@@ -85,17 +85,45 @@ fi
 echo -e "${YELLOW}Running tests: $TEST_PATH${NC}"
 echo ""
 
-if $BATS_CMD "$TEST_PATH"; then
-  echo ""
-  echo -e "${GREEN}✅ All tests passed!${NC}"
-  exit 0
+# If TEST_PATH is a directory, find all .bats files recursively
+# If it's a file, run it directly
+if [ -d "$TEST_PATH" ]; then
+  # Find all .bats files and run them
+  TEST_FILES=$(find "$TEST_PATH" -name "*.bats" | sort)
+  
+  if [ -z "$TEST_FILES" ]; then
+    echo -e "${RED}❌ No test files found in $TEST_PATH${NC}"
+    exit 1
+  fi
+  
+  # Run bats with all found test files
+  if echo "$TEST_FILES" | xargs $BATS_CMD; then
+    echo ""
+    echo -e "${GREEN}✅ All tests passed!${NC}"
+    exit 0
+  else
+    echo ""
+    echo -e "${RED}❌ Some tests failed${NC}"
+    echo ""
+    echo "Tips:"
+    echo "  • Run with --verbose for more details"
+    echo "  • Check docs/troubleshooting/testing-issues.md"
+    echo "  • Run specific test file to isolate issues"
+    exit 1
+  fi
 else
-  echo ""
-  echo -e "${RED}❌ Some tests failed${NC}"
-  echo ""
-  echo "Tips:"
-  echo "  • Run with --verbose for more details"
-  echo "  • Check docs/troubleshooting/testing-issues.md"
-  echo "  • Run specific test file to isolate issues"
-  exit 1
+  # Single file - run directly
+  if $BATS_CMD "$TEST_PATH"; then
+    echo ""
+    echo -e "${GREEN}✅ All tests passed!${NC}"
+    exit 0
+  else
+    echo ""
+    echo -e "${RED}❌ Some tests failed${NC}"
+    echo ""
+    echo "Tips:"
+    echo "  • Run with --verbose for more details"
+    echo "  • Check docs/troubleshooting/testing-issues.md"
+    exit 1
+  fi
 fi

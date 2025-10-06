@@ -249,6 +249,72 @@ bats --trace tests/unit/core/test-simple.bats
 
 ---
 
+## Exit Code Inconsistencies
+
+**Symptom:**
+Test expects function to return 1 but it returns 128 or other non-standard code.
+
+**Example:**
+```bash
+@test "gh_is_git_repo: returns 1 outside git repository" {
+  run gh_is_git_repo
+  [ "$status" -eq 1 ]  # Fails! Actually returns 128
+}
+```
+
+**Cause:**
+Many bash functions pass through the exit code of underlying commands. For example:
+- `git rev-parse --git-dir` returns 128 when not in a git repo
+- `command -v nonexistent` returns 1
+- `curl` returns various codes (6, 7, 28, etc.)
+
+**Solutions:**
+
+### 1. Test for Non-Zero (Recommended for Most Cases)
+```bash
+@test "function fails appropriately" {
+  run some_function_that_should_fail
+  [ "$status" -ne 0 ]  # Just check it's non-zero
+}
+```
+
+### 2. Test for Specific Exit Code (When It Matters)
+```bash
+@test "function returns specific code" {
+  run some_function
+  [ "$status" -eq 128 ]  # If you need the exact code
+}
+```
+
+### 3. Document Expected Behavior
+```bash
+@test "gh_is_git_repo: returns non-zero outside git repository" {
+  # Note: git returns 128, not 1, when not in a repo
+  # This is expected behavior - we just need non-zero
+  run gh_is_git_repo
+  [ "$status" -ne 0 ]
+}
+```
+
+### 4. Normalize Exit Codes in Functions (Future Enhancement)
+If consistent exit codes are important, wrap commands:
+```bash
+gh_is_git_repo() {
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    return 0
+  else
+    return 1  # Normalize to 1 instead of passing through 128
+  fi
+}
+```
+
+**When to Use Each Approach:**
+- **Non-zero check:** Most tests, especially for error conditions
+- **Specific code:** When the exact code is part of the API contract
+- **Normalization:** When building a library with documented exit codes
+
+---
+
 ## Known Issues
 
 ### Issue: Complex Function Tests Hang
