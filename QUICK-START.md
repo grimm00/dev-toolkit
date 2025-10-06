@@ -33,6 +33,10 @@ dt-config edit global       # Edit global config
 
 ### Sourcery Parser
 ```bash
+# Quick review extraction (recommended)
+dt-review 42                # Extract review to admin/feedback/sourcery/pr42.md
+
+# Full parser with options
 dt-sourcery-parse           # Parse current user's open PR
 dt-sourcery-parse 42        # Parse PR #42
 dt-sourcery-parse 42 -o review.md    # Save to file
@@ -124,4 +128,5 @@ git commit -m "Your message"
 ---
 
 **Full Documentation**: [README.md](README.md)  
-**Version**: 0.1.0-alpha
+**Testing Guide**: [docs/TESTING.md](docs/TESTING.md)  
+**Version**: 0.2.0
