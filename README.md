@@ -201,9 +201,15 @@ dev-toolkit/
 
 ## 📚 Documentation
 
+### User Guides
 - **[Optional Features Guide](docs/OPTIONAL-FEATURES.md)** - Core vs Optional features explained
-- **[Troubleshooting Guide](docs/troubleshooting/common-issues.md)** - Common issues and solutions
 - **[Sourcery Setup Guide](docs/SOURCERY-SETUP.md)** - Setting up Sourcery AI code reviews
+
+### Troubleshooting
+- **[Common Issues](docs/troubleshooting/common-issues.md)** - Quick solutions to frequent problems
+- **[Sourcery Parser: No Comments](docs/troubleshooting/sourcery-parser-no-comments.md)** - When parser shows 0 comments
+
+### Project Documentation
 - **[Admin README](admin/README.md)** - Project coordination and structure
 - **[Planning Roadmap](admin/planning/roadmap.md)** - Development phases
 
