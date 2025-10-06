@@ -41,7 +41,7 @@
 ## Release Branch Workflow
 
 ### 1. Create Release Branch
-- [ ] Create branch: `release/v0.2.0` from develop
+- [x] Create branch: `release/v0.2.0` from develop
   ```bash
   git checkout develop
   git pull origin develop
@@ -49,12 +49,12 @@
   ```
 
 ### 2. Prepare Release
-- [ ] Update VERSION file to `0.2.0`
+- [x] Update VERSION file to `0.2.0`
   ```bash
   echo "0.2.0" > VERSION
   ```
-- [ ] Update CHANGELOG.md with release date
-- [ ] Update any version references in README (if any)
+- [x] Update CHANGELOG.md with release date
+- [x] Update any version references in README (none needed)
 - [ ] Commit release preparation
   ```bash
   git add VERSION CHANGELOG.md
