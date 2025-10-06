@@ -48,6 +48,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] - 2025-10-06
+
+### Added
+- **Documentation**
+  - `docs/OPTIONAL-FEATURES.md` - Comprehensive guide explaining core vs optional features (247 lines)
+  - `docs/troubleshooting/sourcery-parser-no-comments.md` - Focused troubleshooting guide for parser limitations (223 lines)
+  - Enhanced `docs/SOURCERY-SETUP.md` with prominent rate limit warnings
+
+- **Admin Structure**
+  - `admin/planning/features/` - New feature tracking structure
+  - `admin/planning/features/optional-sourcery/feature-plan.md` - Complete feature planning document (302 lines)
+  - `admin/planning/features/optional-sourcery/phase-1.md` - Phase tracking with implementation notes (147 lines)
+  - `admin/planning/features/README.md` - Feature workflow documentation
+
+### Changed
+- **README.md** - Added ✅ Core vs 🔌 Optional categorization throughout
+  - Clear visual indicators for features requiring external services
+  - Reorganized documentation section with categories (User Guides, Troubleshooting, Project Documentation)
+  - Core features section showing what works immediately without setup
+
+- **bin/dt-setup-sourcery** - Added upfront rate limit information
+  - Shows "Sourcery is Optional" messaging
+  - Displays rate limit info (500k diff chars/week) before installation
+  - Provides graceful exit option (Ctrl+C)
+  - Links to documentation for more details
+
+- **lib/sourcery/parser.sh** - Improved error messages
+  - Reminds users that Sourcery is optional when errors occur
+  - Shows core features that work without Sourcery
+  - Links to OPTIONAL-FEATURES.md guide
+
+- **admin/planning/roadmap.md** - Updated to reflect v0.1.0-alpha completion and v0.1.1 progress
+
+### Improved
+- **Documentation Structure** - Moved from monolithic to focused docs
+  - `common-issues.md` now links to focused troubleshooting guides
+  - Easier to find specific issues
+  - Better searchability and maintainability
+
+### Philosophy
+- Emphasized core-first design: toolkit should be useful immediately without external services
+- Made it clear that Sourcery is optional and all core features work independently
+- Transparent about rate limits and limitations
+
+---
+
 ## [Unreleased]
 
 ### Planned
@@ -55,4 +101,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Priority matrix helper tools
 - Enhanced GitHub API batch operations
 - Automated testing suite
-- Extended documentation and guides
+- Parser improvements to extract overall comments
