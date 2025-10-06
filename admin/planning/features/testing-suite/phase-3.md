@@ -910,6 +910,27 @@ gh pr create --base develop --title "feat: Phase 3 Testing Suite - Edge Cases"
 - Provided clear examples and principles
 - Updated all test counts and performance stats
 
+**Design Insight - Command Aliases vs Executables:**
+When asked to create an "alias" for dt-sourcery-parse, the implementation created a new executable (`bin/dt-review`) rather than a shell alias. This highlights an important concept:
+
+*"In Linux (or anywhere), we can make as many user bin files as we want. I was always abstracted from system or user executables, but once you're in this tech space, a lot of this is demystified."*
+
+**Why Executables > Shell Aliases:**
+- **Portability**: Works in any shell (bash, zsh, fish)
+- **Discoverability**: Shows up in `command -v`, tab completion
+- **Flexibility**: Can have its own logic, flags, and help text
+- **Installation**: Automatically available after `install.sh`
+- **Testing**: Can be tested like any other command
+- **Documentation**: Can provide its own `--help` output
+
+**The Demystification:**
+Commands like `ls`, `git`, `npm` aren't magic - they're just executable files in directories on your `PATH`. The dev-toolkit does the same thing:
+1. Create executable scripts in `bin/`
+2. Add `bin/` to `PATH` (via `install.sh` or `dev-setup.sh`)
+3. Now `dt-review` is just another command
+
+This realization opens up possibilities: any repetitive task can become a command. The barrier between "system commands" and "your commands" disappears once you understand they're all just executables on the `PATH`.
+
 ---
 
 **Phase 3 Complete!** 🎉
