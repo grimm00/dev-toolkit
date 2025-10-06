@@ -41,7 +41,7 @@
 ## Release Branch Workflow
 
 ### 1. Create Release Branch
-- [ ] Create branch: `release/v0.2.0` from develop
+- [x] Create branch: `release/v0.2.0` from develop
   ```bash
   git checkout develop
   git pull origin develop
@@ -49,68 +49,68 @@
   ```
 
 ### 2. Prepare Release
-- [ ] Update VERSION file to `0.2.0`
+- [x] Update VERSION file to `0.2.0`
   ```bash
   echo "0.2.0" > VERSION
   ```
-- [ ] Update CHANGELOG.md with release date
-- [ ] Update any version references in README (if any)
-- [ ] Commit release preparation
+- [x] Update CHANGELOG.md with release date
+- [x] Update any version references in README (none needed)
+- [x] Commit release preparation
   ```bash
   git add VERSION CHANGELOG.md
   git commit -m "chore: Prepare release v0.2.0"
   ```
 
 ### 3. Final Testing
-- [ ] Run all tests locally
+- [x] Run all tests locally
   ```bash
   ./scripts/test.sh
   ```
-- [ ] Verify all 215 tests pass
-- [ ] Test installation process
+- [x] Verify all 215 tests pass ✅
+- [x] Test installation process
   ```bash
   ./install.sh --help
   ```
-- [ ] Verify commands work
+- [x] Verify commands work
   ```bash
   ./bin/dt-git-safety --version
   ./bin/dt-config show
   ```
 
 ### 4. Push Release Branch
-- [ ] Push release branch to GitHub
+- [x] Push release branch to GitHub
   ```bash
   git push -u origin release/v0.2.0
   ```
-- [ ] **CI will run on the release branch** (this tests our CI workflow!)
-- [ ] Verify CI passes on release branch
-  ```bash
-  gh run list --branch release/v0.2.0
-  ```
-- [ ] If CI fails, create `fix/ci-*` branch from release branch
-- [ ] Merge fixes back to release branch
-- [ ] Re-run CI until green ✅
+- [x] **CI will NOT run on branch push** (by design - only runs on PRs and main)
+  - This is correct behavior per our CI workflow changes
+  - CI will run when we merge to main (step 5)
+  - All tests passed locally (215/215) ✅
 
 ---
 
 ## Release Execution
 
+**Note:** We merged directly to main instead of creating a PR. In future releases, create a PR from release branch to main first to test CI before merging.
+
 ### 5. Merge to Main
-- [ ] Switch to main
+- [x] Switch to main
   ```bash
   git checkout main
   git pull origin main
   ```
-- [ ] Merge release branch (no fast-forward)
+- [x] Merge release branch (no fast-forward)
   ```bash
   git merge release/v0.2.0 --no-ff -m "Release v0.2.0: Testing & Reliability"
   ```
-- [ ] Push to main
+- [x] Push to main
   ```bash
   git push origin main
   ```
-- [ ] **CI will run on main** (validates the release)
-- [ ] Verify CI passes on main
+- [x] **CI ran on main** (validates the release)
+- [x] CI passed! ✅ (after hotfix for link checker)
+  - Had to apply hotfix for markdown-link-check config
+  - All tests passed, linting passed, docs passed
 
 ### 6. Create Git Tag
 - [ ] Create annotated tag
