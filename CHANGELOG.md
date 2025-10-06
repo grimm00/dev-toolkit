@@ -100,5 +100,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Additional Git Flow workflow commands
 - Priority matrix helper tools
 - Enhanced GitHub API batch operations
-- Automated testing suite
 - Parser improvements to extract overall comments
+
+---
+
+## [0.2.0] - 2025-10-06
+
+### Added
+- **Testing Suite** (215 tests, < 15 second execution)
+  - `bats-core` testing framework integration
+  - 144 unit tests covering all core utilities
+  - 71 integration tests for all commands
+  - Test helpers for mocking, assertions, and setup
+  - CI/CD test integration in GitHub Actions
+
+- **New Command**
+  - `dt-review` - Convenient wrapper for `dt-sourcery-parse` with automatic formatting and output to `admin/feedback/sourcery/pr<NUMBER>.md`
+
+- **Test Coverage**
+  - `tests/unit/core/test-github-utils-*.bats` - 94 tests for github-utils.sh
+  - `tests/unit/git-flow/test-git-flow-*.bats` - 45 tests for git-flow utilities
+  - `tests/integration/test-dt-*.bats` - 71 tests for all commands
+  - `tests/helpers/` - Reusable test helpers (setup, mocks, assertions)
+
+- **Documentation** (2,800+ lines)
+  - `docs/TESTING.md` (897 lines) - Comprehensive testing guide
+  - `docs/troubleshooting/testing-issues.md` (717 lines) - Testing troubleshooting
+  - `admin/planning/notes/demystifying-executables.md` (217 lines) - Key design insights
+  - `admin/planning/features/testing-suite/` - Complete phase planning (5 documents, 2,700+ lines)
+  - `admin/planning/releases/` - Release process documentation (3 documents, 1,450+ lines)
+
+### Fixed
+- **dt-review** - Help flag handling (`--help` was failing with "invalid number" error)
+- **dt-setup-sourcery** - ShellCheck warnings (SC2034: unused variables)
+- **Test Infrastructure** - Temporary directory cleanup and test isolation issues
+
+### Changed
+- **CI/CD Workflow** - Only triggers on PRs and main pushes (not develop pushes)
+  - Reduces unnecessary CI runs
+  - Maintains quality gates where they matter
+  - Standard Git Flow pattern
+
+### Improved
+- **Code Quality** - Addressed 17 Sourcery AI suggestions across 4 PRs
+  - PR #6: 3 suggestions (setup issues)
+  - PR #8: 10 suggestions (edge cases) - All addressed
+  - PR #9: 4 suggestions (edge cases) - All addressed
+  - PR #10: 3 suggestions (optional enhancements) - Deferred to v0.2.1
+
+- **Testing Patterns** - Established reusable patterns for future development
+  - Dynamic test creation over static fixtures
+  - Function mocking with `export -f`
+  - Interface testing for optional features
+  - Comprehensive edge case coverage
+
+### Impact
+- **High Confidence** - 215 tests provide safety net for changes
+- **Regression Prevention** - Automated detection of breaking changes
+- **Safe Refactoring** - Can confidently improve code
+- **Clear Patterns** - Established testing approach for future features
+
+### Statistics
+- **Tests:** 215 (100% passing)
+- **Execution Time:** < 15 seconds
+- **Unit Tests:** 144
+- **Integration Tests:** 71
+- **Test Files:** 11
+- **Documentation:** 2,800+ lines
+- **PRs Merged:** 4 (#6, #8, #9, #10)

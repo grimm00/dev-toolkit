@@ -307,7 +307,7 @@ EOF
             git push -u origin "$TEST_BRANCH"
             
             # Create PR
-            PR_URL=$(gh pr create --title "test: Verify Sourcery integration" --body "Testing Sourcery AI code review integration" --web)
+            gh pr create --title "test: Verify Sourcery integration" --body "Testing Sourcery AI code review integration" --web > /dev/null
             PR_NUMBER=$(gh pr view --json number --jq '.number')
             
             print_status "SUCCESS" "Test PR created: #$PR_NUMBER"
@@ -315,7 +315,7 @@ EOF
             echo -e "${CYAN}Waiting for Sourcery to review (this takes 1-2 minutes)...${NC}"
             echo ""
             
-            for i in {1..12}; do
+            for _ in {1..12}; do
                 echo -n "."
                 sleep 10
             done

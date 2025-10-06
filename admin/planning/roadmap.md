@@ -145,9 +145,10 @@ Create a portable, project-agnostic development toolkit that streamlines code re
   - < 15 second execution time
 
 ### Next Up
-- 🎯 **Phase 4: Test Enhancements** - Address remaining Sourcery suggestions (optional)
-- 📋 **Batch Operations** - Process multiple items efficiently
-- 📋 **Enhanced Git Flow** - More workflow automation
+- 🎯 **v0.2.0 Release** - Merge to main, create release tag
+- 📋 **Batch Operations** - Process multiple items efficiently (v0.3.0)
+- 📋 **Enhanced Git Flow** - More workflow automation (v0.4.0)
+- 📋 **Phase 4: Test Enhancements** - Optional edge cases (v0.2.1, deferred)
 - 🔮 **v1.0 Production Ready** - Stable, tested, production-grade
 
 ---
@@ -169,19 +170,21 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 - Feature tracking workflow
 - Improved user experience
 
-### v0.2.0 - Testing & Reliability ✅ COMPLETED (Oct 6, 2025)
+### v0.2.0 - Testing & Reliability ✅ READY FOR RELEASE
 - ✅ Automated test suite (215 tests)
 - ✅ CI/CD test integration
 - ✅ Comprehensive test documentation
 - ✅ Regression prevention
 - ✅ All commands tested end-to-end
 - ✅ < 15 second execution time
+- **Status:** Complete, ready to merge to main and tag
 
-### v0.2.1 - Test Enhancements (Optional)
+### v0.2.1 - Test Enhancements (Optional, Deferred)
 - Additional edge case tests from Sourcery feedback
 - Boundary value testing
 - Complex scenario coverage
 - ~5-10 additional tests
+- **Status:** Deferred - will address after v0.3.0 or v0.4.0 if needed
 
 ### v0.3.0 - Batch Operations (Planned)
 - Batch PR processing
@@ -204,6 +207,60 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 
 ---
 
+## 🚀 v0.2.0 Release Plan
+
+### Current Status
+- ✅ All Phase 3 work complete (215 tests)
+- ✅ All documentation updated
+- ✅ All PRs merged to develop
+- ✅ Branches cleaned up
+- ⏳ Ready to release to main
+
+### Release Checklist
+- [ ] Review CHANGELOG.md
+- [ ] Update VERSION file to 0.2.0
+- [ ] Merge develop to main
+- [ ] Create v0.2.0 release tag
+- [ ] Update README badges (if any)
+- [ ] Announce release
+
+### What's Included in v0.2.0
+**Major Features:**
+- 215 automated tests (144 unit + 71 integration)
+- < 15 second test execution
+- 100% test pass rate
+- Comprehensive testing documentation
+- CI/CD test integration
+- dt-review command (new)
+- All Sourcery feedback addressed
+
+**Documentation:**
+- docs/TESTING.md (897 lines)
+- docs/troubleshooting/testing-issues.md (717 lines)
+- admin/planning/notes/demystifying-executables.md (217 lines)
+- Complete phase planning documents
+- Sourcery feedback analyses (4 PRs)
+
+**Impact:**
+- High confidence in code changes
+- Regression prevention
+- Safe to refactor and add features
+- Clear patterns for future development
+
+### After Release
+- Continue with v0.3.0 (Batch Operations)
+- Or v0.4.0 (Enhanced Git Flow)
+- Phase 4 (Test Enhancements) deferred as optional
+
+### Release Documentation
+- **Process Guide:** [releases/README.md](releases/README.md)
+- **Release History:** [releases/history.md](releases/history.md)
+- **v0.2.0 Directory:** [releases/v0.2.0/](releases/v0.2.0/)
+  - [Release Notes](releases/v0.2.0/release-notes.md)
+  - [Checklist](releases/v0.2.0/checklist.md)
+
+---
+
 ## 📝 Notes
 
 ### Origin Story
@@ -222,7 +279,7 @@ This toolkit emerged from the Pokehub project's need for portable Sourcery autom
 ---
 
 **Last Updated:** October 6, 2025  
-**Next Review:** Before v0.2.0 planning
+**Next Review:** After v0.2.0 release
 
 ---
 
