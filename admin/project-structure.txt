@@ -1,0 +1,104 @@
+.
+├── .cursor
+│   └── rules
+│       └── development-rules.mdc
+├── .github
+│   ├── markdown-link-check-config.json
+│   └── workflows
+│       └── ci.yml
+├── admin
+│   ├── chat-logs
+│   │   └── 2025
+│   │       ├── 2025-01-06-dev-toolkit-inception.md
+│   │       └── 2025-10-05-testing-suite-phase-2.md
+│   ├── dev-toolkit-handoff-prompt.md
+│   ├── docs
+│   ├── feedback
+│   │   └── sourcery
+│   │       ├── pr06.md
+│   │       ├── pr08.md
+│   │       ├── pr09.md
+│   │       └── pr10.md
+│   ├── planning
+│   │   ├── features
+│   │   │   ├── optional-sourcery
+│   │   │   ├── README.md
+│   │   │   └── testing-suite
+│   │   ├── notes
+│   │   │   └── demystifying-executables.md
+│   │   ├── phases
+│   │   │   └── phase1-foundation.md
+│   │   ├── releases
+│   │   │   ├── history.md
+│   │   │   ├── README.md
+│   │   │   └── v0.2.0
+│   │   └── roadmap.md
+│   ├── project-structure.txt
+│   ├── README.md
+│   └── testing
+├── bin
+│   ├── dt-config
+│   ├── dt-git-safety
+│   ├── dt-install-hooks
+│   ├── dt-review
+│   ├── dt-setup-sourcery
+│   └── dt-sourcery-parse
+├── CHANGELOG.md
+├── config
+│   └── config.example
+├── dev-setup.sh
+├── docs
+│   ├── INSTALL-VS-DEV-SETUP.md
+│   ├── OPTIONAL-FEATURES.md
+│   ├── SIMPLE-EXPLANATION.md
+│   ├── SOURCERY-SETUP.md
+│   ├── TESTING.md
+│   └── troubleshooting
+│       ├── common-issues.md
+│       ├── sourcery-parser-no-comments.md
+│       └── testing-issues.md
+├── examples
+├── install.sh
+├── lib
+│   ├── core
+│   │   └── github-utils.sh
+│   ├── git-flow
+│   │   ├── hooks
+│   │   │   └── pre-commit
+│   │   ├── safety.sh
+│   │   └── utils.sh
+│   └── sourcery
+│       └── parser.sh
+├── LICENSE
+├── QUICK-START.md
+├── README.md
+├── scripts
+│   └── test.sh
+├── tests
+│   ├── fixtures
+│   │   ├── configs
+│   │   ├── repos
+│   │   └── responses
+│   ├── helpers
+│   │   ├── assertions.bash
+│   │   ├── mocks.bash
+│   │   └── setup.bash
+│   ├── integration
+│   │   ├── test-dt-config.bats
+│   │   ├── test-dt-git-safety.bats
+│   │   ├── test-dt-install-hooks.bats
+│   │   └── test-dt-sourcery-parse.bats
+│   └── unit
+│       ├── core
+│       │   ├── test-github-utils-basic.bats
+│       │   ├── test-github-utils-git.bats
+│       │   ├── test-github-utils-output.bats
+│       │   ├── test-github-utils-validation.bats
+│       │   └── test-simple.bats
+│       ├── git-flow
+│       │   ├── test-git-flow-safety.bats
+│       │   └── test-git-flow-utils.bats
+│       └── sourcery
+└── VERSION
+
+42 directories, 60 files
