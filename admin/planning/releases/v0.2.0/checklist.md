@@ -55,23 +55,23 @@
   ```
 - [x] Update CHANGELOG.md with release date
 - [x] Update any version references in README (none needed)
-- [ ] Commit release preparation
+- [x] Commit release preparation
   ```bash
   git add VERSION CHANGELOG.md
   git commit -m "chore: Prepare release v0.2.0"
   ```
 
 ### 3. Final Testing
-- [ ] Run all tests locally
+- [x] Run all tests locally
   ```bash
   ./scripts/test.sh
   ```
-- [ ] Verify all 215 tests pass
-- [ ] Test installation process
+- [x] Verify all 215 tests pass ✅
+- [x] Test installation process
   ```bash
   ./install.sh --help
   ```
-- [ ] Verify commands work
+- [x] Verify commands work
   ```bash
   ./bin/dt-git-safety --version
   ./bin/dt-config show
