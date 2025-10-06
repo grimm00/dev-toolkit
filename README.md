@@ -278,13 +278,21 @@ See [docs/TESTING.md](docs/TESTING.md) for detailed testing guide.
 
 ## 🤝 Contributing
 
-This toolkit is designed for personal use across multiple projects but contributions are welcome:
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-1. Keep tools project-agnostic
-2. Maintain zero external dependencies for core features
-3. Document all functions and usage
-4. Write tests for new features
-5. Test across different project types
+**Quick Start:**
+1. Fork the repository
+2. Create a feature branch (`feat/your-feature`)
+3. Write tests for your changes
+4. Ensure all tests pass
+5. Submit a pull request
+
+**Key Principles:**
+- Keep tools project-agnostic
+- Maintain minimal dependencies for core features
+- Document all functions and usage
+- Write tests for new features
+- Follow conventional commit messages
 
 ## 📝 License
 
