@@ -40,9 +40,16 @@ This toolkit consolidates reusable development utilities that work across any pr
 
 ## 🚀 Installation
 
+### Prerequisites
+
+1. **Fork this repository** on GitHub (click "Fork" button)
+2. Clone your fork:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/dev-toolkit.git ~/.dev-toolkit
+   ```
+
 ### Quick Install (Global)
 ```bash
-git clone https://github.com/yourusername/dev-toolkit.git ~/.dev-toolkit
 cd ~/.dev-toolkit
 ./install.sh
 ```
@@ -61,10 +68,19 @@ This installs commands globally:
 
 ### Per-Project Install
 ```bash
-# In your project root
-git clone https://github.com/yourusername/dev-toolkit.git .dev-toolkit
+# In your project root (after forking)
+git clone https://github.com/YOUR_USERNAME/dev-toolkit.git .dev-toolkit
 cd .dev-toolkit
 ./install.sh --local
+```
+
+### Updating
+
+To get the latest changes:
+```bash
+cd ~/.dev-toolkit  # or your installation directory
+git pull origin main
+./install.sh  # Re-run installation if needed
 ```
 
 ## 📖 Usage
@@ -216,8 +232,8 @@ dev-toolkit/
 If you're developing or testing the toolkit locally:
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/dev-toolkit.git
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/dev-toolkit.git
 cd dev-toolkit
 
 # Set up development environment
@@ -232,9 +248,9 @@ dt-config show
 dt-git-safety check
 ```
 
-For persistent setup, add to your `~/.zshrc`:
+For persistent setup, add to your `~/.zshrc` or `~/.bashrc`:
 ```bash
-export DT_ROOT="/Users/cdwilson/Projects/dev-toolkit"
+export DT_ROOT="/path/to/your/dev-toolkit"
 export PATH="$DT_ROOT/bin:$PATH"
 ```
 

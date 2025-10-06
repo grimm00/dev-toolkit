@@ -6,17 +6,26 @@ Fast reference for getting started with dev-toolkit.
 
 ## 🚀 Installation
 
+### For Production Use
+```bash
+# 1. Fork the repository on GitHub
+# 2. Clone your fork
+git clone https://github.com/YOUR_USERNAME/dev-toolkit.git ~/.dev-toolkit
+cd ~/.dev-toolkit
+./install.sh
+```
+
 ### For Development/Testing
 ```bash
 cd /path/to/dev-toolkit
 source dev-setup.sh
 ```
 
-### For Production Use
+### Updating
 ```bash
-git clone https://github.com/yourusername/dev-toolkit.git ~/.dev-toolkit
 cd ~/.dev-toolkit
-./install.sh
+git pull origin main
+./install.sh  # Re-run if needed
 ```
 
 ---
