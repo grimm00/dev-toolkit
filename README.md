@@ -25,6 +25,7 @@ This toolkit consolidates reusable development utilities that work across any pr
 
 ### Command Wrappers (`bin/`)
 - `dt-sourcery-parse` - Parse Sourcery reviews
+- `dt-setup-sourcery` - Interactive Sourcery setup
 - `dt-git-safety` - Run Git Flow safety checks
 - `dt-config` - Configuration management
 - `dt-install-hooks` - Install pre-commit hooks
@@ -40,6 +41,7 @@ cd ~/.dev-toolkit
 
 This installs commands globally:
 - `dt-sourcery-parse` - Parse Sourcery reviews
+- `dt-setup-sourcery` - Interactive Sourcery setup
 - `dt-git-safety` - Git Flow safety checks
 - `dt-config` - Configuration management
 - `dt-install-hooks` - Install git hooks
@@ -54,9 +56,21 @@ cd .dev-toolkit
 
 ## 📖 Usage
 
-### Sourcery Review Parser
-Extract Sourcery AI reviews from GitHub PRs:
+### Sourcery AI Integration
 
+**Setup Sourcery (Interactive):**
+```bash
+# Interactive setup wizard
+dt-setup-sourcery
+
+# Options:
+# 1) Install Sourcery GitHub App
+# 2) Check if Sourcery is installed
+# 3) View configuration docs
+# 4) Test Sourcery on current PR
+```
+
+**Parse Sourcery Reviews:**
 ```bash
 # Parse a specific PR
 dt-sourcery-parse 42
