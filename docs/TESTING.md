@@ -77,13 +77,14 @@ tests/
 └── integration/               # Integration tests (end-to-end)
     ├── test-dt-git-safety.bats      # dt-git-safety command
     ├── test-dt-config.bats          # dt-config command
-    └── test-dt-install-hooks.bats   # dt-install-hooks command
+    ├── test-dt-install-hooks.bats   # dt-install-hooks command
+    └── test-dt-sourcery-parse.bats  # dt-sourcery-parse command
 ```
 
-**Test Coverage (as of Phase 3):**
-- **198 total tests** (100% passing)
-- **Unit tests:** 139 tests (5 smoke + 134 unit)
-- **Integration tests:** 59 tests (3 commands)
+**Test Coverage (as of Phase 3 Part C):**
+- **215 total tests** (100% passing)
+- **Unit tests:** 144 tests (5 smoke + 139 unit)
+- **Integration tests:** 71 tests (4 commands: dt-git-safety, dt-config, dt-install-hooks, dt-sourcery-parse)
 - **Execution time:** < 15 seconds
 
 ### Test File Naming
@@ -145,15 +146,16 @@ Integration tests verify commands work end-to-end:
 bats tests/integration/test-dt-git-safety.bats
 bats tests/integration/test-dt-config.bats
 bats tests/integration/test-dt-install-hooks.bats
+bats tests/integration/test-dt-sourcery-parse.bats
 ```
 
 **Note:** Integration tests may create temporary directories and git repositories. They clean up after themselves automatically.
 
 ### Performance
 
-**Current Stats (Phase 3):**
-- **Total Tests:** 198
-- **Execution Time:** < 10 seconds
+**Current Stats (Phase 3 Part C):**
+- **Total Tests:** 215
+- **Execution Time:** < 15 seconds
 - **Success Rate:** 100%
 
 ---
@@ -656,6 +658,41 @@ EDITOR="echo" run dt-config edit
   # Cleanup happens automatically on exit
 }
 ```
+
+#### Issue 8: Testing Optional Features
+
+**Symptom:** Need to test commands that depend on external services (like Sourcery)
+
+**Solution:** Focus on interface testing without complex mocking:
+```bash
+# Test command interface, not external dependencies
+@test "dt-sourcery-parse: accepts numeric PR number" {
+  # Will fail due to no repo, but validates argument parsing
+  run dt-sourcery-parse 123
+  [ "$status" -ne 0 ]
+  # Should NOT show "Invalid argument" error
+  ! [[ "$output" =~ "Invalid argument" ]]
+}
+
+@test "dt-sourcery-parse: rejects non-numeric PR number" {
+  run dt-sourcery-parse abc
+  [ "$status" -ne 0 ]
+  [[ "$output" =~ "Invalid argument" ]]
+}
+
+@test "dt-sourcery-parse: accepts --rich-details flag" {
+  run dt-sourcery-parse 1 --rich-details
+  [ "$status" -ne 0 ]
+  # Should NOT show "Invalid argument" for the flag
+  ! [[ "$output" =~ "Invalid argument.*rich-details" ]]
+}
+```
+
+**Key Principles:**
+- Test the command interface (flags, arguments, help)
+- Test error handling without external dependencies
+- Avoid complex mocking of external APIs
+- Focus on what you can reliably test
 
 ### Debug Tips
 
