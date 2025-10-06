@@ -28,12 +28,16 @@ fi
 
 # Create temporary test directory
 setup_test_dir() {
+  ORIGINAL_PWD="$PWD"
   TEST_DIR="$(mktemp -d)"
   cd "$TEST_DIR"
 }
 
 # Cleanup temporary directory
 teardown_test_dir() {
+  if [ -n "$ORIGINAL_PWD" ]; then
+    cd "$ORIGINAL_PWD"
+  fi
   if [ -n "$TEST_DIR" ] && [ -d "$TEST_DIR" ]; then
     rm -rf "$TEST_DIR"
   fi

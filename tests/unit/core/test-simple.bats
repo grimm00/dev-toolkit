@@ -14,7 +14,8 @@
 }
 
 @test "can check if file exists" {
-  [ -f "README.md" ]
+  load '../../helpers/setup'
+  [ -f "$PROJECT_ROOT/README.md" ]
 }
 
 @test "PROJECT_ROOT is set correctly" {
