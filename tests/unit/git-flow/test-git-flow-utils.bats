@@ -114,6 +114,28 @@ teardown() {
   unset GF_PROTECTED_BRANCHES
 }
 
+@test "gf_is_protected_branch: exact match prevents false positives" {
+  # PR #9 Sourcery suggestion #3
+  export GF_PROTECTED_BRANCHES=("main" "develop")
+  
+  # Should match exactly
+  run gf_is_protected_branch "main"
+  [ "$status" -eq 0 ]
+  
+  # Should NOT match (false positive check)
+  run gf_is_protected_branch "main-feature"
+  [ "$status" -eq 1 ]
+  
+  run gf_is_protected_branch "my-main-branch"
+  [ "$status" -eq 1 ]
+  
+  run gf_is_protected_branch "maintain"
+  [ "$status" -eq 1 ]
+  
+  # Clean up
+  unset GF_PROTECTED_BRANCHES
+}
+
 # ============================================================================
 # Current Branch Tests
 # ============================================================================

@@ -119,6 +119,39 @@ setup() {
   unset GH_PROTECTED_BRANCHES
 }
 
+@test "gh_is_protected_branch: handles empty protected branches array" {
+  # PR #9 Sourcery suggestion #2
+  export GH_PROTECTED_BRANCHES=()
+  
+  # With empty array, should fall back to defaults or return not protected
+  run gh_is_protected_branch "main"
+  # Should not be protected when array is explicitly empty
+  [ "$status" -eq 1 ]
+  
+  unset GH_PROTECTED_BRANCHES
+}
+
+@test "gh_is_protected_branch: handles unset protected branches variable" {
+  # PR #9 Sourcery suggestion #2
+  # When variable is unset/empty, the function should handle it gracefully
+  # In practice, the script initializes it with defaults, but if it's empty
+  # the function should not crash
+  
+  # Save current value
+  local saved_branches=("${GH_PROTECTED_BRANCHES[@]}")
+  
+  # Set to empty array (simulating unset in practice)
+  GH_PROTECTED_BRANCHES=()
+  
+  # Should handle gracefully without crashing
+  run gh_is_protected_branch "main"
+  # With empty array, returns not protected
+  [ "$status" -eq 1 ]
+  
+  # Restore
+  GH_PROTECTED_BRANCHES=("${saved_branches[@]}")
+}
+
 # ============================================================================
 # Secret Generation Tests
 # ============================================================================
