@@ -1,0 +1,109 @@
+---
+description: Read admin/planning/roadmap.md and admin/README.md for project context
+globs:
+alwaysApply: true
+---
+Read admin/planning/roadmap.md and admin/README.md, and also:
+
+# Cursor AI Rules for Dev Toolkit Project
+
+## Testing Before Implementation
+- Always test scripts in isolated environments before committing
+- Test with different project contexts (various repositories)
+- Verify auto-detection logic works correctly
+- Test with and without optional dependencies (jq, etc.)
+- Test edge cases: no git remote, no GitHub access, etc.
+
+## CRITICAL: NEVER COMMIT WITHOUT TESTING
+- **MANDATORY**: Test ALL script changes before committing
+- **MANDATORY**: Verify scripts work in different project contexts
+- **MANDATORY**: Check for portability issues (hardcoded paths, project names)
+- **MANDATORY**: Test the specific scenario the user reported
+- **NEVER**: Commit changes with hardcoded project-specific values
+- **ALWAYS**: Ask user to test across multiple projects if unsure
+
+## Development Workflow
+1. **Design First**: Ensure scripts are project-agnostic from the start
+2. **Test Locally**: Verify in dev-toolkit repository
+3. **Test Externally**: Verify in other projects (Pokehub, etc.)
+4. **Documentation**: Update README and guides with changes
+
+## Code Quality
+- Make incremental changes with clear explanations
+- Test functionality after each change
+- Use existing files rather than creating new ones
+- Maintain project structure and organization
+- Keep scripts modular and reusable
+
+## Project Context
+- This is a portable, project-agnostic development toolkit
+- Written in Bash for maximum portability
+- Designed to work across any Git repository
+- Core dependencies: bash, git, gh CLI
+- Optional dependencies: jq (for performance)
+- Current focus: Phase 1 (Foundation - copying and adapting utilities)
+
+## Design Principles
+- **Portability**: Works in any project without modification
+- **Auto-Detection**: Intelligently discovers project context
+- **Modularity**: Use individual tools or the full suite
+- **Zero Dependencies**: Core features work with minimal requirements
+- **AI-Friendly**: Designed for seamless AI assistant integration
+
+## Testing Commands
+- Test script syntax: `bash -n script.sh`
+- Test in current project: `./script.sh`
+- Test in other project: `cd ~/Projects/other && ~/.dev-toolkit/script.sh`
+- Test auto-detection: `./script.sh --debug`
+- Check dependencies: `./script.sh --check-deps`
+
+## Admin Directory Structure
+- Always maintain comprehensive documentation in `admin/`
+- Document all decisions in planning notes
+- Save significant chat logs with descriptive names
+- Keep phase documents updated with progress
+- Use the admin structure for AI agent coordination
+
+## Script Standards
+- Use `#!/usr/bin/env bash` shebang
+- Set strict mode: `set -euo pipefail`
+- Add comprehensive help text (`--help`)
+- Include version info (`--version`)
+- Provide debug mode (`--debug`)
+- Check dependencies before execution
+- Use meaningful variable names
+- Add comments for complex logic
+- Handle errors gracefully with clear messages
+
+## Path Management
+- Never hardcode project-specific paths
+- Use auto-detection for repository info
+- Support both global (`~/.dev-toolkit`) and local (`.dev-toolkit`) installation
+- Use `$HOME` instead of `~` in scripts
+- Always use absolute paths in critical operations
+
+## Git Workflow
+- Work in feature branches
+- Commit related changes together
+- Write clear, descriptive commit messages
+- Test before pushing
+- Document breaking changes
+- Update version numbers appropriately
+
+## Documentation Standards
+- Keep README.md up to date
+- Document all functions and utilities
+- Provide usage examples
+- Include troubleshooting sections
+- Maintain changelog for releases
+- Use markdown formatting consistently
+
+## Best Practices from Pokehub
+- **Batch API Calls**: Use `jq` for efficient GitHub operations
+- **Explicit Paths**: Always use absolute paths in scripts
+- **Error Messages**: Clear, actionable error messages
+- **Comprehensive Docs**: Prevent confusion with thorough documentation
+- **Live Testing**: Test in temporary directories to catch issues early
+- **Pattern Recognition**: Identify and document recurring patterns
+- **Proactive Fixes**: Check for similar issues across all files
+- **Admin Structure**: Essential for project organization and AI coordination

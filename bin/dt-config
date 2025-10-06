@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+# Dev Toolkit - Configuration Management Wrapper
+# Manages dev-toolkit configuration
+
+set -euo pipefail
+
+# Detect toolkit installation location
+if [ -n "${DT_ROOT:-}" ]; then
+    TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$HOME/.dev-toolkit/lib/core/github-utils.sh" ]; then
+    TOOLKIT_ROOT="$HOME/.dev-toolkit"
+else
+    echo "❌ Error: Cannot locate dev-toolkit installation"
+    echo "💡 Set DT_ROOT environment variable or install to ~/.dev-toolkit"
+    exit 1
+fi
+
+# Source utilities
+source "$TOOLKIT_ROOT/lib/core/github-utils.sh"
+source "$TOOLKIT_ROOT/lib/git-flow/utils.sh"
+
+# Command handling
+case "${1:-help}" in
+    "show"|"view")
+        echo "=== GitHub Configuration ==="
+        echo ""
+        gh_show_config
+        echo ""
+        echo "=== Git Flow Configuration ==="
+        echo ""
+        gf_show_config
+        ;;
+    "create")
+        config_type="${2:-global}"
+        if [ "$config_type" = "project" ]; then
+            gh_create_default_config "project"
+            gf_create_default_config "project"
+        else
+            gh_create_default_config "global"
+            gf_create_default_config "global"
+        fi
+        ;;
+    "edit")
+        config_type="${2:-global}"
+        if [ "$config_type" = "project" ]; then
+            config_file=".dev-toolkit.conf"
+        else
+            config_file="$HOME/.dev-toolkit/config"
+        fi
+        
+        if [ ! -f "$config_file" ]; then
+            echo "❌ Config file not found: $config_file"
+            echo "💡 Create it first: dt-config create $config_type"
+            exit 1
+        fi
+        
+        ${EDITOR:-vi} "$config_file"
+        ;;
+    "help"|"-h"|"--help")
+        echo "Dev Toolkit - Configuration Management"
+        echo ""
+        echo "Usage: dt-config [command] [options]"
+        echo ""
+        echo "Commands:"
+        echo "  show              Show current configuration"
+        echo "  create [type]     Create config file (global or project)"
+        echo "  edit [type]       Edit config file (global or project)"
+        echo "  help              Show this help message"
+        echo ""
+        echo "Examples:"
+        echo "  dt-config show              # Show current config"
+        echo "  dt-config create global     # Create global config"
+        echo "  dt-config create project    # Create project-local config"
+        echo "  dt-config edit global       # Edit global config"
+        ;;
+    *)
+        echo "❌ Unknown command: $1"
+        echo "Use 'dt-config help' for usage information"
+        exit 1
+        ;;
+esac
