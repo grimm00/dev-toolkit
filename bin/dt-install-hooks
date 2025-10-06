@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# Dev Toolkit - Git Hooks Installation Script
+# Installs pre-commit hooks for automatic safety checks
+
+set -euo pipefail
+
+# Colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+echo -e "${BOLD}${CYAN}🪝 Dev Toolkit - Git Hooks Installer${NC}"
+echo -e "${CYAN}════════════════════════════════════${NC}"
+echo ""
+
+# Detect toolkit installation
+if [ -n "${DT_ROOT:-}" ]; then
+    TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$HOME/.dev-toolkit/lib/git-flow/hooks/pre-commit" ]; then
+    TOOLKIT_ROOT="$HOME/.dev-toolkit"
+else
+    echo -e "${YELLOW}⚠️  Cannot locate dev-toolkit installation${NC}"
+    echo -e "${YELLOW}💡 Set DT_ROOT environment variable or install to ~/.dev-toolkit${NC}"
+    exit 1
+fi
+
+# Check if we're in a git repository
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    echo -e "${YELLOW}❌ Not in a git repository${NC}"
+    echo -e "${YELLOW}💡 Run this command from within a git repository${NC}"
+    exit 1
+fi
+
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+HOOKS_DIR="$PROJECT_ROOT/.git/hooks"
+
+echo -e "${BLUE}ℹ️  Installing hooks to: $HOOKS_DIR${NC}"
+echo ""
+
+# Create hooks directory if it doesn't exist
+mkdir -p "$HOOKS_DIR"
+
+# Install pre-commit hook
+HOOK_SOURCE="$TOOLKIT_ROOT/lib/git-flow/hooks/pre-commit"
+HOOK_DEST="$HOOKS_DIR/pre-commit"
+
+if [ ! -f "$HOOK_SOURCE" ]; then
+    echo -e "${YELLOW}❌ Hook source not found: $HOOK_SOURCE${NC}"
+    exit 1
+fi
+
+# Check if hook already exists
+if [ -f "$HOOK_DEST" ]; then
+    echo -e "${YELLOW}⚠️  Pre-commit hook already exists${NC}"
+    echo -e "${BLUE}   Current hook: $HOOK_DEST${NC}"
+    echo ""
+    read -p "Overwrite existing hook? (y/N): " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${BLUE}ℹ️  Skipping hook installation${NC}"
+        exit 0
+    fi
+    echo ""
+fi
+
+# Copy and make executable
+cp "$HOOK_SOURCE" "$HOOK_DEST"
+chmod +x "$HOOK_DEST"
+
+echo -e "${GREEN}✅ Pre-commit hook installed successfully!${NC}"
+echo ""
+echo -e "${CYAN}What this hook does:${NC}"
+echo "  • Checks branch safety (prevents commits to protected branches)"
+echo "  • Detects potential merge conflicts"
+echo "  • Prevents committing sensitive files (.env, .key, etc.)"
+echo "  • Warns about large files (>10MB)"
+echo ""
+echo -e "${CYAN}To test the hook:${NC}"
+echo "  git commit -m \"test commit\""
+echo ""
+echo -e "${CYAN}To bypass the hook (not recommended):${NC}"
+echo "  git commit --no-verify -m \"your message\""
+echo ""
+echo -e "${GREEN}🎉 Installation complete!${NC}"
