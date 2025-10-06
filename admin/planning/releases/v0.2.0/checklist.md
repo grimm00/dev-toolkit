@@ -91,22 +91,26 @@
 
 ## Release Execution
 
+**Note:** We merged directly to main instead of creating a PR. In future releases, create a PR from release branch to main first to test CI before merging.
+
 ### 5. Merge to Main
-- [ ] Switch to main
+- [x] Switch to main
   ```bash
   git checkout main
   git pull origin main
   ```
-- [ ] Merge release branch (no fast-forward)
+- [x] Merge release branch (no fast-forward)
   ```bash
   git merge release/v0.2.0 --no-ff -m "Release v0.2.0: Testing & Reliability"
   ```
-- [ ] Push to main
+- [x] Push to main
   ```bash
   git push origin main
   ```
-- [ ] **CI will run on main** (validates the release)
-- [ ] Verify CI passes on main
+- [x] **CI ran on main** (validates the release)
+- [x] CI passed! ✅ (after hotfix for link checker)
+  - Had to apply hotfix for markdown-link-check config
+  - All tests passed, linting passed, docs passed
 
 ### 6. Create Git Tag
 - [ ] Create annotated tag
