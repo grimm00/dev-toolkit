@@ -108,6 +108,17 @@ setup() {
   [ "$status" -eq 1 ]
 }
 
+@test "gh_is_protected_branch: identifies custom protected branch from config" {
+  # Set custom protected branch via environment
+  export GH_PROTECTED_BRANCHES=("main" "develop" "release")
+  
+  run gh_is_protected_branch "release"
+  [ "$status" -eq 0 ]
+  
+  # Clean up
+  unset GH_PROTECTED_BRANCHES
+}
+
 # ============================================================================
 # Secret Generation Tests
 # ============================================================================

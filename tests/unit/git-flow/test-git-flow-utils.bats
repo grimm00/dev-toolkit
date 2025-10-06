@@ -103,6 +103,17 @@ teardown() {
   [ "$status" -eq 1 ]
 }
 
+@test "gf_is_protected_branch: identifies custom protected branch from config" {
+  # Set custom protected branch via environment
+  export GF_PROTECTED_BRANCHES=("main" "develop" "release")
+  
+  run gf_is_protected_branch "release"
+  [ "$status" -eq 0 ]
+  
+  # Clean up
+  unset GF_PROTECTED_BRANCHES
+}
+
 # ============================================================================
 # Current Branch Tests
 # ============================================================================

@@ -242,6 +242,44 @@ teardown() {
   [[ "$output" =~ "Cannot determine repository" ]]
 }
 
+@test "gh_validate_repository: handles multiple git remotes gracefully" {
+  # Mock git to return multiple remotes
+  git() {
+    if [ "$1" = "rev-parse" ] && [ "$2" = "--git-dir" ]; then
+      echo ".git"
+      return 0
+    elif [ "$1" = "remote" ]; then
+      if [ "$2" = "get-url" ] && [ "$3" = "origin" ]; then
+        echo "https://github.com/user/repo.git"
+        return 0
+      elif [ -z "$2" ]; then
+        # List remotes
+        echo "origin"
+        echo "upstream"
+        echo "fork"
+        return 0
+      fi
+    fi
+    command git "$@"
+  }
+  export -f git
+  
+  # Mock gh to succeed
+  gh() {
+    if [ "$1" = "repo" ] && [ "$2" = "view" ]; then
+      echo '{"nameWithOwner":"user/repo"}'
+      return 0
+    fi
+    command gh "$@"
+  }
+  export -f gh
+  
+  # Should succeed and use origin by default
+  run gh_validate_repository
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Repository validated" ]]
+}
+
 # ============================================================================
 # Init Function Tests
 # ============================================================================
