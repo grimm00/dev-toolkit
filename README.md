@@ -6,10 +6,16 @@ A portable, project-agnostic development toolkit for managing code reviews, Git 
 
 This toolkit consolidates reusable development utilities that work across any project:
 
-- **Sourcery Automation** - Extract and format AI code reviews programmatically
+### ✅ Core Features (No External Services Required)
 - **Git Flow Utilities** - Streamlined branching, merging, and cleanup workflows
-- **GitHub Integration** - Batch API operations and PR management
-- **Project Management** - Priority matrices and planning templates
+- **GitHub Integration** - Batch API operations and PR management (requires `gh` CLI)
+- **Pre-commit Hooks** - Automated safety checks before commits
+- **Configuration Management** - Global and project-local settings
+
+### 🔌 Optional Features (External Services)
+- **Sourcery Automation** - Extract and format AI code reviews programmatically
+  - Requires: Sourcery GitHub App (free tier: 500k diff chars/week)
+  - **You can use all core features without Sourcery!**
 
 ## 📦 What's Inside
 
@@ -40,11 +46,15 @@ cd ~/.dev-toolkit
 ```
 
 This installs commands globally:
-- `dt-sourcery-parse` - Parse Sourcery reviews
-- `dt-setup-sourcery` - Interactive Sourcery setup
+
+**✅ Core Commands (Work immediately):**
 - `dt-git-safety` - Git Flow safety checks
 - `dt-config` - Configuration management
-- `dt-install-hooks` - Install git hooks
+- `dt-install-hooks` - Install pre-commit hooks
+
+**🔌 Optional Commands (Require Sourcery):**
+- `dt-sourcery-parse` - Parse Sourcery reviews
+- `dt-setup-sourcery` - Interactive Sourcery setup
 
 ### Per-Project Install
 ```bash
@@ -56,7 +66,43 @@ cd .dev-toolkit
 
 ## 📖 Usage
 
-### Sourcery AI Integration
+### Core Features (Available Immediately)
+
+These features work right after installation with no additional setup:
+
+**Git Flow Safety Checks:**
+```bash
+# Run all safety checks
+dt-git-safety check
+
+# Check current branch safety
+dt-git-safety branch
+
+# Check for merge conflicts
+dt-git-safety conflicts
+```
+
+**Configuration Management:**
+```bash
+# Show current configuration
+dt-config show
+
+# Create global configuration
+dt-config create global
+```
+
+**Git Hooks:**
+```bash
+# Install pre-commit hooks
+dt-install-hooks
+```
+
+---
+
+### Optional: Sourcery AI Integration
+
+> **⚠️ Rate Limits:** Sourcery free tier provides 500,000 diff characters/week.  
+> **💡 Tip:** All core features work without Sourcery! Only add this if you want AI code reviews.
 
 **Setup Sourcery (Interactive):**
 ```bash
@@ -88,19 +134,8 @@ dt-sourcery-parse 42 --think
 dt-sourcery-parse 42 --rich-details
 ```
 
-### Git Flow Safety Checks
-Run automated Git Flow workflow compliance checks:
-
+**More Git Flow Options:**
 ```bash
-# Run all safety checks
-dt-git-safety check
-
-# Check current branch safety
-dt-git-safety branch
-
-# Check for merge conflicts
-dt-git-safety conflicts
-
 # Check open pull requests
 dt-git-safety prs
 
@@ -108,35 +143,13 @@ dt-git-safety prs
 dt-git-safety fix
 ```
 
-### Configuration Management
-Manage dev-toolkit configuration:
-
+**More Configuration Options:**
 ```bash
-# Show current configuration
-dt-config show
-
-# Create global configuration
-dt-config create global
-
 # Create project-local configuration
 dt-config create project
 
 # Edit configuration
 dt-config edit global
-```
-
-### Git Hooks
-Install pre-commit hooks for automatic safety checks:
-
-```bash
-# Install hooks in current repository
-dt-install-hooks
-
-# Hooks will automatically run before each commit
-# - Check branch safety
-# - Detect merge conflicts
-# - Prevent committing sensitive files
-# - Warn about large files
 ```
 
 ## 🛠️ Requirements
@@ -188,11 +201,11 @@ dev-toolkit/
 
 ## 📚 Documentation
 
+- **[Optional Features Guide](docs/OPTIONAL-FEATURES.md)** - Core vs Optional features explained
 - **[Troubleshooting Guide](docs/troubleshooting/common-issues.md)** - Common issues and solutions
 - **[Sourcery Setup Guide](docs/SOURCERY-SETUP.md)** - Setting up Sourcery AI code reviews
 - **[Admin README](admin/README.md)** - Project coordination and structure
 - **[Planning Roadmap](admin/planning/roadmap.md)** - Development phases
-- **[Installation Guide](admin/docs/installation-guide.md)** - Detailed setup (coming soon)
 
 ## 🔧 Development
 

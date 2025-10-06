@@ -80,8 +80,12 @@ extract_sourcery_review() {
         echo "   - Sourcery is not installed on this repository"
         echo "   - PR has no code changes to review"
         echo ""
-        echo -e "${GH_CYAN}To install Sourcery:${GH_NC}"
-        echo "   dt-setup-sourcery"
+        echo -e "${GH_CYAN}${GH_BOLD}💡 Remember: Sourcery is optional!${GH_NC}"
+        echo -e "   All core toolkit features work without it:"
+        echo -e "   ${GH_GREEN}✅${GH_NC} dt-git-safety, dt-config, dt-install-hooks"
+        echo ""
+        echo -e "${GH_BLUE}ℹ️  To install Sourcery: ${GH_BOLD}dt-setup-sourcery${GH_NC}"
+        echo -e "${GH_BLUE}ℹ️  Learn more: ${GH_BOLD}docs/OPTIONAL-FEATURES.md${GH_NC}"
         return 1
     fi
     

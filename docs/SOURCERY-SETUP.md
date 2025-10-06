@@ -1,7 +1,43 @@
 
 # Setting Up Sourcery AI for Dev Toolkit
 
+> **💡 Note:** Sourcery is **optional**! All core dev-toolkit features (git-safety, hooks, config) work without it.  
+> See [Optional Features Guide](OPTIONAL-FEATURES.md) for details.
+
 Sourcery is an AI code reviewer that automatically reviews your pull requests. This guide shows you how to set it up for the dev-toolkit repository.
+
+---
+
+## ⚠️ Important: Rate Limits
+
+Before installing Sourcery, understand the free tier limitations:
+
+### Free Tier
+- **500,000 diff characters per week**
+- **Resets:** Every Monday
+- **What counts:** Every line added or removed in your PRs
+
+### What This Means
+- **Small PRs (< 100 lines):** ~5,000 chars = 100 PRs/week ✅
+- **Medium PRs (< 500 lines):** ~25,000 chars = 20 PRs/week ✅
+- **Large PRs (> 1000 lines):** ~50,000+ chars = 10 PRs/week ⚠️
+
+### When You Hit the Limit
+Sourcery will comment on your PR:
+```
+⚠️ Weekly rate limit exceeded (500,000 diff characters)
+Your limit will reset on [date]
+```
+
+**What still works:**
+- ✅ All dev-toolkit core features (git-safety, hooks, config)
+- ✅ Previous Sourcery reviews (still visible on GitHub)
+- ✅ Manual code reviews
+
+**Options:**
+1. **Wait** - Limit resets weekly
+2. **Upgrade** - Sourcery Pro for unlimited reviews
+3. **Use Core Features** - Toolkit works great without Sourcery!
 
 ---
 
