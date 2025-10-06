@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Dev Toolkit - Quick Sourcery Review Extractor
+# Alias for dt-sourcery-parse with convenient output location
+
+set -euo pipefail
+
+# Detect DT_ROOT
+if [ -n "${DT_ROOT:-}" ]; then
+    TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$HOME/.dev-toolkit/bin/dt-sourcery-parse" ]; then
+    TOOLKIT_ROOT="$HOME/.dev-toolkit"
+else
+    echo "❌ Error: Cannot locate dev-toolkit installation"
+    echo "💡 Set DT_ROOT environment variable or install to ~/.dev-toolkit"
+    exit 1
+fi
+
+# Get PR number
+PR_NUMBER="${1:-}"
+
+if [ -z "$PR_NUMBER" ]; then
+    echo "Usage: dt-review <PR_NUMBER>"
+    echo ""
+    echo "Extracts Sourcery review and saves to admin/feedback/sourcery/pr<NUMBER>.md"
+    echo ""
+    echo "Example:"
+    echo "  dt-review 6"
+    echo "  # Saves to admin/feedback/sourcery/pr06.md"
+    exit 1
+fi
+
+# Format PR number with leading zero if needed
+PR_PADDED=$(printf "pr%02d" "$PR_NUMBER")
+
+# Create output directory if it doesn't exist
+mkdir -p admin/feedback/sourcery
+
+# Output file
+OUTPUT_FILE="admin/feedback/sourcery/${PR_PADDED}.md"
+
+# Run the parser with rich details
+echo "📋 Extracting Sourcery review for PR #${PR_NUMBER}..."
+echo ""
+
+if "$TOOLKIT_ROOT/bin/dt-sourcery-parse" "$PR_NUMBER" --rich-details --output "$OUTPUT_FILE"; then
+    echo ""
+    echo "✅ Review saved to: $OUTPUT_FILE"
+    echo ""
+    echo "💡 View the review:"
+    echo "   cat $OUTPUT_FILE"
+    echo "   code $OUTPUT_FILE"
+else
+    echo ""
+    echo "❌ Failed to extract review"
+    exit 1
+fi
