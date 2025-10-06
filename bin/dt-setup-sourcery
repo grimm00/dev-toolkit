@@ -47,19 +47,19 @@ fi
 
 print_status "SUCCESS" "GitHub CLI found: $(gh --version | head -1)"
 
-# Check if authenticated
+# Check if authenticated (specifically for github.com)
 echo ""
 print_status "INFO" "Checking GitHub authentication..."
-if ! gh auth status >/dev/null 2>&1; then
-    print_status "WARNING" "Not authenticated with GitHub"
+if ! gh auth status -h github.com >/dev/null 2>&1; then
+    print_status "WARNING" "Not authenticated with github.com"
     echo ""
     echo -e "${CYAN}Let's authenticate with GitHub first...${NC}"
     echo ""
-    gh auth login
+    gh auth login -h github.com
     echo ""
     print_status "SUCCESS" "Authenticated with GitHub"
 else
-    print_status "SUCCESS" "Already authenticated with GitHub"
+    print_status "SUCCESS" "Already authenticated with github.com"
 fi
 
 # Check if we're in a git repository

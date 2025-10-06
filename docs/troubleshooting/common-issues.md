@@ -444,6 +444,57 @@ dt-config show
 
 ---
 
+### Issue: Authentication keeps asking even though you're logged in
+
+**Symptom:**
+```bash
+# You run dt-setup-sourcery
+# It asks you to authenticate even though you already did
+```
+
+**Cause:**
+You have multiple GitHub accounts configured (e.g., github.com and a GitHub Enterprise account), and one of them has an invalid token. The `gh auth status` command fails if ANY account is invalid.
+
+**Check your accounts:**
+```bash
+gh auth status
+# Shows all configured accounts
+```
+
+**Example output:**
+```
+github.com
+  ✓ Logged in to github.com account grimm00 (keyring)
+  
+git.enterprise.com
+  X Failed to log in to git.enterprise.com account user (keyring)
+  - The token in keyring is invalid.
+```
+
+**Solutions:**
+
+**Option 1: Fix the invalid account**
+```bash
+# Re-authenticate with the failing account
+gh auth login -h git.enterprise.com
+```
+
+**Option 2: Remove the invalid account**
+```bash
+# Remove the account you don't need
+gh auth logout -h git.enterprise.com -u username
+```
+
+**Option 3: Check specific host**
+```bash
+# Check only github.com authentication
+gh auth status -h github.com
+```
+
+The toolkit scripts now check specifically for `github.com` authentication, so this should be less of an issue.
+
+---
+
 ## Debugging Tips
 
 ### Enable Verbose Mode
