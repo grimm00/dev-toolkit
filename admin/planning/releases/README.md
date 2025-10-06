@@ -172,9 +172,39 @@ Copy this for each release:
 
 ---
 
+## 📁 Release Directory Structure
+
+Each release gets its own directory:
+
+```
+admin/planning/releases/
+├── README.md              # This file (process guide)
+├── history.md             # All releases timeline
+└── v0.2.0/               # Release-specific directory
+    ├── checklist.md      # Release checklist (track progress)
+    ├── release-notes.md  # Polished release notes
+    └── decisions.md      # Any release-specific decisions (optional)
+```
+
+### Creating a New Release Directory
+
+```bash
+# Create release directory
+mkdir -p admin/planning/releases/vX.Y.Z
+
+# Copy checklist template
+cp admin/planning/releases/v0.2.0/checklist.md \
+   admin/planning/releases/vX.Y.Z/checklist.md
+
+# Create release notes
+touch admin/planning/releases/vX.Y.Z/release-notes.md
+```
+
+---
+
 ## 📄 Release Notes Template
 
-Create a file: `admin/planning/releases/vX.Y.Z-notes.md`
+Create a file: `admin/planning/releases/vX.Y.Z/release-notes.md`
 
 ```markdown
 # Release vX.Y.Z - [Release Name]

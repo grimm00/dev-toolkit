@@ -255,7 +255,9 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 ### Release Documentation
 - **Process Guide:** [releases/README.md](releases/README.md)
 - **Release History:** [releases/history.md](releases/history.md)
-- **v0.2.0 Notes:** [releases/v0.2.0-notes.md](releases/v0.2.0-notes.md)
+- **v0.2.0 Directory:** [releases/v0.2.0/](releases/v0.2.0/)
+  - [Release Notes](releases/v0.2.0/release-notes.md)
+  - [Checklist](releases/v0.2.0/checklist.md)
 
 ---
 

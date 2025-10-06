@@ -52,8 +52,10 @@ Major release adding comprehensive automated testing suite with 215 tests, compl
 - PR #9: Phase 3 Parts A & B - Integration Tests & Edge Cases
 - PR #10: Phase 3 Part C - dt-sourcery-parse & Final Edge Cases
 
-### Release Notes
-See: [v0.2.0-notes.md](./v0.2.0-notes.md)
+### Release Directory
+See: [v0.2.0/](./v0.2.0/)
+- [Release Notes](./v0.2.0/release-notes.md)
+- [Checklist](./v0.2.0/checklist.md)
 
 ---
 
