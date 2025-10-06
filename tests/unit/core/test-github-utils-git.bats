@@ -248,6 +248,35 @@ teardown() {
   [ "$PROJECT_NAME" = "my-project-name" ]
 }
 
+@test "gh_detect_project_info: handles malformed remote URL gracefully" {
+  # Mock git to return a malformed remote URL
+  git() {
+    if [ "$1" = "remote" ] && [ "$2" = "get-url" ]; then
+      echo "malformed-url-without-proper-format"
+      return 0
+    elif [ "$1" = "rev-parse" ] && [ "$2" = "--show-toplevel" ]; then
+      echo "/Users/test/my-project-name"
+      return 0
+    fi
+    command git "$@"
+  }
+  export -f git
+  
+  # Mock gh to fail
+  gh() {
+    return 1
+  }
+  export -f gh
+  
+  # Function should handle malformed URL gracefully (may return error or fall back)
+  gh_detect_project_info || true
+  
+  # At minimum, it should not crash and should set some project name
+  # Either from the malformed URL or from directory fallback
+  [ -n "${PROJECT_NAME:-}" ]
+  # The function handled the malformed URL without crashing
+}
+
 # ============================================================================
 # Config Loading Tests
 # ============================================================================

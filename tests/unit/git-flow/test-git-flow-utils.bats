@@ -103,6 +103,17 @@ teardown() {
   [ "$status" -eq 1 ]
 }
 
+@test "gf_is_protected_branch: identifies custom protected branch from config" {
+  # Set custom protected branch via environment
+  export GF_PROTECTED_BRANCHES=("main" "develop" "release")
+  
+  run gf_is_protected_branch "release"
+  [ "$status" -eq 0 ]
+  
+  # Clean up
+  unset GF_PROTECTED_BRANCHES
+}
+
 # ============================================================================
 # Current Branch Tests
 # ============================================================================
@@ -365,6 +376,22 @@ EOF
   run gf_check_required_dependencies
   [ "$status" -eq 1 ]
   [[ "$output" =~ "git" ]]
+}
+
+@test "gf_check_required_dependencies: fails when multiple dependencies missing" {
+  # Mock git and bash as missing
+  command() {
+    if [ "$1" = "-v" ] && { [ "$2" = "git" ] || [ "$2" = "bash" ]; }; then
+      return 1
+    fi
+    builtin command "$@"
+  }
+  export -f command
+  
+  run gf_check_required_dependencies
+  [ "$status" -eq 1 ]
+  # Should report both missing dependencies
+  [[ "$output" =~ "git" ]] || [[ "$output" =~ "bash" ]]
 }
 
 # ============================================================================

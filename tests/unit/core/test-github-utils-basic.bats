@@ -108,6 +108,17 @@ setup() {
   [ "$status" -eq 1 ]
 }
 
+@test "gh_is_protected_branch: identifies custom protected branch from config" {
+  # Set custom protected branch via environment
+  export GH_PROTECTED_BRANCHES=("main" "develop" "release")
+  
+  run gh_is_protected_branch "release"
+  [ "$status" -eq 0 ]
+  
+  # Clean up
+  unset GH_PROTECTED_BRANCHES
+}
+
 # ============================================================================
 # Secret Generation Tests
 # ============================================================================
@@ -127,4 +138,20 @@ setup() {
   result=$(gh_generate_secret)
   # Base64 output contains alphanumeric, +, /, and = characters
   [[ "$result" =~ ^[a-zA-Z0-9+/=]+$ ]]
+}
+
+@test "gh_generate_secret: generates secure secrets with sufficient length and entropy" {
+  result=$(gh_generate_secret)
+  
+  # Base64 format check
+  [[ "$result" =~ ^[a-zA-Z0-9+/=]+$ ]]
+  
+  # Minimum length check (32 characters for security)
+  [ "${#result}" -ge 32 ]
+  
+  # Entropy checks - base64 should have variety of characters
+  [[ "$result" =~ [A-Z] ]]  # Has uppercase letters
+  [[ "$result" =~ [a-z] ]]  # Has lowercase letters
+  [[ "$result" =~ [0-9] ]]  # Has digits
+  # Note: +/= may not always be present in every string, but the above checks ensure variety
 }
