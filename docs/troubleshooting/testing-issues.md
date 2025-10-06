@@ -353,6 +353,280 @@ bats --timing tests/
 
 ---
 
+## Integration Test Issues
+
+### Issue: Tests Hanging on User Input
+
+**Symptom:**
+Integration tests hang indefinitely when commands prompt for user input.
+
+**Example:**
+```bash
+@test "dt-install-hooks installs hook" {
+  TEST_DIR="$(mktemp -d)"
+  cd "$TEST_DIR"
+  git init
+  
+  run dt-install-hooks  # Hangs waiting for y/n input
+}
+```
+
+**Cause:**
+Commands like `dt-install-hooks` prompt for confirmation when a hook already exists.
+
+**Solutions:**
+
+#### 1. Pipe Input to Command
+```bash
+@test "dt-install-hooks with piped input" {
+  TEST_DIR="$(mktemp -d)"
+  cd "$TEST_DIR"
+  git init > /dev/null 2>&1
+  
+  # Pipe 'y' to answer prompt
+  run bash -c "echo 'y' | dt-install-hooks"
+  [ "$status" -eq 0 ]
+  
+  cd - > /dev/null
+  rm -rf "$TEST_DIR"
+}
+```
+
+#### 2. Mock EDITOR for Edit Commands
+```bash
+@test "dt-config edit with mocked EDITOR" {
+  TEST_DIR="$(mktemp -d)"
+  HOME="$TEST_DIR" dt-config create > /dev/null 2>&1
+  
+  # Mock EDITOR to just echo the file path
+  EDITOR="echo" run dt-config edit
+  [ "$status" -eq 0 ]
+  
+  rm -rf "$TEST_DIR"
+}
+```
+
+#### 3. Use Non-Interactive Flags (if available)
+```bash
+# If command supports --yes or --no-prompt flags
+run dt-install-hooks --yes
+```
+
+---
+
+### Issue: Temporary Directory Cleanup
+
+**Symptom:**
+`/tmp` directory fills up with test directories after running tests.
+
+**Cause:**
+Tests create temporary directories but don't clean them up properly.
+
+**Solutions:**
+
+#### 1. Manual Cleanup (Simple)
+```bash
+@test "my integration test" {
+  TEST_DIR="$(mktemp -d)"
+  ORIG_DIR="$PWD"
+  cd "$TEST_DIR"
+  
+  # Test code here
+  
+  # Always cleanup
+  cd "$ORIG_DIR"
+  rm -rf "$TEST_DIR"
+}
+```
+
+#### 2. Trap for Guaranteed Cleanup (Recommended)
+```bash
+@test "my integration test with trap" {
+  TEST_DIR="$(mktemp -d)"
+  trap "cd - > /dev/null 2>&1; rm -rf '$TEST_DIR'" EXIT
+  
+  cd "$TEST_DIR"
+  
+  # Test code here
+  # Cleanup happens automatically even if test fails
+}
+```
+
+#### 3. Use Helper Functions
+```bash
+setup() {
+  setup_file
+  setup_test_dir  # Creates TEST_DIR and cd's into it
+}
+
+teardown() {
+  teardown_test_dir  # Cleans up and restores PWD
+}
+
+@test "my test" {
+  # TEST_DIR is already set and cleaned up automatically
+  git init
+  # ...
+}
+```
+
+---
+
+### Issue: Integration Tests Fail in CI but Pass Locally
+
+**Symptom:**
+Tests pass on your machine but fail in GitHub Actions or other CI environments.
+
+**Common Causes:**
+
+#### 1. Git Configuration Missing
+```bash
+# CI environments don't have git user configured
+@test "test that commits" {
+  TEST_DIR="$(mktemp -d)"
+  cd "$TEST_DIR"
+  
+  git init
+  # ❌ This will fail in CI without user config
+  git commit -m "test"
+}
+```
+
+**Solution:** Always configure git in tests:
+```bash
+@test "test that commits" {
+  TEST_DIR="$(mktemp -d)"
+  cd "$TEST_DIR"
+  
+  git init
+  git config user.email "test@example.com"
+  git config user.name "Test User"
+  
+  echo "test" > file.txt
+  git add file.txt
+  git commit -m "test"  # ✅ Now works in CI
+  
+  cd - > /dev/null
+  rm -rf "$TEST_DIR"
+}
+```
+
+#### 2. HOME Directory Differences
+```bash
+# CI may have different HOME directory
+@test "test with config" {
+  # ❌ Assumes specific HOME location
+  [ -f "$HOME/.dev-toolkit/config" ]
+}
+```
+
+**Solution:** Use temporary HOME for tests:
+```bash
+@test "test with config" {
+  TEST_DIR="$(mktemp -d)"
+  
+  # ✅ Use temporary HOME
+  HOME="$TEST_DIR" dt-config create
+  [ -f "$TEST_DIR/.dev-toolkit/config" ]
+  
+  rm -rf "$TEST_DIR"
+}
+```
+
+#### 3. Path Dependencies
+```bash
+# CI may not have commands in PATH
+@test "test that uses jq" {
+  # ❌ Assumes jq is installed
+  result=$(echo '{"key":"value"}' | jq -r .key)
+}
+```
+
+**Solution:** Check for optional dependencies:
+```bash
+@test "test that uses jq" {
+  if ! command -v jq > /dev/null; then
+    skip "jq not installed"
+  fi
+  
+  result=$(echo '{"key":"value"}' | jq -r .key)
+  [ "$result" = "value" ]
+}
+```
+
+---
+
+### Issue: Integration Tests Are Slow
+
+**Symptom:**
+Integration tests take a long time to run (> 30 seconds).
+
+**Causes and Solutions:**
+
+#### 1. Too Many Git Operations
+```bash
+# ❌ Slow: Creates full git history
+@test "slow test" {
+  TEST_DIR="$(mktemp -d)"
+  cd "$TEST_DIR"
+  
+  git init
+  for i in {1..100}; do
+    echo "$i" > file.txt
+    git add file.txt
+    git commit -m "Commit $i"
+  done
+  
+  # Test something
+}
+```
+
+**Solution:** Minimize git operations:
+```bash
+# ✅ Fast: Only necessary operations
+@test "fast test" {
+  TEST_DIR="$(mktemp -d)"
+  cd "$TEST_DIR"
+  
+  git init
+  git config user.email "test@example.com"
+  git config user.name "Test User"
+  
+  echo "test" > file.txt
+  git add file.txt
+  git commit -m "Initial"
+  
+  # Test something
+  
+  cd - > /dev/null
+  rm -rf "$TEST_DIR"
+}
+```
+
+#### 2. Redirect Output
+```bash
+# ❌ Slow: Shows all git output
+git init
+git add .
+git commit -m "test"
+```
+
+**Solution:** Redirect to /dev/null:
+```bash
+# ✅ Fast: Suppresses output
+git init > /dev/null 2>&1
+git add . > /dev/null 2>&1
+git commit -m "test" > /dev/null 2>&1
+```
+
+#### 3. Parallel Test Execution
+```bash
+# Run tests in parallel (if bats supports it)
+bats --jobs 4 tests/
+```
+
+---
+
 **Last Updated:** October 6, 2025  
 **Version:** 0.2.0-dev  
-**Related:** Phase 1 testing implementation
+**Related:** Phase 3 testing implementation (integration tests)

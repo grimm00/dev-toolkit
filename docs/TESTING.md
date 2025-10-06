@@ -74,8 +74,17 @@ tests/
 │   └── git-flow/              # Git Flow tests
 │       ├── test-git-flow-utils.bats
 │       └── test-git-flow-safety.bats
-└── integration/               # Integration tests (future)
+└── integration/               # Integration tests (end-to-end)
+    ├── test-dt-git-safety.bats      # dt-git-safety command
+    ├── test-dt-config.bats          # dt-config command
+    └── test-dt-install-hooks.bats   # dt-install-hooks command
 ```
+
+**Test Coverage (as of Phase 3):**
+- **198 total tests** (100% passing)
+- **Unit tests:** 139 tests (5 smoke + 134 unit)
+- **Integration tests:** 59 tests (3 commands)
+- **Execution time:** < 15 seconds
 
 ### Test File Naming
 
@@ -124,10 +133,26 @@ bats --timing tests/
 bats --filter "github-utils" tests/
 ```
 
+### Running Integration Tests
+
+Integration tests verify commands work end-to-end:
+
+```bash
+# Run all integration tests
+./scripts/test.sh tests/integration/
+
+# Run specific command tests
+bats tests/integration/test-dt-git-safety.bats
+bats tests/integration/test-dt-config.bats
+bats tests/integration/test-dt-install-hooks.bats
+```
+
+**Note:** Integration tests may create temporary directories and git repositories. They clean up after themselves automatically.
+
 ### Performance
 
-**Current Stats:**
-- **Total Tests:** 129
+**Current Stats (Phase 3):**
+- **Total Tests:** 198
 - **Execution Time:** < 10 seconds
 - **Success Rate:** 100%
 
@@ -340,7 +365,7 @@ EOF
 }
 ```
 
-### Pattern 6: Integration Testing
+### Pattern 6: Integration Testing (Unit Level)
 
 Test multiple functions working together:
 
@@ -368,6 +393,45 @@ Test multiple functions working together:
   [ "$status" -eq 0 ]
 }
 ```
+
+### Pattern 7: Command Integration Testing (End-to-End)
+
+Test actual commands in real scenarios:
+
+```bash
+@test "dt-git-safety: complete workflow on feature branch" {
+  TEST_DIR="$(mktemp -d)"
+  cd "$TEST_DIR"
+  
+  # Set up real git repository
+  git init > /dev/null 2>&1
+  git config user.email "test@example.com"
+  git config user.name "Test User"
+  
+  echo "test" > file.txt
+  git add file.txt
+  git commit -m "Initial" > /dev/null 2>&1
+  
+  # Create feature branch
+  git checkout -b feat/test-feature > /dev/null 2>&1
+  
+  # Run actual command
+  run dt-git-safety check
+  [ "$status" -eq 0 ]
+  
+  # Cleanup
+  cd - > /dev/null
+  rm -rf "$TEST_DIR"
+}
+```
+
+**Integration Test Best Practices:**
+- Use temporary directories (`mktemp -d`)
+- Create real git repositories when needed
+- Test actual command wrappers, not just functions
+- Always clean up (cd back, rm -rf temp dirs)
+- Redirect git output to /dev/null for cleaner tests
+- Test both success and failure scenarios
 
 ---
 
@@ -546,6 +610,50 @@ setup() {
 teardown() {
   teardown_test_dir  # Cleans up and restores PWD
   restore_commands   # Restores mocked commands
+}
+```
+
+#### Issue 6: Integration Tests Hanging
+
+**Symptom:** Integration tests hang waiting for user input
+
+**Solution:** Provide input via pipe or use non-interactive flags:
+```bash
+# Pipe input for prompts
+run bash -c "echo 'y' | dt-install-hooks"
+
+# Or mock EDITOR for edit commands
+EDITOR="echo" run dt-config edit
+```
+
+#### Issue 7: Temporary Directory Cleanup
+
+**Symptom:** `/tmp` fills up with test directories
+
+**Solution:** Always cleanup in tests:
+```bash
+@test "my test" {
+  TEST_DIR="$(mktemp -d)"
+  ORIG_DIR="$PWD"
+  cd "$TEST_DIR"
+  
+  # ... test code ...
+  
+  # Always cleanup
+  cd "$ORIG_DIR"
+  rm -rf "$TEST_DIR"
+}
+```
+
+**Tip:** Use `trap` for guaranteed cleanup:
+```bash
+@test "my test with trap" {
+  TEST_DIR="$(mktemp -d)"
+  trap "cd - > /dev/null; rm -rf '$TEST_DIR'" EXIT
+  
+  cd "$TEST_DIR"
+  # ... test code ...
+  # Cleanup happens automatically on exit
 }
 ```
 
