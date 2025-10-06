@@ -172,6 +172,86 @@ Fill it out to prioritize which suggestions to implement.
 
 ---
 
+## Rate Limits
+
+### Free Tier Limits
+
+Sourcery's free tier includes:
+- **500,000 diff characters per week**
+- Resets weekly
+- Covers most small to medium projects
+
+**What counts as diff characters?**
+- Lines added/removed in your PRs
+- Larger PRs = more characters
+- Multiple PRs accumulate
+
+### Rate Limit Reached
+
+If you see:
+```
+Sorry @username, you have reached your weekly rate limit of 500000 diff characters.
+```
+
+**Options:**
+
+1. **Wait for Weekly Reset**
+   - Rate limits reset every week
+   - You can still view existing reviews
+   - New PRs will be reviewed after reset
+
+2. **View Reviews on GitHub**
+   - Sourcery still comments on PRs
+   - Security issues are highlighted
+   - Inline suggestions are visible
+   - Just can't use `dt-sourcery-parse` until reset
+
+3. **Upgrade to Pro**
+   - Unlimited reviews
+   - Priority support
+   - Advanced features
+   - Visit: https://sourcery.ai/pricing
+
+### Managing Usage
+
+**Tips to stay within free tier:**
+
+1. **Review smaller PRs**
+   - Break large changes into smaller PRs
+   - Each PR uses fewer diff characters
+
+2. **Focus on important code**
+   - Skip documentation-only PRs
+   - Review logic changes primarily
+
+3. **Use selectively**
+   - Not every PR needs Sourcery review
+   - Focus on complex changes
+
+4. **Check usage**
+   - Sourcery shows remaining quota in rate limit messages
+   - Plan PRs accordingly
+
+### Rate Limit Detection
+
+The `dt-sourcery-parse` command automatically detects rate limits:
+
+```bash
+dt-sourcery-parse 1
+# ⚠️  Sourcery rate limit reached
+# 
+# 📊 Rate Limit Information:
+# 
+# Sorry @username, you have reached your weekly rate limit...
+#
+# ℹ️  About Sourcery Rate Limits:
+#    • Free tier: 500,000 diff characters per week
+#    • Resets weekly
+#    • Upgrade available for unlimited reviews
+```
+
+---
+
 ## Troubleshooting
 
 ### Sourcery Not Reviewing

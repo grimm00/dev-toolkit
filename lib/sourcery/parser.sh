@@ -74,7 +74,53 @@ extract_sourcery_review() {
     
     if [ -z "$review_data" ] || [ "$review_data" = "null" ]; then
         gh_print_status "WARNING" "No Sourcery review found for PR #$pr_number"
+        echo ""
+        echo -e "${GH_YELLOW}💡 Possible reasons:${GH_NC}"
+        echo "   - Sourcery hasn't reviewed yet (wait 1-2 minutes)"
+        echo "   - Sourcery is not installed on this repository"
+        echo "   - PR has no code changes to review"
+        echo ""
+        echo -e "${GH_CYAN}To install Sourcery:${GH_NC}"
+        echo "   dt-setup-sourcery"
         return 1
+    fi
+    
+    # Check for rate limit message
+    if echo "$review_data" | grep -q "rate limit"; then
+        gh_print_status "WARNING" "Sourcery rate limit reached"
+        echo ""
+        echo -e "${GH_YELLOW}📊 Rate Limit Information:${GH_NC}"
+        echo ""
+        # Extract and display the rate limit message
+        echo "$review_data" | head -10
+        echo ""
+        echo -e "${GH_CYAN}ℹ️  About Sourcery Rate Limits:${GH_NC}"
+        echo "   • Free tier: 500,000 diff characters per week"
+        echo "   • Resets weekly"
+        echo "   • Upgrade available for unlimited reviews"
+        echo ""
+        echo -e "${GH_CYAN}💡 What you can still do:${GH_NC}"
+        echo "   • View Sourcery comments on GitHub PR page"
+        echo "   • See security issues and suggestions inline"
+        echo "   • Wait for weekly reset"
+        echo "   • Upgrade at: https://sourcery.ai/pricing"
+        echo ""
+        return 1
+    fi
+    
+    # Check for security issues (different format)
+    if echo "$review_data" | grep -q "security issues"; then
+        gh_print_status "INFO" "Sourcery found security issues"
+        echo ""
+        echo -e "${GH_YELLOW}🔒 Security Review Available:${GH_NC}"
+        echo ""
+        echo "$review_data"
+        echo ""
+        echo -e "${GH_CYAN}💡 View detailed security issues:${GH_NC}"
+        echo "   gh pr view $pr_number --web"
+        echo ""
+        echo -e "${GH_YELLOW}Note: Security reviews may not include the full markdown format${GH_NC}"
+        return 0
     fi
     
     # Extract the markdown code block content
@@ -82,6 +128,14 @@ extract_sourcery_review() {
     
     if [ -z "$markdown_content" ]; then
         gh_print_status "WARNING" "No markdown content found in Sourcery review"
+        echo ""
+        echo -e "${GH_YELLOW}💡 Sourcery may have reviewed in a different format${GH_NC}"
+        echo ""
+        echo "Review content preview:"
+        echo "$review_data" | head -20
+        echo ""
+        echo -e "${GH_CYAN}View full review:${GH_NC}"
+        echo "   gh pr view $pr_number --web"
         return 1
     fi
     
