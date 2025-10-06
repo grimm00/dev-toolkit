@@ -54,6 +54,13 @@
 │   │   │   └── README.md
 │   │   │
 │   │   ├── notes/                    # Planning insights
+│   │   │   ├── opportunities/        # Feature opportunities
+│   │   │   │   ├── internal/         # From dev-toolkit usage
+│   │   │   │   ├── external/         # From other projects
+│   │   │   │   │   └── workflow-helper/
+│   │   │   │   │       ├── workflow-helper-analysis.md
+│   │   │   │   │       └── workflow-helper-template-idea.md
+│   │   │   │   └── README.md
 │   │   │   └── demystifying-executables.md
 │   │   │
 │   │   ├── phases/                   # Historical phase tracking
@@ -203,7 +210,14 @@
 - Design patterns and learnings
 - **Example:** `demystifying-executables.md`
 
-**Why:** Provides context for AI agents, tracks decisions, manages releases
+#### `admin/planning/notes/opportunities/`
+- Feature opportunities discovered from real-world usage
+- Organized into `internal/` (from dev-toolkit) and `external/` (from other projects)
+- Each opportunity has its own subdirectory with analysis and proposal docs
+- **Example:** `external/workflow-helper/workflow-helper-analysis.md`
+- **Lifecycle:** Discovery → Analysis → Proposal → Feature Plan → Implementation
+
+**Why:** Provides context for AI agents, tracks decisions, manages releases, captures feature ideas organically
 
 ---
 
@@ -316,6 +330,16 @@
 
 ## 🎨 Design Patterns
 
+### Opportunity Discovery (New in v0.2.0)
+1. Discover pattern/need during real-world usage
+2. Create subdirectory: `admin/planning/notes/opportunities/{internal|external}/<feature-name>/`
+3. Write `analysis.md` to understand current state and problem
+4. Write `proposal.md` or `*-idea.md` to design solution
+5. Promote to feature when approved (move to `features/`)
+6. Keep opportunity docs as historical context
+
+**Key Principle:** Subdirectory per opportunity prevents file overflow
+
 ### Feature Development
 1. Create `admin/planning/features/<feature-name>/`
 2. Write `feature-plan.md` with vision and phases
@@ -402,7 +426,7 @@
 
 1. **Copy Structure:**
    ```bash
-   mkdir -p {admin/{chat-logs,feedback,planning/{features,releases,notes,phases},docs,testing},bin,config,docs/troubleshooting,examples,lib/{core,git-flow,sourcery},scripts,tests/{fixtures,helpers,integration,unit}}
+   mkdir -p {admin/{chat-logs,feedback,planning/{features,releases,notes/{opportunities/{internal,external}},phases},docs,testing},bin,config,docs/troubleshooting,examples,lib/{core,git-flow,sourcery},scripts,tests/{fixtures,helpers,integration,unit}}
    ```
 
 2. **Copy Key Files:**
@@ -411,6 +435,7 @@
    - `admin/README.md`
    - `admin/planning/features/README.md`
    - `admin/planning/releases/README.md`
+   - `admin/planning/notes/opportunities/README.md`
    - `scripts/test.sh`
    - `tests/helpers/*.bash`
 
@@ -431,12 +456,14 @@
 ## 💡 Key Learnings
 
 1. **Admin Structure is Essential** - Provides context for AI agents and tracks decisions
-2. **Feature-Based Planning** - Easier to manage than phase-based alone
-3. **Release Directories** - Each release gets its own workspace
-4. **Comprehensive Testing** - 215 tests provide confidence for changes
-5. **Documentation First** - Good docs prevent confusion and rework
-6. **CI/CD Integration** - Automated quality gates catch issues early
-7. **Lessons Learned** - Document what worked and what didn't
+2. **Opportunity Tracking** - Subdirectories per opportunity prevent file overflow and keep related docs together
+3. **Real-World Discovery** - Best features emerge from actual usage (e.g., workflow-helper from Pokehub)
+4. **Feature-Based Planning** - Easier to manage than phase-based alone
+5. **Release Directories** - Each release gets its own workspace
+6. **Comprehensive Testing** - 215 tests provide confidence for changes
+7. **Documentation First** - Good docs prevent confusion and rework
+8. **CI/CD Integration** - Automated quality gates catch issues early
+9. **Lessons Learned** - Document what worked and what didn't
 
 ---
 
