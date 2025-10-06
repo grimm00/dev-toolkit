@@ -115,45 +115,63 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 
 ## 📊 Current Status
 
-### Completed
+### Completed (v0.1.0-alpha - October 6, 2025)
 - ✅ Repository structure
 - ✅ Admin directory setup
-- ✅ Main README
-- ✅ Roadmap documentation
+- ✅ Comprehensive documentation
+- ✅ Core utilities (project-agnostic)
+- ✅ Installation system (install.sh, dev-setup.sh)
+- ✅ Git hooks and CI/CD
+- ✅ Command wrappers (dt-* commands)
+- ✅ Sourcery integration with rate limit handling
 
-### In Progress
-- 🚧 Copying core utilities from Pokehub
-- 🚧 Making utilities project-agnostic
+### In Progress (v0.1.1)
+- 🚧 Feature Phase 1: Optional Sourcery Integration
+  - Making Sourcery clearly optional
+  - Adding rate limit awareness
+  - Improving documentation clarity
 
 ### Next Up
-- 📋 Installation script
-- 📋 Basic testing
-- 📋 Sourcery automation completion
+- 📋 Feature Phase 2: Enhanced Git Flow operations
+- 📋 Feature Phase 3: Batch PR operations
+- 📋 Version Phase: v1.0 Production Ready
 
 ---
 
 ## 🎯 Milestones
 
-### v0.1.0 - Foundation (Current)
-- Basic structure and documentation
-- Core utilities copied
-- Installation script working
+### v0.1.0-alpha - Foundation ✅ RELEASED (Oct 6, 2025)
+- Complete project structure
+- Core utilities (project-agnostic)
+- Installation system
+- Git hooks and CI/CD
+- Comprehensive documentation
+- Sourcery integration
 
-### v0.2.0 - Sourcery Automation
-- Fully functional review parser
-- Global commands available
-- Basic testing in place
+### v0.1.1 - Optional Features Clarity 🚧 IN PROGRESS
+- Clear core vs optional categorization
+- Rate limit awareness
+- Enhanced documentation
+- Improved user experience
 
-### v0.3.0 - Git Flow Enhancement
-- Complete Git workflow utilities
-- Batch operations working
+### v0.2.0 - Enhanced Git Flow (Planned)
+- Advanced branch operations
+- Batch PR management
 - GitHub API optimization
+- Interactive workflows
 
-### v1.0.0 - Production Ready
-- Comprehensive testing
-- Complete documentation
+### v0.3.0 - Testing & Quality (Planned)
+- Comprehensive test suite
+- Performance benchmarks
+- Code quality metrics
+- Integration tests
+
+### v1.0.0 - Production Ready (Future)
 - Stable API
+- Complete documentation
+- Full test coverage
 - Performance optimized
+- Production-grade error handling
 
 ---
 
@@ -174,5 +192,14 @@ This toolkit emerged from the Pokehub project's need for portable Sourcery autom
 
 ---
 
-**Last Updated:** 2025-01-06  
-**Next Review:** After Phase 1 completion
+**Last Updated:** October 6, 2025  
+**Next Review:** After v0.1.1 release
+
+## 📁 Phase Organization
+
+Phases are now organized by focus area:
+- **Foundation:** `phases/phase1-foundation.md` (completed)
+- **Features:** `phases/features/phase-{n}-{name}.md`
+- **Versions:** `phases/versions/phase-v{version}-{focus}.md`
+
+See `admin/planning/phases/README.md` for details.

@@ -244,6 +244,19 @@ The toolkit cannot detect your repository information from git remotes.
    dt-sourcery-parse  # Uses current user's open PR
    ```
 
+### Issue: Parser shows "Total Comments: 0" but Sourcery reviewed
+
+**Quick Answer:**
+The parser only extracts inline code comments, not overall feedback. For documentation-heavy PRs, Sourcery often gives overall feedback only.
+
+**See detailed guide:**
+📖 [Sourcery Parser: No Comments Issue](sourcery-parser-no-comments.md)
+
+**Quick workaround:**
+```bash
+gh pr view <PR#> --web  # View on GitHub
+```
+
 ---
 
 ## Permission Issues

@@ -34,6 +34,36 @@ print_status() {
 
 print_header "🤖 Sourcery AI Setup for Dev Toolkit"
 
+# Show important information upfront
+echo -e "${YELLOW}${BOLD}💡 Important: Sourcery is Optional!${NC}"
+echo ""
+echo -e "All core dev-toolkit features work without Sourcery:"
+echo -e "  ${GREEN}✅${NC} dt-git-safety - Git Flow safety checks"
+echo -e "  ${GREEN}✅${NC} dt-config - Configuration management"
+echo -e "  ${GREEN}✅${NC} dt-install-hooks - Pre-commit hooks"
+echo ""
+echo -e "${YELLOW}${BOLD}⚠️  Sourcery Rate Limits (Free Tier)${NC}"
+echo ""
+echo -e "${CYAN}Free Tier:${NC}"
+echo "  • 500,000 diff characters per week"
+echo "  • Resets every Monday"
+echo "  • ~20-100 PRs/week depending on size"
+echo ""
+echo -e "${CYAN}What counts as diff characters?${NC}"
+echo "  • Every line added or removed in your PRs"
+echo "  • Large PRs (>1000 lines) use quota quickly"
+echo "  • Small PRs (<100 lines) are very efficient"
+echo ""
+echo -e "${CYAN}When you hit the limit:${NC}"
+echo "  • Core toolkit features still work"
+echo "  • Previous reviews still visible on GitHub"
+echo "  • Wait for weekly reset or upgrade to Pro"
+echo ""
+echo -e "${BLUE}ℹ️  See docs/OPTIONAL-FEATURES.md for more details${NC}"
+echo ""
+read -p "Press Enter to continue with Sourcery setup (or Ctrl+C to exit)..."
+echo ""
+
 # Check if gh CLI is installed
 if ! command -v gh >/dev/null 2>&1; then
     print_status "ERROR" "GitHub CLI (gh) is not installed"
