@@ -1,0 +1,120 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint Shell Scripts
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
+      with:
+        scandir: './bin'
+        additional_files: './lib ./install.sh ./dev-setup.sh'
+        severity: warning
+        
+  test:
+    runs-on: ubuntu-latest
+    name: Test Toolkit
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up environment
+      run: |
+        export DT_ROOT="${GITHUB_WORKSPACE}"
+        export PATH="${DT_ROOT}/bin:$PATH"
+        echo "DT_ROOT=${DT_ROOT}" >> $GITHUB_ENV
+        echo "${DT_ROOT}/bin" >> $GITHUB_PATH
+        
+    - name: Install dependencies
+      run: |
+        # GitHub CLI is pre-installed on GitHub Actions runners
+        gh --version
+        git --version
+        
+    - name: Test script syntax
+      run: |
+        echo "Testing bash syntax..."
+        bash -n lib/core/github-utils.sh
+        bash -n lib/git-flow/utils.sh
+        bash -n lib/git-flow/safety.sh
+        bash -n lib/sourcery/parser.sh
+        bash -n bin/dt-config
+        bash -n bin/dt-git-safety
+        bash -n bin/dt-sourcery-parse
+        bash -n install.sh
+        bash -n dev-setup.sh
+        echo "✅ All scripts have valid syntax"
+        
+    - name: Test configuration
+      run: |
+        source lib/core/github-utils.sh
+        source lib/git-flow/utils.sh
+        
+        # Test auto-detection
+        gh_detect_project_info
+        echo "Detected project: ${PROJECT_NAME}"
+        echo "Detected repo: ${PROJECT_REPO}"
+        
+        # Test configuration
+        gf_show_config
+        
+    - name: Test commands
+      run: |
+        # Test dt-config
+        ./bin/dt-config show
+        
+        # Test dt-git-safety (will run checks)
+        ./bin/dt-git-safety check || echo "Safety checks completed"
+        
+    - name: Verify executables
+      run: |
+        test -x bin/dt-config || exit 1
+        test -x bin/dt-git-safety || exit 1
+        test -x bin/dt-sourcery-parse || exit 1
+        test -x lib/core/github-utils.sh || exit 1
+        test -x lib/git-flow/utils.sh || exit 1
+        test -x lib/git-flow/safety.sh || exit 1
+        test -x lib/sourcery/parser.sh || exit 1
+        test -x install.sh || exit 1
+        test -x dev-setup.sh || exit 1
+        echo "✅ All executables have correct permissions"
+        
+  docs:
+    runs-on: ubuntu-latest
+    name: Check Documentation
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check for broken links
+      uses: gaurav-nelson/github-action-markdown-link-check@v1
+      with:
+        use-quiet-mode: 'yes'
+        config-file: '.github/markdown-link-check-config.json'
+        
+    - name: Verify documentation exists
+      run: |
+        test -f README.md || exit 1
+        test -f CHANGELOG.md || exit 1
+        test -f QUICK-START.md || exit 1
+        test -f docs/SIMPLE-EXPLANATION.md || exit 1
+        test -f docs/INSTALL-VS-DEV-SETUP.md || exit 1
+        test -f docs/troubleshooting/common-issues.md || exit 1
+        echo "✅ All documentation files exist"

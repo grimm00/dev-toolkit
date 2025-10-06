@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Dev Toolkit - Sourcery Review Parser Wrapper
+# Parses Sourcery AI reviews from GitHub PRs
+
+# Detect toolkit installation location
+if [ -n "${DT_ROOT:-}" ]; then
+    TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$HOME/.dev-toolkit/lib/sourcery/parser.sh" ]; then
+    TOOLKIT_ROOT="$HOME/.dev-toolkit"
+else
+    echo "❌ Error: Cannot locate dev-toolkit installation"
+    echo "💡 Set DT_ROOT environment variable or install to ~/.dev-toolkit"
+    exit 1
+fi
+
+# Execute the parser with all arguments
+exec "$TOOLKIT_ROOT/lib/sourcery/parser.sh" "$@"
