@@ -1,8 +1,8 @@
 # Dev Toolkit Roadmap
 
-**Status:** 🚧 Active Development  
-**Current Phase:** Phase 1 - Foundation  
-**Version:** 0.1.0
+**Status:** ✅ Foundation Complete  
+**Current Version:** v0.1.1  
+**Focus:** Feature Development & Enhancement
 
 ## Vision
 
@@ -18,98 +18,93 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 
 ---
 
-## 🎯 Development Phases
+## 🎯 What's Been Built
 
-### Phase 1: Foundation ✅ IN PROGRESS
-**Goal:** Establish project structure and core infrastructure
+### Foundation ✅ COMPLETED (v0.1.0-alpha)
+**All core infrastructure is in place and working**
 
-#### Tasks
-- [x] Create repository structure
-- [x] Set up admin/ directory for coordination
-- [x] Create comprehensive README
-- [x] Document roadmap and phases
-- [ ] Copy core utilities from Pokehub
-  - [ ] `github-utils.sh` (project-agnostic version)
-  - [ ] `git-flow-utils.sh`
-  - [ ] `sourcery-review-parser.sh`
-- [ ] Create installation script
-- [ ] Add basic tests
+**Core Utilities:**
+- ✅ `lib/core/github-utils.sh` - Project-agnostic GitHub operations
+- ✅ `lib/git-flow/utils.sh` - Git Flow workflow utilities
+- ✅ `lib/git-flow/safety.sh` - Automated safety checks
+- ✅ `lib/sourcery/parser.sh` - Sourcery review extraction
 
-**Success Criteria:**
-- Repository structure complete
-- Core utilities copied and adapted
-- Installation script functional
-- Documentation comprehensive
+**Commands:**
+- ✅ `dt-git-safety` - Git Flow safety checks
+- ✅ `dt-config` - Configuration management
+- ✅ `dt-install-hooks` - Pre-commit hook installer
+- ✅ `dt-sourcery-parse` - Parse Sourcery reviews
+- ✅ `dt-setup-sourcery` - Interactive Sourcery setup
 
----
-
-### Phase 2: Sourcery Automation 📋 PLANNED
-**Goal:** Fully functional Sourcery review extraction and formatting
-
-#### Tasks
-- [ ] Make `sourcery-review-parser.sh` project-agnostic
-- [ ] Add global command wrapper (`sourcery-review`)
-- [ ] Implement output formatting options
-- [ ] Add batch processing for multiple PRs
-- [ ] Create priority matrix templates
-- [ ] Add error handling and validation
-
-**Success Criteria:**
-- Can extract reviews from any GitHub repository
-- Multiple output formats supported
-- Batch operations work correctly
-- Comprehensive error messages
+**Infrastructure:**
+- ✅ Installation system (install.sh, dev-setup.sh)
+- ✅ Pre-commit hooks with safety checks
+- ✅ GitHub Actions CI/CD pipeline
+- ✅ Comprehensive documentation
+- ✅ Admin structure for feature tracking
 
 ---
 
-### Phase 3: Git Flow Enhancement 📋 PLANNED
-**Goal:** Streamlined Git workflow commands
+## 🚀 What's Next
 
-#### Tasks
-- [ ] Adapt `workflow-helper.sh` to be project-agnostic
-- [ ] Create `git-flow` command wrapper
-- [ ] Implement batch operations
-- [ ] Add branch management utilities
-- [ ] Integrate GitHub API batching (jq)
-- [ ] Add interactive mode for complex operations
+### Near-Term Priorities
 
-**Success Criteria:**
-- All Git Flow commands work globally
-- Batch operations are efficient
-- Interactive mode is user-friendly
-- GitHub API calls are optimized
+#### 1. Testing Suite 🎯 HIGH PRIORITY
+**Why:** Ensure reliability as we add features
+
+**Tasks:**
+- [ ] Unit tests for core utilities
+- [ ] Integration tests for commands
+- [ ] CI/CD test automation
+- [ ] Test coverage reporting
+
+**Benefit:** Confidence in changes, catch regressions early
 
 ---
 
-### Phase 4: Testing & Documentation 📋 PLANNED
-**Goal:** Comprehensive testing and user documentation
+#### 2. Batch Operations 🎯 MEDIUM PRIORITY
+**Why:** Process multiple PRs/branches efficiently
 
-#### Tasks
-- [ ] Create test suite for all utilities
-- [ ] Add integration tests
-- [ ] Write detailed usage guides
-- [ ] Create video tutorials (optional)
-- [ ] Add troubleshooting documentation
-- [ ] Performance benchmarks
+**Tasks:**
+- [ ] Batch PR review extraction
+- [ ] Multiple branch safety checks
+- [ ] Bulk configuration operations
+- [ ] Progress reporting
 
-**Success Criteria:**
-- 80%+ test coverage
-- All features documented
-- Common issues have solutions
-- Performance is acceptable
+**Benefit:** Save time on repetitive operations
 
 ---
 
-### Phase 5: Advanced Features 🔮 FUTURE
-**Goal:** Enhanced automation and intelligence
+#### 3. Enhanced Git Flow 🎯 MEDIUM PRIORITY
+**Why:** More workflow automation
 
-#### Ideas
-- [ ] AI-powered commit message generation
-- [ ] Automated changelog generation
-- [ ] Code quality metrics dashboard
-- [ ] Integration with other review tools (CodeRabbit, etc.)
-- [ ] Custom workflow templates
-- [ ] Project scaffolding utilities
+**Tasks:**
+- [ ] Interactive branch management
+- [ ] PR creation helpers
+- [ ] Merge automation with safety checks
+- [ ] Branch cleanup utilities
+
+**Benefit:** Streamlined daily workflows
+
+---
+
+### Future Enhancements 🔮
+
+#### Parser Improvements
+- Extract overall comments (not just inline)
+- Multiple output formats
+- Custom priority matrix templates
+
+#### Advanced Automation
+- AI-powered commit messages
+- Automated changelog generation
+- Code quality dashboards
+- Integration with other review tools (CodeRabbit, etc.)
+
+#### Workflow Templates
+- Custom project templates
+- Reusable workflow patterns
+- Project scaffolding utilities
 
 ---
 
@@ -125,16 +120,18 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 - ✅ Command wrappers (dt-* commands)
 - ✅ Sourcery integration with rate limit handling
 
-### In Progress (v0.1.1)
-- 🚧 Feature Phase 1: Optional Sourcery Integration
-  - Making Sourcery clearly optional
-  - Adding rate limit awareness
-  - Improving documentation clarity
+### Completed (v0.1.1 - October 6, 2025)
+- ✅ Optional Sourcery Integration feature
+  - Core vs optional categorization
+  - Rate limit awareness
+  - Enhanced documentation structure
+  - Feature tracking workflow established
 
 ### Next Up
-- 📋 Feature Phase 2: Enhanced Git Flow operations
-- 📋 Feature Phase 3: Batch PR operations
-- 📋 Version Phase: v1.0 Production Ready
+- 🎯 **Testing Suite** - Automated tests for reliability
+- 📋 **Batch Operations** - Process multiple items efficiently
+- 📋 **Enhanced Git Flow** - More workflow automation
+- 🔮 **v1.0 Production Ready** - Stable, tested, production-grade
 
 ---
 
@@ -148,23 +145,30 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 - Comprehensive documentation
 - Sourcery integration
 
-### v0.1.1 - Optional Features Clarity 🚧 IN PROGRESS
+### v0.1.1 - Optional Features Clarity ✅ RELEASED (Oct 6, 2025)
 - Clear core vs optional categorization
 - Rate limit awareness
-- Enhanced documentation
+- Enhanced documentation structure
+- Feature tracking workflow
 - Improved user experience
 
-### v0.2.0 - Enhanced Git Flow (Planned)
-- Advanced branch operations
-- Batch PR management
-- GitHub API optimization
-- Interactive workflows
+### v0.2.0 - Testing & Reliability (Next)
+- Automated test suite
+- CI/CD test integration
+- Test coverage reporting
+- Regression prevention
 
-### v0.3.0 - Testing & Quality (Planned)
-- Comprehensive test suite
-- Performance benchmarks
-- Code quality metrics
-- Integration tests
+### v0.3.0 - Batch Operations (Planned)
+- Batch PR processing
+- Multiple branch operations
+- Bulk configuration management
+- Progress reporting
+
+### v0.4.0 - Enhanced Git Flow (Planned)
+- Interactive branch management
+- PR creation helpers
+- Merge automation
+- Branch cleanup utilities
 
 ### v1.0.0 - Production Ready (Future)
 - Stable API
@@ -193,13 +197,38 @@ This toolkit emerged from the Pokehub project's need for portable Sourcery autom
 ---
 
 **Last Updated:** October 6, 2025  
-**Next Review:** After v0.1.1 release
+**Next Review:** Before v0.2.0 planning
 
-## 📁 Phase Organization
+---
 
-Phases are now organized by focus area:
-- **Foundation:** `phases/phase1-foundation.md` (completed)
-- **Features:** `phases/features/phase-{n}-{name}.md`
-- **Versions:** `phases/versions/phase-v{version}-{focus}.md`
+## 📁 Planning Structure
 
-See `admin/planning/phases/README.md` for details.
+### Feature Development
+Individual features are tracked in `admin/planning/features/`:
+- Each feature has its own directory
+- `feature-plan.md` - Overall vision and design
+- `phase-N.md` - Implementation phases with progress tracking
+
+**Example:** `features/optional-sourcery/`
+- ✅ Phase 1 complete (documentation & messaging)
+- Future phases can be added as needed
+
+### Foundation Phase
+Original foundation work documented in:
+- `phases/phase1-foundation.md` - Initial setup (completed)
+
+### This Roadmap
+High-level view of:
+- What's been built
+- What's next (priorities)
+- Future enhancements
+- Version milestones
+
+---
+
+## 🎯 How to Use This Roadmap
+
+1. **Check "What's Next"** for current priorities
+2. **Review feature directories** for detailed plans
+3. **Create feature branches** following the workflow in `features/README.md`
+4. **Update this roadmap** when priorities shift
