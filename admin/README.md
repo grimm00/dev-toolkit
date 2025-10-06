@@ -62,9 +62,10 @@ The `admin/` directory serves as the coordination hub for:
 - ✅ **Optional Sourcery** - Clear core vs optional feature documentation
 
 ### Active Planning
+- 🎯 **v0.3.0: Workflow Helper Template** - Next feature (HIGH priority)
 - 📋 **Phase 4: Test Enhancements** - Deferred (optional)
-- 📋 **v0.3.0: Batch Operations** - Planned
-- 📋 **v0.4.0: Enhanced Git Flow** - Planned
+- 📋 **v0.4.0: Batch Operations** - Planned
+- 📋 **v0.5.0: Enhanced Git Flow** - Planned
 
 ### Recent Releases
 - **v0.2.0** (Oct 6, 2025) - Testing & Reliability
@@ -74,6 +75,13 @@ The `admin/` directory serves as the coordination hub for:
 ---
 
 ## Best Practices
+
+### Opportunity Discovery
+1. Document opportunities as they're discovered in `planning/notes/opportunities/`
+2. Create subdirectory per opportunity: `{internal|external}/{feature-name}/`
+3. Start with `analysis.md` to understand the problem
+4. Create `proposal.md` or `*-idea.md` to design solution
+5. Promote to feature when approved
 
 ### Feature Development
 1. Create feature directory in `planning/features/`
@@ -109,6 +117,7 @@ The `admin/` directory serves as the coordination hub for:
 - **[releases/history.md](planning/releases/history.md)** - All releases timeline
 - **[releases/README.md](planning/releases/README.md)** - Release process guide
 - **[features/README.md](planning/features/README.md)** - Feature workflow guide
+- **[opportunities/README.md](planning/notes/opportunities/README.md)** - Opportunity tracking guide
 
 ---
 
