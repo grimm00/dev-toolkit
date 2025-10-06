@@ -252,6 +252,11 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 - Or v0.4.0 (Enhanced Git Flow)
 - Phase 4 (Test Enhancements) deferred as optional
 
+### Release Documentation
+- **Process Guide:** [releases/README.md](releases/README.md)
+- **Release History:** [releases/history.md](releases/history.md)
+- **v0.2.0 Notes:** [releases/v0.2.0-notes.md](releases/v0.2.0-notes.md)
+
 ---
 
 ## 📝 Notes
