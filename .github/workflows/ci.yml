@@ -2,9 +2,9 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]  # Only run on pushes to main (releases)
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop ]  # Run on all PRs
 
 permissions:
   contents: read
