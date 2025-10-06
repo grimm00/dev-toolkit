@@ -280,6 +280,35 @@ teardown() {
   [[ "$output" =~ "Repository validated" ]]
 }
 
+@test "gh_validate_repository: handles missing remote gracefully" {
+  # PR #9 Sourcery suggestion #1
+  setup_test_dir
+  git init > /dev/null 2>&1
+  # No remote added
+  
+  run gh_validate_repository
+  [ "$status" -ne 0 ]
+  [[ "$output" =~ "remote" ]] || [[ "$output" =~ "Cannot determine" ]]
+  
+  teardown_test_dir
+}
+
+@test "gh_validate_repository: handles misconfigured remote gracefully" {
+  # PR #9 Sourcery suggestion #1
+  # Note: The function checks if a remote exists, not if it's valid
+  # It will succeed if a remote is present, even if malformed
+  setup_test_dir
+  git init > /dev/null 2>&1
+  git remote add origin "not-a-valid-url"
+  
+  run gh_validate_repository
+  # Should handle gracefully without crashing (may succeed or fail depending on gh CLI behavior)
+  # The important part is it doesn't crash with a bash error
+  [ "$status" -eq 0 ] || [ "$status" -eq 1 ]
+  
+  teardown_test_dir
+}
+
 # ============================================================================
 # Init Function Tests
 # ============================================================================

@@ -627,6 +627,90 @@ bats --jobs 4 tests/
 
 ---
 
+## Command Wrapper Help Flag Issues
+
+**Symptom:**
+```bash
+dt-review --help
+# Error: /path/to/dt-review: line 34: printf: --help: invalid number
+```
+
+**Cause:**
+Command wrapper scripts that accept positional arguments may not handle help flags (`--help`, `-h`) before processing arguments, causing the flag to be interpreted as an invalid argument value.
+
+**Example Problem:**
+```bash
+#!/usr/bin/env bash
+# Get PR number
+PR_NUMBER="${1:-}"
+
+# Format PR number with leading zero
+PR_PADDED=$(printf "pr%02d" "$PR_NUMBER")  # Fails if $1 is "--help"
+```
+
+**Solution:**
+Handle help flags at the beginning of the script, before processing positional arguments:
+
+```bash
+#!/usr/bin/env bash
+
+# Handle help flags FIRST
+if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
+    echo "Usage: dt-review <PR_NUMBER>"
+    echo ""
+    echo "Description of what this command does"
+    echo ""
+    echo "Example:"
+    echo "  dt-review 6"
+    exit 0
+fi
+
+# Now safe to process positional arguments
+PR_NUMBER="${1:-}"
+
+if [ -z "$PR_NUMBER" ]; then
+    echo "Usage: dt-review <PR_NUMBER>"
+    echo ""
+    echo "Use --help for more information"
+    exit 1
+fi
+
+# Continue with normal processing...
+```
+
+**Testing Pattern:**
+```bash
+@test "command: shows help with --help flag" {
+  run dt-review --help
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Usage:" ]]
+}
+
+@test "command: shows help with -h flag" {
+  run dt-review -h
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Usage:" ]]
+}
+
+@test "command: fails gracefully without arguments" {
+  run dt-review
+  [ "$status" -ne 0 ]
+  [[ "$output" =~ "Usage:" ]]
+}
+```
+
+**Key Principles:**
+- Always handle help flags before processing arguments
+- Test help flags early in development
+- Provide clear usage messages for both help and error cases
+- Exit with code 0 for help, non-zero for errors
+
+**Related:**
+- Phase 3 Part C: dt-review bug fix (commit e58876f)
+- tests/integration/test-dt-sourcery-parse.bats
+
+---
+
 **Last Updated:** October 6, 2025  
 **Version:** 0.2.0-dev  
-**Related:** Phase 3 testing implementation (integration tests)
+**Related:** Phase 3 testing implementation (integration tests, command wrappers)
