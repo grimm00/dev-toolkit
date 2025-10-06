@@ -170,14 +170,15 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 - Feature tracking workflow
 - Improved user experience
 
-### v0.2.0 - Testing & Reliability ✅ READY FOR RELEASE
+### v0.2.0 - Testing & Reliability ✅ RELEASED (Oct 6, 2025)
 - ✅ Automated test suite (215 tests)
 - ✅ CI/CD test integration
 - ✅ Comprehensive test documentation
 - ✅ Regression prevention
 - ✅ All commands tested end-to-end
 - ✅ < 15 second execution time
-- **Status:** Complete, ready to merge to main and tag
+- **Status:** Released
+- **Release URL:** https://github.com/grimm00/dev-toolkit/releases/tag/v0.2.0
 
 ### v0.2.1 - Test Enhancements (Optional, Deferred)
 - Additional edge case tests from Sourcery feedback
