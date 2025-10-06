@@ -1,28 +1,132 @@
-# Testing Suite - Phase 3: Edge Cases & Enhancements
+# Testing Suite - Phase 3: Commands & Edge Cases
 
 **Status:** 📋 Planned  
 **Started:** TBD  
-**Target Completion:** 1-2 days  
+**Target Completion:** 3-5 days  
 **Branch:** `feat/testing-suite-phase-3`
 
-**Goal:** Address Sourcery feedback from PR #8, adding edge case tests and error handling coverage
+**Combined Goal:** 
+1. Test command wrappers end-to-end (original Phase 3 plan)
+2. Address Sourcery feedback from PR #8 (edge cases and error handling)
 
 ---
 
-## 🎯 Phase Goal
+## 🎯 Phase Goals
 
-Enhance test coverage by addressing all 10 Sourcery suggestions from PR #8, focusing on edge cases, error handling, and configuration scenarios.
+This phase combines two objectives:
+
+### Part A: Command Integration Tests (Original Phase 3)
+Test command wrappers end-to-end in real scenarios.
 
 **Success Criteria:**
-- [ ] Address all 10 Sourcery suggestions from PR #8
-- [ ] Add ~8-10 new tests (some suggestions are duplicates)
+- [ ] Test all `dt-*` commands end-to-end
+- [ ] Test different repository states
+- [ ] Test error handling and edge cases
+- [ ] All commands work in integration
+
+### Part B: Edge Cases & Enhancements (Sourcery Feedback)
+Address all 10 Sourcery suggestions from PR #8.
+
+**Success Criteria:**
+- [ ] Address all 10 Sourcery suggestions
+- [ ] Add ~10 unit tests for edge cases
 - [ ] Maintain 100% test pass rate
-- [ ] Keep execution time under 15 seconds
+- [ ] Keep execution time under 30 seconds (including integration tests)
 - [ ] Document new testing patterns
+
+**Combined Target:** 150+ tests (129 current + 10 edge cases + integration tests)
 
 ---
 
-## 📊 Sourcery Feedback Analysis
+## 📋 Part A: Command Integration Tests
+
+**From:** Original feature plan (Phase 3)  
+**Goal:** Test command wrappers end-to-end  
+**Priority:** 🎯 HIGH
+
+### Commands to Test
+
+#### 1. dt-git-safety
+**File:** `tests/integration/test-dt-git-safety.bats`
+
+**Subcommands to test:**
+- [ ] `check` - Run all safety checks
+- [ ] `branch` - Check current branch safety
+- [ ] `conflicts` - Check for merge conflicts
+- [ ] `prs` - Check open pull requests
+- [ ] `health` - Check repository health
+- [ ] `fix` - Show auto-fix suggestions
+- [ ] `help` - Display help
+
+**Scenarios:**
+- [ ] On feature branch (should pass)
+- [ ] On protected branch (should fail)
+- [ ] With uncommitted changes (should warn)
+- [ ] With merge conflicts (should detect)
+- [ ] In non-git directory (should error gracefully)
+
+**Estimated Time:** 2 hours
+
+---
+
+#### 2. dt-config
+**File:** `tests/integration/test-dt-config.bats`
+
+**Commands to test:**
+- [ ] `show` - Display current configuration
+- [ ] `create` - Create default config
+- [ ] `edit` - Edit configuration (with EDITOR mock)
+
+**Scenarios:**
+- [ ] No config exists (create new)
+- [ ] Global config exists (show global)
+- [ ] Project config exists (show project, overrides global)
+- [ ] Environment variables override config
+- [ ] Invalid config file (handle gracefully)
+
+**Estimated Time:** 1.5 hours
+
+---
+
+#### 3. dt-install-hooks
+**File:** `tests/integration/test-dt-install-hooks.bats`
+
+**Commands to test:**
+- [ ] Install pre-commit hook
+- [ ] Hook already exists (prompt/replace)
+- [ ] Not in git repo (error)
+- [ ] No .git/hooks directory (create)
+
+**Scenarios:**
+- [ ] Fresh git repo (install succeeds)
+- [ ] Existing hook (backup and replace)
+- [ ] Hook execution (mock git commit)
+- [ ] Hook detects issues (prevents commit)
+
+**Estimated Time:** 1.5 hours
+
+---
+
+#### 4. dt-sourcery-parse (Optional)
+**File:** `tests/integration/test-dt-sourcery-parse.bats`
+
+**Commands to test:**
+- [ ] Parse PR with Sourcery review
+- [ ] Parse PR without Sourcery review
+- [ ] Invalid PR number
+- [ ] Network issues (mock gh failure)
+
+**Scenarios:**
+- [ ] Sourcery installed and has reviewed
+- [ ] Sourcery not installed (graceful message)
+- [ ] Rate limited (detect and inform)
+- [ ] No PR found (clear error)
+
+**Estimated Time:** 1 hour (if time permits)
+
+---
+
+## 📊 Part B: Sourcery Feedback Analysis
 
 Based on `admin/feedback/sourcery/pr08.md`, we have 10 suggestions grouped into 4 themes:
 
@@ -447,32 +551,141 @@ Test optional dependency scenarios:
 
 ---
 
+## 📊 Combined Progress Tracking
+
+### Part A: Integration Tests
+- [ ] dt-git-safety (7 subcommands + 5 scenarios)
+- [ ] dt-config (3 commands + 5 scenarios)
+- [ ] dt-install-hooks (4 commands + 4 scenarios)
+- [ ] dt-sourcery-parse (4 commands + 4 scenarios) - Optional
+
+**Estimated Tests:** ~20-30 integration tests
+
+### Part B: Unit Test Enhancements
+- [ ] Custom protected branches (3 tests)
+- [ ] Multiple missing dependencies (2 tests)
+- [ ] Secret validation enhancement (1 test)
+- [ ] Malformed URL handling (1 test)
+- [ ] Active merge conflict (1 test)
+- [ ] Optional dependency missing (1 test)
+- [ ] Multiple git remotes (1 test)
+
+**Estimated Tests:** ~10 unit tests
+
+### Combined Totals
+- **Current:** 129 tests
+- **Part A (Integration):** +20-30 tests
+- **Part B (Unit Enhancements):** +10 tests
+- **Target:** 160-170 tests
+
+### Performance Targets
+- Unit tests: < 15 seconds
+- Integration tests: < 30 seconds
+- **Total:** < 45 seconds acceptable, < 30 seconds ideal
+
+---
+
+## 🎯 Recommended Implementation Order
+
+### Week 1: Quick Wins (Days 1-2)
+1. **Part B: Edge Cases** (2.5 hours)
+   - Start with Sourcery feedback
+   - Add all 10 unit test enhancements
+   - Quick wins, builds momentum
+
+### Week 2: Integration Tests (Days 3-5)
+2. **dt-git-safety** (2 hours)
+   - Most important command
+   - Real-world scenarios
+   
+3. **dt-config** (1.5 hours)
+   - Configuration management
+   - Global vs project configs
+
+4. **dt-install-hooks** (1.5 hours)
+   - Hook installation
+   - Pre-commit testing
+
+5. **dt-sourcery-parse** (1 hour - optional)
+   - If time permits
+   - Lower priority (optional feature)
+
+### Week 3: Documentation & Polish
+6. **Documentation** (1 hour)
+   - Update TESTING.md
+   - Add integration test patterns
+   - Document new discoveries
+
+**Total Estimated Time:** 10-12 hours over 3-5 days
+
+---
+
+## ✅ Success Criteria (Combined)
+
+### Part A: Integration Tests
+- [ ] All core commands tested end-to-end
+- [ ] Real-world scenarios covered
+- [ ] Error handling verified
+- [ ] Integration tests run in < 30 seconds
+
+### Part B: Edge Cases
+- [ ] All 10 Sourcery suggestions addressed
+- [ ] Edge cases covered
+- [ ] Error handling enhanced
+- [ ] Unit tests still run in < 15 seconds
+
+### Overall
+- [ ] 160+ tests passing (100% pass rate)
+- [ ] Total execution time < 45 seconds
+- [ ] Documentation updated
+- [ ] No test isolation issues
+- [ ] Phase 3 complete and ready for PR
+
+---
+
 ## 📝 Notes
 
-### Why Phase 3?
+### Why Combine These?
 
-Phase 2 achieved excellent coverage (95%/90%), but Sourcery identified valuable edge cases that will make our tests even more robust:
+**Synergy:** 
+1. Both enhance test coverage
+2. Integration tests exercise the code that unit tests check
+3. Edge cases from Sourcery make integration tests more robust
+4. Natural progression: unit → edge cases → integration
 
-1. **Configuration flexibility** - Test custom settings
-2. **Error scenarios** - Better error handling coverage
-3. **Edge cases** - Malformed data, multiple dependencies
-4. **Optional features** - Graceful degradation
+**Efficiency:**
+1. One PR instead of two
+2. Update test infrastructure once
+3. Document patterns together
+4. Single review cycle
+
+**Scope Management:**
+- Part B (edge cases) is smaller, can be done first
+- Part A (integration) is larger, benefits from Part B being done
+- Can split if needed (Part B = Phase 3a, Part A = Phase 3b)
 
 ### Testing Philosophy
 
-These tests follow the "defensive programming" principle:
-- Test what happens when things go wrong
-- Verify graceful degradation
-- Ensure clear error messages
-- Handle edge cases explicitly
+**Part A (Integration):**
+- Test commands as users use them
+- Verify end-to-end workflows
+- Real-world scenarios
+- Error handling in context
+
+**Part B (Edge Cases):**
+- Defensive programming
+- What happens when things go wrong
+- Graceful degradation
+- Clear error messages
 
 ### Benefits
 
-After Phase 3:
-- More robust error handling
-- Better configuration testing
-- Comprehensive edge case coverage
-- Stronger test foundation for future work
+**After Phase 3:**
+- Commands tested end-to-end ✅
+- Edge cases covered ✅
+- Error handling robust ✅
+- Integration + unit coverage ✅
+- Ready for Phase 4 (CI/CD) ✅
 
 ---
 
