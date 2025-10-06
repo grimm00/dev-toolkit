@@ -27,6 +27,7 @@ This toolkit consolidates reusable development utilities that work across any pr
 - `dt-sourcery-parse` - Parse Sourcery reviews
 - `dt-git-safety` - Run Git Flow safety checks
 - `dt-config` - Configuration management
+- `dt-install-hooks` - Install pre-commit hooks
 
 ## 🚀 Installation
 
@@ -41,6 +42,7 @@ This installs commands globally:
 - `dt-sourcery-parse` - Parse Sourcery reviews
 - `dt-git-safety` - Git Flow safety checks
 - `dt-config` - Configuration management
+- `dt-install-hooks` - Install git hooks
 
 ### Per-Project Install
 ```bash
@@ -109,6 +111,20 @@ dt-config create project
 dt-config edit global
 ```
 
+### Git Hooks
+Install pre-commit hooks for automatic safety checks:
+
+```bash
+# Install hooks in current repository
+dt-install-hooks
+
+# Hooks will automatically run before each commit
+# - Check branch safety
+# - Detect merge conflicts
+# - Prevent committing sensitive files
+# - Warn about large files
+```
+
 ## 🛠️ Requirements
 
 ### Required
@@ -159,6 +175,7 @@ dev-toolkit/
 ## 📚 Documentation
 
 - **[Troubleshooting Guide](docs/troubleshooting/common-issues.md)** - Common issues and solutions
+- **[Sourcery Setup Guide](docs/SOURCERY-SETUP.md)** - Setting up Sourcery AI code reviews
 - **[Admin README](admin/README.md)** - Project coordination and structure
 - **[Planning Roadmap](admin/planning/roadmap.md)** - Development phases
 - **[Installation Guide](admin/docs/installation-guide.md)** - Detailed setup (coming soon)
