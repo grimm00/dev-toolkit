@@ -16,6 +16,26 @@ else
     exit 1
 fi
 
+# Handle help flags
+if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
+    echo "Usage: dt-review <PR_NUMBER>"
+    echo ""
+    echo "Extracts Sourcery review and saves to admin/feedback/sourcery/pr<NUMBER>.md"
+    echo ""
+    echo "This is a convenience wrapper for dt-sourcery-parse that:"
+    echo "  - Automatically adds --rich-details flag"
+    echo "  - Saves to admin/feedback/sourcery/pr<NUMBER>.md"
+    echo "  - Formats PR number with leading zero (e.g., pr06.md)"
+    echo ""
+    echo "Example:"
+    echo "  dt-review 6"
+    echo "  # Saves to admin/feedback/sourcery/pr06.md"
+    echo ""
+    echo "For more options, use dt-sourcery-parse directly:"
+    echo "  dt-sourcery-parse --help"
+    exit 0
+fi
+
 # Get PR number
 PR_NUMBER="${1:-}"
 
@@ -27,6 +47,8 @@ if [ -z "$PR_NUMBER" ]; then
     echo "Example:"
     echo "  dt-review 6"
     echo "  # Saves to admin/feedback/sourcery/pr06.md"
+    echo ""
+    echo "Use --help for more information"
     exit 1
 fi
 
