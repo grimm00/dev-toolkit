@@ -122,45 +122,64 @@ case $choice in
         read -p "Press Enter after you've installed Sourcery..."
         
         echo ""
-        print_status "INFO" "Verifying installation..."
-        sleep 2
-        
-        # Check installation
-        if gh api "/repos/$REPO/installation" >/dev/null 2>&1; then
-            print_status "SUCCESS" "Sourcery is installed on $REPO!"
-            echo ""
-            echo -e "${CYAN}Next steps:${NC}"
-            echo "1. Create a PR to test Sourcery"
-            echo "2. Wait 1-2 minutes for Sourcery to review"
-            echo "3. Parse the review: dt-sourcery-parse <PR_NUMBER>"
-        else
-            print_status "WARNING" "Could not verify installation"
-            echo ""
-            echo -e "${YELLOW}This might be normal - GitHub Apps can take a moment to register${NC}"
-            echo -e "${YELLOW}Try checking again in a minute with option 2${NC}"
-        fi
+        print_status "SUCCESS" "Installation page opened in browser"
+        echo ""
+        echo -e "${CYAN}After installing, you can verify with option 2${NC}"
+        echo ""
+        echo -e "${YELLOW}Note: It may take a minute for the installation to register${NC}"
         ;;
         
     2)
         print_header "🔍 Checking Sourcery Installation"
         
-        if gh api "/repos/$REPO/installation" >/dev/null 2>&1; then
-            print_status "SUCCESS" "Sourcery is installed on $REPO"
-            
-            # Try to get more details
-            echo ""
-            print_status "INFO" "Installation details:"
-            gh api "/repos/$REPO/installation" --jq '{id: .id, app_id: .app_id, account: .account.login}' 2>/dev/null || true
-            
+        # Check if there are any PRs to verify Sourcery on
+        print_status "INFO" "Looking for Sourcery bot activity..."
+        
+        # Try to find Sourcery bot in recent PR reviews or comments
+        SOURCERY_FOUND=false
+        
+        # Check recent PRs for Sourcery reviews
+        PR_LIST=$(gh pr list --limit 10 --json number 2>/dev/null | jq -r '.[].number' 2>/dev/null)
+        
+        if [ -n "$PR_LIST" ]; then
+            for pr in $PR_LIST; do
+                if gh api "/repos/$REPO/pulls/$pr/reviews" --jq '.[] | select(.user.login == "sourcery-ai[bot]") | .user.login' 2>/dev/null | grep -q "sourcery-ai"; then
+                    SOURCERY_FOUND=true
+                    print_status "SUCCESS" "Sourcery is installed and active on $REPO"
+                    echo ""
+                    echo -e "${CYAN}Found Sourcery reviews on PR #$pr${NC}"
+                    break
+                fi
+            done
+        fi
+        
+        if [ "$SOURCERY_FOUND" = false ]; then
+            # Check if Sourcery app is in the list of installed apps
+            if gh api "/repos/$REPO/hooks" --jq '.[] | select(.config.url | contains("sourcery"))' 2>/dev/null | grep -q "sourcery"; then
+                SOURCERY_FOUND=true
+                print_status "SUCCESS" "Sourcery appears to be installed on $REPO"
+            fi
+        fi
+        
+        if [ "$SOURCERY_FOUND" = true ]; then
             echo ""
             echo -e "${CYAN}Sourcery is ready to use!${NC}"
             echo ""
             echo "Test it:"
             echo "1. Create a PR: gh pr create --title 'test' --body 'test'"
-            echo "2. Wait 1-2 minutes"
+            echo "2. Wait 1-2 minutes for Sourcery to review"
             echo "3. Parse review: dt-sourcery-parse <PR_NUMBER>"
         else
-            print_status "WARNING" "Sourcery does not appear to be installed on $REPO"
+            print_status "WARNING" "Cannot confirm Sourcery installation"
+            echo ""
+            echo -e "${YELLOW}This could mean:${NC}"
+            echo "1. Sourcery is not installed yet"
+            echo "2. No PRs have been created yet for Sourcery to review"
+            echo "3. Sourcery hasn't reviewed any PRs yet"
+            echo ""
+            echo -e "${CYAN}To verify manually:${NC}"
+            echo "1. Visit: https://github.com/$REPO/settings/installations"
+            echo "2. Look for 'Sourcery' in the list"
             echo ""
             echo -e "${YELLOW}To install Sourcery:${NC}"
             echo "1. Run this script again and choose option 1"
