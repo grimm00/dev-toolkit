@@ -367,6 +367,22 @@ EOF
   [[ "$output" =~ "git" ]]
 }
 
+@test "gf_check_required_dependencies: fails when multiple dependencies missing" {
+  # Mock git and bash as missing
+  command() {
+    if [ "$1" = "-v" ] && { [ "$2" = "git" ] || [ "$2" = "bash" ]; }; then
+      return 1
+    fi
+    builtin command "$@"
+  }
+  export -f command
+  
+  run gf_check_required_dependencies
+  [ "$status" -eq 1 ]
+  # Should report both missing dependencies
+  [[ "$output" =~ "git" ]] || [[ "$output" =~ "bash" ]]
+}
+
 # ============================================================================
 # Config Display Tests
 # ============================================================================

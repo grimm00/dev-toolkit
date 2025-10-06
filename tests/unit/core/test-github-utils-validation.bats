@@ -62,11 +62,44 @@ teardown() {
   [[ "$output" =~ "gh" ]]
 }
 
+@test "gh_check_required_dependencies: fails when both git and gh missing" {
+  # Mock both git and gh as missing
+  command() {
+    if [ "$1" = "-v" ] && { [ "$2" = "git" ] || [ "$2" = "gh" ]; }; then
+      return 1
+    fi
+    builtin command "$@"
+  }
+  export -f command
+  
+  run gh_check_required_dependencies
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "git" ]]
+  [[ "$output" =~ "gh" ]]
+}
+
 @test "gh_check_optional_dependencies: checks for jq" {
   run gh_check_optional_dependencies
   [ "$status" -eq 0 ]
   # Should mention jq in output
   [[ "$output" =~ "jq" ]] || true  # jq is optional, so this might not fail
+}
+
+@test "gh_check_optional_dependencies: warns when jq is missing" {
+  # Mock jq as not installed
+  command() {
+    if [ "$1" = "-v" ] && [ "$2" = "jq" ]; then
+      return 1
+    fi
+    builtin command "$@"
+  }
+  export -f command
+  
+  run gh_check_optional_dependencies
+  [ "$status" -eq 0 ]  # Should still succeed (optional)
+  [[ "$output" =~ "jq" ]]
+  # Check for warning indicators
+  [[ "$output" =~ "optional" || "$output" =~ "not installed" || "$output" =~ "warning" || "$output" =~ "not found" ]]
 }
 
 @test "gh_check_dependencies: runs both required and optional checks" {
