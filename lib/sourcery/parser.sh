@@ -76,8 +76,8 @@ extract_overall_comments() {
         fi
     done <<< "$content"
     
-    # Clean up the overall section (remove leading/trailing empty lines)
-    overall_section=$(echo "$overall_section" | sed '/^[[:space:]]*$/d')
+    # Clean up the overall section (remove only leading/trailing empty lines, preserve internal spacing)
+    overall_section=$(echo "$overall_section" | sed '/^[[:space:]]*$/N;/^\n$/d' | sed '1{/^$/d;}' | sed '$ {/^$/d;}')
     
     echo "$overall_section"
 }
@@ -163,7 +163,6 @@ extract_sourcery_review() {
     
     # Extract the markdown code block content
     local markdown_content=$(echo "$review_data" | sed -n '/~~~markdown/,/~~~/p' | sed '1d;$d')
-    
     
     if [ -z "$markdown_content" ]; then
         gh_print_status "WARNING" "No markdown content found in Sourcery review"
