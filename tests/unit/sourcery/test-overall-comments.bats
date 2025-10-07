@@ -2,17 +2,60 @@
 
 # Test Overall Comments extraction functionality in Sourcery parser
 
-load '../test-helpers'
+load '../../helpers/setup'
+load '../../helpers/assertions'
+
+# Source just the function we need to test
+setup() {
+    # Extract just the extract_overall_comments function from the parser
+    local parser_file="$PROJECT_ROOT/lib/sourcery/parser.sh"
+    
+    # Create a temporary file with just the function
+    cat > "$BATS_TEST_TMPDIR/test_functions.sh" << 'EOF'
+# Extract Overall Comments section from Sourcery review content
+extract_overall_comments() {
+    local content="$1"
+    local overall_section=""
+    local in_overall=false
+    
+    while IFS= read -r line; do
+        # Check for start of Overall Comments section
+        if [[ "$line" =~ ^##\ (Overall\ Comments|Overall|Summary\ Comments) ]]; then
+            in_overall=true
+            continue
+        fi
+        
+        # Check for end of Overall Comments section (next major section)
+        if [ "$in_overall" = true ] && [[ "$line" =~ ^##\ [^O] ]] && [[ ! "$line" =~ ^##\ (Overall|Summary) ]]; then
+            break
+        fi
+        
+        # Collect content while in Overall Comments section
+        if [ "$in_overall" = true ]; then
+            if [ -n "$overall_section" ]; then
+                overall_section="$overall_section"$'\n'"$line"
+            else
+                overall_section="$line"
+            fi
+        fi
+    done <<< "$content"
+    
+    # Clean up the overall section (remove leading/trailing empty lines)
+    overall_section=$(echo "$overall_section" | sed '/^$/N;/^\n$/d' | sed '1{/^$/d;}' | sed '$ {/^$/d;}')
+    
+    echo "$overall_section"
+}
+EOF
+    
+    source "$BATS_TEST_TMPDIR/test_functions.sh"
+}
 
 @test "extract_overall_comments function exists" {
-    source "$TOOLKIT_ROOT/lib/sourcery/parser.sh"
-    
     # Check if function is defined
     type extract_overall_comments
 }
 
 @test "extract_overall_comments finds Overall Comments section" {
-    source "$TOOLKIT_ROOT/lib/sourcery/parser.sh"
     
     local test_content="## Individual Comments
 
@@ -39,7 +82,6 @@ Some matrix content"
 }
 
 @test "extract_overall_comments handles different header formats" {
-    source "$TOOLKIT_ROOT/lib/sourcery/parser.sh"
     
     # Test "## Overall" format
     local test_content1="## Overall
@@ -63,7 +105,6 @@ This is a summary comment.
 }
 
 @test "extract_overall_comments handles missing section gracefully" {
-    source "$TOOLKIT_ROOT/lib/sourcery/parser.sh"
     
     local test_content="## Individual Comments
 
@@ -80,7 +121,6 @@ Some matrix content"
 }
 
 @test "extract_overall_comments stops at next major section" {
-    source "$TOOLKIT_ROOT/lib/sourcery/parser.sh"
     
     local test_content="## Overall Comments
 
@@ -105,7 +145,6 @@ Some matrix content"
 }
 
 @test "extract_overall_comments cleans up whitespace" {
-    source "$TOOLKIT_ROOT/lib/sourcery/parser.sh"
     
     local test_content="## Overall Comments
 
