@@ -5,7 +5,37 @@ All notable changes to the Dev Toolkit project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0-alpha] - 2025-10-06
+## [0.2.1] - 2025-10-07
+
+### Added
+- **Overall Comments Support** - `dt-sourcery-parse` now captures high-level Sourcery feedback
+- **Enhanced dt-review** - Automatic Overall Comments detection with smart preview
+- **Comprehensive Testing** - 6 new unit tests for Overall Comments functionality
+- **Real Data Validation** - Tested with actual Sourcery reviews
+
+### Enhanced
+- **dt-sourcery-parse** - Now extracts both individual comments and Overall Comments sections
+- **dt-review** - Smart detection and preview of Overall Comments when present
+- **Installer** - Updated to include dt-review command in available commands list
+- **Documentation** - Comprehensive feature planning and implementation docs
+
+### Fixed
+- **CI Documentation Check** - Updated markdown link checker config to handle planning docs
+- **Link Checker** - Added ignore patterns for relative markdown links in planning directories
+
+### Technical Details
+- **New Function**: `extract_overall_comments()` - Detects and extracts Overall Comments sections
+- **Enhanced Output**: Summary now shows "Total Individual Comments: X + Overall Comments"
+- **Backward Compatibility**: All existing functionality preserved
+- **Test Coverage**: 6/6 unit tests passing for Overall Comments functionality
+
+### Impact
+- **Complete Review Analysis** - Users now get both individual and high-level feedback
+- **Better Decision Making** - Overall Comments provide strategic insights
+- **Enhanced Workflow** - dt-review automatically highlights valuable feedback
+- **Improved User Experience** - Smart detection with contextual messages
+
+## [0.2.0] - 2025-10-06
 
 ### Added
 - **Core Libraries**
