@@ -8,6 +8,15 @@
     },
     {
       "pattern": "^\\.\\./.*\\.md$"
+    },
+    {
+      "pattern": "^[^/]*\\.md$"
+    },
+    {
+      "pattern": "^[^/]*/[^/]*\\.md$"
+    },
+    {
+      "pattern": "^[^/]*/[^/]*/[^/]*\\.md$"
     }
   ],
   "timeout": "20s",
@@ -16,6 +25,9 @@
   "fallbackRetryDelay": "30s",
   "aliveStatusCodes": [200, 206],
   "ignoreFiles": [
-    "admin/planning/releases/**/*.md"
+    "admin/planning/releases/**/*.md",
+    "admin/planning/notes/**/*.md",
+    "admin/planning/features/**/*.md",
+    "admin/docs/guides/**/*.md"
   ]
 }
