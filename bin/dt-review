@@ -26,7 +26,6 @@ if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
     echo "  - Automatically adds --rich-details flag"
     echo "  - Saves to admin/feedback/sourcery/pr<NUMBER>.md"
     echo "  - Formats PR number with leading zero (e.g., pr06.md)"
-    echo "  - Detects and highlights Overall Comments when present"
     echo ""
     echo "Example:"
     echo "  dt-review 6"
@@ -69,24 +68,6 @@ echo ""
 if "$TOOLKIT_ROOT/bin/dt-sourcery-parse" "$PR_NUMBER" --rich-details --output "$OUTPUT_FILE"; then
     echo ""
     echo "✅ Review saved to: $OUTPUT_FILE"
-    
-    # Check if Overall Comments were found
-    if grep -q "## Overall Comments" "$OUTPUT_FILE"; then
-        echo ""
-        echo "🎉 Overall Comments detected! This PR has high-level Sourcery feedback."
-        echo ""
-        echo "📋 Overall Comments preview:"
-        echo "═══════════════════════════════════════════════════════════════"
-        # Extract and display Overall Comments section
-        awk '/## Overall Comments/,/^## [^O]/ { if (!/^## [^O]/ || /^## Overall Comments/) print }' "$OUTPUT_FILE" | head -20
-        echo "═══════════════════════════════════════════════════════════════"
-        echo ""
-        echo "💡 This is a great test case for Overall Comments functionality!"
-    else
-        echo ""
-        echo "ℹ️  No Overall Comments found in this PR (this is normal)"
-    fi
-    
     echo ""
     echo "💡 View the review:"
     echo "   cat $OUTPUT_FILE"

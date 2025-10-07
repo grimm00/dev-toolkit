@@ -76,8 +76,8 @@ extract_overall_comments() {
         fi
     done <<< "$content"
     
-    # Clean up the overall section (remove leading/trailing empty lines)
-    overall_section=$(echo "$overall_section" | sed '/^$/N;/^\n$/d' | sed '1{/^$/d;}' | sed '$ {/^$/d;}')
+    # Clean up the overall section (remove only leading/trailing empty lines, preserve internal spacing)
+    overall_section=$(echo "$overall_section" | sed '/^[[:space:]]*$/N;/^\n$/d' | sed '1{/^$/d;}' | sed '$ {/^$/d;}')
     
     echo "$overall_section"
 }
