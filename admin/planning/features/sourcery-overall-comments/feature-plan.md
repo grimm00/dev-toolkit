@@ -22,16 +22,16 @@ Enhance the `dt-sourcery-parse` command to capture "Overall Comments" sections f
 
 ## 🎯 Success Criteria
 
-- [ ] Overall Comments sections are detected and extracted
-- [ ] Overall Comments are included in parser output
-- [ ] Summary indicates presence of Overall Comments
-- [ ] Individual comments continue to work unchanged
-- [ ] All existing tests pass
-- [ ] New tests cover Overall Comments functionality
-- [ ] Issue #11 is resolved
-- [ ] Documentation is updated
+- [x] ✅ Overall Comments sections are detected and extracted
+- [x] ✅ Overall Comments are included in parser output
+- [x] ✅ Summary indicates presence of Overall Comments
+- [x] ✅ Individual comments continue to work unchanged
+- [x] ✅ All existing tests pass
+- [x] ✅ New tests cover Overall Comments functionality
+- [ ] Issue #11 is resolved (pending PR creation)
+- [ ] Documentation is updated (pending final updates)
 
-**Progress:** 1/8 complete (12%)
+**Progress:** 6/8 complete (75%)
 
 ---
 
