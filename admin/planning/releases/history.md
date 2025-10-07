@@ -9,7 +9,7 @@
 
 | Version | Date | Type | Status | Highlights |
 |---------|------|------|--------|------------|
-| [v0.2.0](#v020---testing--reliability) | 2025-10-06 | Stable | 🎯 Pending | Testing Suite (215 tests) |
+| [v0.2.0](#v020---testing--reliability) | 2025-10-06 | Stable | ✅ Released | Testing Suite (215 tests) |
 | [v0.1.1](#v011---optional-features-clarity) | 2025-10-06 | Stable | ✅ Released | Optional Features Documentation |
 | [v0.1.0-alpha](#v010-alpha---foundation) | 2025-10-06 | Alpha | ✅ Released | Initial Foundation |
 
@@ -17,9 +17,10 @@
 
 ## v0.2.0 - Testing & Reliability
 
-**Release Date:** 2025-10-06 (Pending)  
+**Release Date:** 2025-10-06  
 **Type:** Stable Release  
-**Branch:** `release/v0.2.0` (if using release branch) or direct from `develop`
+**Status:** ✅ RELEASED  
+**Release URL:** https://github.com/grimm00/dev-toolkit/releases/tag/v0.2.0
 
 ### Overview
 Major release adding comprehensive automated testing suite with 215 tests, complete documentation, and the new `dt-review` command.

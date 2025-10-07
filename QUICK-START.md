@@ -6,17 +6,26 @@ Fast reference for getting started with dev-toolkit.
 
 ## 🚀 Installation
 
+### For Production Use
+```bash
+# 1. Fork the repository on GitHub
+# 2. Clone your fork
+git clone https://github.com/YOUR_USERNAME/dev-toolkit.git ~/.dev-toolkit
+cd ~/.dev-toolkit
+./install.sh
+```
+
 ### For Development/Testing
 ```bash
 cd /path/to/dev-toolkit
 source dev-setup.sh
 ```
 
-### For Production Use
+### Updating
 ```bash
-git clone https://github.com/yourusername/dev-toolkit.git ~/.dev-toolkit
 cd ~/.dev-toolkit
-./install.sh
+git pull origin main
+./install.sh  # Re-run if needed
 ```
 
 ---
@@ -33,6 +42,10 @@ dt-config edit global       # Edit global config
 
 ### Sourcery Parser
 ```bash
+# Quick review extraction (recommended)
+dt-review 42                # Extract review to admin/feedback/sourcery/pr42.md
+
+# Full parser with options
 dt-sourcery-parse           # Parse current user's open PR
 dt-sourcery-parse 42        # Parse PR #42
 dt-sourcery-parse 42 -o review.md    # Save to file
@@ -124,4 +137,5 @@ git commit -m "Your message"
 ---
 
 **Full Documentation**: [README.md](README.md)  
-**Version**: 0.1.0-alpha
+**Testing Guide**: [docs/TESTING.md](docs/TESTING.md)  
+**Version**: 0.2.0

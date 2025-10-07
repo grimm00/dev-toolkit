@@ -1,0 +1,54 @@
+# Sourcery Configuration for Dev-Toolkit
+# Only review actual code implementation, skip documentation and planning
+
+# Paths to include in reviews (actual code only)
+path_patterns:
+  - "bin/**/*.sh"                    # Command executables
+  - "lib/**/*.sh"                    # Core libraries
+  - "tests/**/*.bats"                # Test files
+  - ".github/workflows/*.yml"        # CI/CD workflows
+  - "install.sh"                     # Installation script
+  - "dev-setup.sh"                   # Development setup
+
+# Paths to exclude from reviews (documentation, planning, logs)
+ignore_patterns:
+  - "admin/**"                       # Project management hub
+  - "docs/**"                        # User documentation
+  - "**/*.md"                        # All markdown files
+  - "**/chat-logs/**"                # Chat session logs
+  - "**/planning/**"                 # Planning documents
+  - "**/feedback/**"                 # Sourcery feedback analysis
+  - "**/releases/**"                 # Release planning
+  - "**/opportunities/**"            # Opportunity tracking
+  - "**/*.txt"                       # Text files
+  - "LICENSE"                        # License file
+  - ".gitignore"                     # Git ignore
+  - "CHANGELOG.md"                   # Changelog
+  - "VERSION"                        # Version file
+  - "README.md"                      # Main README
+  - "QUICK-START.md"                 # Quick start guide
+  - "CONTRIBUTING.md"                # Contributing guide
+  - "examples/**"                    # Example files
+  - "config/**"                      # Configuration files
+
+# Review rules (empty = use defaults)
+rules: []
+
+# Shell-specific settings
+shell:
+  # Use bash for shell script analysis
+  shell_type: "bash"
+  
+  # Enable strict mode checking
+  strict_mode: true
+
+# GitHub integration settings
+github:
+  # Request reviews from Sourcery automatically
+  request_review: auto
+  
+  # Only review changed files, not entire PR
+  sourcery_branch: main
+  
+  # Skip reviews for documentation-only PRs
+  skip_docs_only: true

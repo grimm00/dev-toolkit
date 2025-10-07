@@ -11,6 +11,7 @@ This toolkit consolidates reusable development utilities that work across any pr
 - **GitHub Integration** - Batch API operations and PR management (requires `gh` CLI)
 - **Pre-commit Hooks** - Automated safety checks before commits
 - **Configuration Management** - Global and project-local settings
+- **Automated Testing** - 215 tests (144 unit + 71 integration) with < 15s execution
 
 ### 🔌 Optional Features (External Services)
 - **Sourcery Automation** - Extract and format AI code reviews programmatically
@@ -30,17 +31,25 @@ This toolkit consolidates reusable development utilities that work across any pr
 - `parser.sh` - Extract and format Sourcery AI reviews from PRs
 
 ### Command Wrappers (`bin/`)
-- `dt-sourcery-parse` - Parse Sourcery reviews
-- `dt-setup-sourcery` - Interactive Sourcery setup
 - `dt-git-safety` - Run Git Flow safety checks
 - `dt-config` - Configuration management
 - `dt-install-hooks` - Install pre-commit hooks
+- `dt-review` - Quick Sourcery review extraction (alias)
+- `dt-sourcery-parse` - Parse Sourcery reviews (full options)
+- `dt-setup-sourcery` - Interactive Sourcery setup
 
 ## 🚀 Installation
 
+### Prerequisites
+
+1. **Fork this repository** on GitHub (click "Fork" button)
+2. Clone your fork:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/dev-toolkit.git ~/.dev-toolkit
+   ```
+
 ### Quick Install (Global)
 ```bash
-git clone https://github.com/yourusername/dev-toolkit.git ~/.dev-toolkit
 cd ~/.dev-toolkit
 ./install.sh
 ```
@@ -53,15 +62,25 @@ This installs commands globally:
 - `dt-install-hooks` - Install pre-commit hooks
 
 **🔌 Optional Commands (Require Sourcery):**
-- `dt-sourcery-parse` - Parse Sourcery reviews
+- `dt-review` - Quick Sourcery review extraction
+- `dt-sourcery-parse` - Parse Sourcery reviews (full options)
 - `dt-setup-sourcery` - Interactive Sourcery setup
 
 ### Per-Project Install
 ```bash
-# In your project root
-git clone https://github.com/yourusername/dev-toolkit.git .dev-toolkit
+# In your project root (after forking)
+git clone https://github.com/YOUR_USERNAME/dev-toolkit.git .dev-toolkit
 cd .dev-toolkit
 ./install.sh --local
+```
+
+### Updating
+
+To get the latest changes:
+```bash
+cd ~/.dev-toolkit  # or your installation directory
+git pull origin main
+./install.sh  # Re-run installation if needed
 ```
 
 ## 📖 Usage
@@ -118,20 +137,15 @@ dt-setup-sourcery
 
 **Parse Sourcery Reviews:**
 ```bash
-# Parse a specific PR
-dt-sourcery-parse 42
+# Quick extraction (recommended)
+dt-review 42                # Saves to admin/feedback/sourcery/pr42.md
 
-# Parse current user's open PR
-dt-sourcery-parse
-
-# Output to file
-dt-sourcery-parse 42 -o docs/reviews/pr-42-review.md
-
-# Show extraction reasoning
-dt-sourcery-parse 42 --think
-
-# Structured details output
-dt-sourcery-parse 42 --rich-details
+# Full parser with options
+dt-sourcery-parse 42        # Parse a specific PR
+dt-sourcery-parse           # Parse current user's open PR
+dt-sourcery-parse 42 -o docs/reviews/pr-42-review.md  # Output to file
+dt-sourcery-parse 42 --think         # Show extraction reasoning
+dt-sourcery-parse 42 --rich-details  # Structured details output
 ```
 
 **More Git Flow Options:**
@@ -218,8 +232,8 @@ dev-toolkit/
 If you're developing or testing the toolkit locally:
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/dev-toolkit.git
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/dev-toolkit.git
 cd dev-toolkit
 
 # Set up development environment
@@ -234,20 +248,51 @@ dt-config show
 dt-git-safety check
 ```
 
-For persistent setup, add to your `~/.zshrc`:
+For persistent setup, add to your `~/.zshrc` or `~/.bashrc`:
 ```bash
-export DT_ROOT="/Users/cdwilson/Projects/dev-toolkit"
+export DT_ROOT="/path/to/your/dev-toolkit"
 export PATH="$DT_ROOT/bin:$PATH"
 ```
 
+## 🧪 Testing
+
+The toolkit includes a comprehensive test suite:
+
+```bash
+# Run all tests (215 tests, < 15 seconds)
+./scripts/test.sh
+
+# Run specific test suites
+bats tests/unit/                    # Unit tests only
+bats tests/integration/             # Integration tests only
+bats tests/unit/core/               # Core utilities tests
+```
+
+**Test Coverage:**
+- 215 total tests (144 unit + 71 integration)
+- 100% pass rate
+- < 15 second execution time
+- All commands tested end-to-end
+
+See [docs/TESTING.md](docs/TESTING.md) for detailed testing guide.
+
 ## 🤝 Contributing
 
-This toolkit is designed for personal use across multiple projects but contributions are welcome:
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-1. Keep tools project-agnostic
-2. Maintain zero external dependencies for core features
-3. Document all functions and usage
-4. Test across different project types
+**Quick Start:**
+1. Fork the repository
+2. Create a feature branch (`feat/your-feature`)
+3. Write tests for your changes
+4. Ensure all tests pass
+5. Submit a pull request
+
+**Key Principles:**
+- Keep tools project-agnostic
+- Maintain minimal dependencies for core features
+- Document all functions and usage
+- Write tests for new features
+- Follow conventional commit messages
 
 ## 📝 License
 
@@ -259,6 +304,6 @@ Born from the [Pokehub](https://github.com/grimm00/pokedex) project's need for p
 
 ---
 
-**Version:** 0.1.0-alpha  
-**Status:** 🚧 Active Development  
+**Version:** 0.2.0  
+**Status:** ✅ Stable (Testing & Reliability)  
 **Last Updated:** October 6, 2025

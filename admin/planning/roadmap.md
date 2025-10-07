@@ -70,7 +70,43 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 
 ---
 
-#### 2. Batch Operations 🎯 MEDIUM PRIORITY
+#### 2. Workflow Helper Template 🎯 HIGH PRIORITY (NEXT)
+**Why:** Lower barrier to entry, demonstrate dev-toolkit integration
+**Target:** v0.3.0
+
+**Origin:** Discovered from Pokehub integration - the workflow-helper.sh pattern is reusable!
+
+**What It Does:**
+```bash
+cd my-new-project
+dt-init-workflow-helper
+# Creates: scripts/workflow-helper.sh
+# - Pre-wired with dev-toolkit integration
+# - Git Flow shortcuts ready to use
+# - Placeholder project commands to customize
+```
+
+**Tasks:**
+- [ ] Phase 1: Generic template + generator command
+- [ ] Phase 2: Command-line options + comprehensive docs
+- [ ] Phase 3: Stack-specific templates (python-react, node-fullstack, etc.)
+- [ ] Phase 4: Interactive wizard mode
+
+**Benefit:** 
+- Fast project setup (one command)
+- Consistent patterns across projects
+- Living example of dev-toolkit integration
+- Saves 2-4 hours per project
+
+**Documentation:**
+- [Feature Plan](features/workflow-helper-template/feature-plan.md)
+- [Phase 1: MVP](features/workflow-helper-template/phase-1.md)
+- [Analysis](notes/opportunities/external/workflow-helper-analysis.md)
+- [Template Idea](notes/opportunities/external/workflow-helper-template-idea.md)
+
+---
+
+#### 3. Batch Operations 🎯 MEDIUM PRIORITY
 **Why:** Process multiple PRs/branches efficiently
 
 **Tasks:**
@@ -83,7 +119,7 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 
 ---
 
-#### 3. Enhanced Git Flow 🎯 MEDIUM PRIORITY
+#### 4. Enhanced Git Flow 🎯 MEDIUM PRIORITY
 **Why:** More workflow automation
 
 **Tasks:**
@@ -145,9 +181,9 @@ Create a portable, project-agnostic development toolkit that streamlines code re
   - < 15 second execution time
 
 ### Next Up
-- 🎯 **v0.2.0 Release** - Merge to main, create release tag
-- 📋 **Batch Operations** - Process multiple items efficiently (v0.3.0)
-- 📋 **Enhanced Git Flow** - More workflow automation (v0.4.0)
+- 🎯 **Workflow Helper Template** - Template generator for project-specific workflows (v0.3.0, NEXT)
+- 📋 **Batch Operations** - Process multiple items efficiently (v0.4.0)
+- 📋 **Enhanced Git Flow** - More workflow automation (v0.5.0)
 - 📋 **Phase 4: Test Enhancements** - Optional edge cases (v0.2.1, deferred)
 - 🔮 **v1.0 Production Ready** - Stable, tested, production-grade
 
@@ -170,14 +206,15 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 - Feature tracking workflow
 - Improved user experience
 
-### v0.2.0 - Testing & Reliability ✅ READY FOR RELEASE
+### v0.2.0 - Testing & Reliability ✅ RELEASED (Oct 6, 2025)
 - ✅ Automated test suite (215 tests)
 - ✅ CI/CD test integration
 - ✅ Comprehensive test documentation
 - ✅ Regression prevention
 - ✅ All commands tested end-to-end
 - ✅ < 15 second execution time
-- **Status:** Complete, ready to merge to main and tag
+- **Status:** Released
+- **Release URL:** https://github.com/grimm00/dev-toolkit/releases/tag/v0.2.0
 
 ### v0.2.1 - Test Enhancements (Optional, Deferred)
 - Additional edge case tests from Sourcery feedback
@@ -186,13 +223,21 @@ Create a portable, project-agnostic development toolkit that streamlines code re
 - ~5-10 additional tests
 - **Status:** Deferred - will address after v0.3.0 or v0.4.0 if needed
 
-### v0.3.0 - Batch Operations (Planned)
+### v0.3.0 - Workflow Helper Template (Planned)
+- Template generator command
+- Generic workflow-helper.sh template
+- Pre-wired dev-toolkit integration
+- Git Flow shortcuts included
+- Comprehensive documentation
+- **Status:** Feature plan complete, ready for implementation
+
+### v0.4.0 - Batch Operations (Planned)
 - Batch PR processing
 - Multiple branch operations
 - Bulk configuration management
 - Progress reporting
 
-### v0.4.0 - Enhanced Git Flow (Planned)
+### v0.5.0 - Enhanced Git Flow (Planned)
 - Interactive branch management
 - PR creation helpers
 - Merge automation
@@ -314,3 +359,4 @@ High-level view of:
 2. **Review feature directories** for detailed plans
 3. **Create feature branches** following the workflow in `features/README.md`
 4. **Update this roadmap** when priorities shift
+

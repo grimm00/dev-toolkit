@@ -177,6 +177,7 @@ if [ "$INSTALL_TYPE" = "global" ]; then
     echo ""
     echo -e "${CYAN}Available commands:${NC}"
     echo "  dt-sourcery-parse  - Parse Sourcery AI reviews from PRs"
+    echo "  dt-review          - Quick Sourcery review extractor with Overall Comments detection"
     echo "  dt-git-safety      - Run Git Flow safety checks"
     echo "  dt-config          - Manage dev-toolkit configuration"
     echo ""
@@ -200,6 +201,7 @@ else
     echo ""
     echo "  3. Or use commands directly:"
     echo "     $TOOLKIT_ROOT/bin/dt-sourcery-parse"
+    echo "     $TOOLKIT_ROOT/bin/dt-review"
     echo "     $TOOLKIT_ROOT/bin/dt-git-safety"
     echo "     $TOOLKIT_ROOT/bin/dt-config"
 fi

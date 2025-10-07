@@ -48,6 +48,40 @@ RICH_DETAILS=false
 # FIXED PARSING FUNCTIONS
 # ============================================================================
 
+# Extract Overall Comments section from Sourcery review content
+extract_overall_comments() {
+    local content="$1"
+    local overall_section=""
+    local in_overall=false
+    
+    while IFS= read -r line; do
+        # Check for start of Overall Comments section
+        if [[ "$line" =~ ^##\ (Overall\ Comments|Overall|Summary\ Comments) ]]; then
+            in_overall=true
+            continue
+        fi
+        
+        # Check for end of Overall Comments section (next major section)
+        if [ "$in_overall" = true ] && [[ "$line" =~ ^##\ [^O] ]] && [[ ! "$line" =~ ^##\ (Overall|Summary) ]]; then
+            break
+        fi
+        
+        # Collect content while in Overall Comments section
+        if [ "$in_overall" = true ]; then
+            if [ -n "$overall_section" ]; then
+                overall_section="$overall_section"$'\n'"$line"
+            else
+                overall_section="$line"
+            fi
+        fi
+    done <<< "$content"
+    
+    # Clean up the overall section (remove leading/trailing empty lines)
+    overall_section=$(echo "$overall_section" | sed '/^$/N;/^\n$/d' | sed '1{/^$/d;}' | sed '$ {/^$/d;}')
+    
+    echo "$overall_section"
+}
+
 # Sanitize a text block: remove control chars and escape HTML for safe embedding
 sanitize_block() {
     local in="$1"
@@ -162,18 +196,30 @@ create_clean_output() {
     
     # Extract comment count
     local comment_count=$(echo "$content" | grep -c "^### Comment [0-9]")
+    local has_overall_comments=""
+    if echo "$content" | grep -q "## Overall Comments\|## Overall\|## Summary Comments"; then
+        has_overall_comments=" + Overall Comments"
+    fi
+    
     output+="## Summary\n\n"
-    output+="Total Comments: $comment_count\n\n"
+    output+="Total Individual Comments: $comment_count$has_overall_comments\n\n"
 
     if [ "$THINK_MODE" = true ]; then
         output+="### Parsing Notes (Think Mode)\n"
-        output+="- We search for comments using the header pattern '### Comment N'\n"
+        output+="- We search for individual comments using the header pattern '### Comment N'\n"
+        output+="- We also search for Overall Comments sections using patterns '## Overall Comments', '## Overall', or '## Summary Comments'\n"
         output+="- Location is taken from the first '<location>...</location>' tag, then HTML tags and backticks are stripped, and whitespace is trimmed\n"
         output+="- Type is the first bold '**...**' phrase; trailing colons are removed to normalize values like 'suggestion:' -> 'suggestion'\n"
         output+="- Description is the first non-empty, non-bold line between '<issue_to_address>' and the next code fence, with markdown tokens removed\n\n"
     fi
     
-    # Comments section
+    # Check for Overall Comments section first
+    local overall_comments=""
+    if echo "$content" | grep -q "## Overall Comments\|## Overall\|## Summary Comments"; then
+        overall_comments=$(extract_overall_comments "$content")
+    fi
+    
+    # Individual Comments section
     output+="## Individual Comments\n\n"
     
     # Split content by comment headers and process each
@@ -200,6 +246,12 @@ create_clean_output() {
     # Process the last comment
     if [ -n "$current_comment" ] && [ -n "$comment_num" ]; then
         output+=$(format_single_comment_fixed "$comment_num" "$current_comment")
+    fi
+    
+    # Add Overall Comments section if found
+    if [ -n "$overall_comments" ]; then
+        output+="## Overall Comments\n\n"
+        output+="$overall_comments\n\n"
     fi
     
     # Priority Matrix Template

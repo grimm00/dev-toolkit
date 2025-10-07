@@ -1,0 +1,544 @@
+# Phase 1: MVP - Generic Template
+
+**Phase:** 1 of 4  
+**Status:** 📋 PLANNED  
+**Target Version:** v0.3.0  
+**Effort:** 1-2 days  
+**Priority:** 🟢 HIGH
+
+---
+
+## 🎯 Goal
+
+Create a working template generator that produces a customizable `workflow-helper.sh` script with dev-toolkit integration and clear customization points.
+
+## 📋 Tasks
+
+### Part A: Template Creation ⏳
+**Goal:** Extract reusable patterns from Pokehub and create base template
+
+- [ ] **A1:** Create `lib/templates/workflow-helper/` directory
+- [ ] **A2:** Create `base.sh` template file
+- [ ] **A3:** Extract framework code from Pokehub's workflow-helper.sh:
+  - [ ] Dev-toolkit detection and sourcing
+  - [ ] Color output system
+  - [ ] Helper functions (print_header, print_section, etc.)
+  - [ ] Command routing structure
+  - [ ] Help text generation
+  - [ ] Error handling
+- [ ] **A4:** Add template variables:
+  - [ ] `{{PROJECT_NAME}}` - Project name
+  - [ ] `{{TOOLKIT_ROOT}}` - Dev-toolkit installation path
+  - [ ] `{{GENERATED_DATE}}` - Generation timestamp
+  - [ ] `{{TOOLKIT_VERSION}}` - Dev-toolkit version
+- [ ] **A5:** Add TODO markers for customization points:
+  - [ ] Project-specific commands (dev, test, backend, frontend)
+  - [ ] Custom workflows
+  - [ ] Additional shortcuts
+- [ ] **A6:** Include pre-wired commands:
+  - [ ] Git Flow shortcuts (start-feature, start-fix, etc.)
+  - [ ] Safety checks (safety, install-hooks)
+  - [ ] PR commands (pr, pr-status, pr-view)
+  - [ ] Basic git operations (push, pull, sync)
+
+**Success Criteria:**
+- [ ] Template file is valid Bash script
+- [ ] All framework code is present
+- [ ] Clear sections for customization
+- [ ] TODO markers guide users
+- [ ] Pre-wired commands work out of the box
+
+**Estimated Time:** 0.5-1 day
+
+---
+
+### Part B: Generator Command ⏳
+**Goal:** Create command that generates workflow-helper.sh from template
+
+- [ ] **B1:** Create `bin/dt-init-workflow-helper` script
+- [ ] **B2:** Implement core functionality:
+  - [ ] Detect dev-toolkit installation path
+  - [ ] Check if target file already exists
+  - [ ] Read template file
+  - [ ] Replace template variables
+  - [ ] Write generated file
+  - [ ] Make file executable (chmod +x)
+- [ ] **B3:** Add validation:
+  - [ ] Verify dev-toolkit is installed
+  - [ ] Verify template file exists
+  - [ ] Verify target directory exists (create if needed)
+  - [ ] Warn if file already exists
+- [ ] **B4:** Add help text:
+  - [ ] Usage instructions
+  - [ ] Examples
+  - [ ] Options (for future phases)
+- [ ] **B5:** Add output messages:
+  - [ ] Success message with next steps
+  - [ ] List of pre-wired commands
+  - [ ] Customization instructions
+  - [ ] Example usage
+
+**Success Criteria:**
+- [ ] Command runs without errors
+- [ ] Generated file is valid and executable
+- [ ] Help text is clear and comprehensive
+- [ ] Output messages guide next steps
+- [ ] Error messages are helpful
+
+**Estimated Time:** 0.5 day
+
+---
+
+### Part C: Testing ⏳
+**Goal:** Verify template generation works correctly
+
+- [ ] **C1:** Unit tests for template generation:
+  - [ ] Test variable replacement
+  - [ ] Test file creation
+  - [ ] Test executable permissions
+  - [ ] Test error handling (missing template, existing file, etc.)
+- [ ] **C2:** Integration tests:
+  - [ ] Test full command execution
+  - [ ] Test generated script is valid Bash
+  - [ ] Test generated script passes shellcheck
+  - [ ] Test pre-wired commands work
+- [ ] **C3:** Manual testing:
+  - [ ] Generate template in test project
+  - [ ] Customize project-specific commands
+  - [ ] Test all pre-wired commands
+  - [ ] Verify help text is accurate
+  - [ ] Test in multiple projects
+
+**Success Criteria:**
+- [ ] All unit tests pass
+- [ ] All integration tests pass
+- [ ] Generated script passes shellcheck
+- [ ] Manual testing confirms usability
+- [ ] No errors in real-world usage
+
+**Estimated Time:** 0.5 day
+
+---
+
+### Part D: Documentation ⏳
+**Goal:** Document the new feature for users
+
+- [ ] **D1:** Update `README.md`:
+  - [ ] Add "Workflow Helper Template" section
+  - [ ] Show basic usage example
+  - [ ] Link to detailed guide
+- [ ] **D2:** Update `QUICK-START.md`:
+  - [ ] Add template generation to "Next Steps"
+  - [ ] Show quick example
+- [ ] **D3:** Update `dev-setup.sh`:
+  - [ ] Add `dt-init-workflow-helper` to available commands
+- [ ] **D4:** Create basic usage guide (inline in README for Phase 1):
+  - [ ] How to generate template
+  - [ ] How to customize commands
+  - [ ] List of pre-wired commands
+  - [ ] Common customization patterns
+
+**Success Criteria:**
+- [ ] README clearly explains the feature
+- [ ] QUICK-START shows how to get started
+- [ ] Usage guide covers common scenarios
+- [ ] Examples are clear and practical
+
+**Estimated Time:** 0.5 day
+
+---
+
+## 🎨 Template Structure (Phase 1)
+
+### Sections in Generated Template
+
+```bash
+#!/usr/bin/env bash
+# Generated by dev-toolkit v0.3.0 on 2025-10-06
+# Workflow Helper for {{PROJECT_NAME}}
+# 
+# This script provides convenient shortcuts for common development tasks.
+# Customize the PROJECT-SPECIFIC sections below for your project.
+
+set -e
+
+# ============================================================================
+# DEV-TOOLKIT INTEGRATION (Auto-generated - Don't modify)
+# ============================================================================
+
+# Detect dev-toolkit installation
+if [ -n "${DT_ROOT:-}" ]; then
+    TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$HOME/.dev-toolkit/lib/git-flow/utils.sh" ]; then
+    TOOLKIT_ROOT="$HOME/.dev-toolkit"
+else
+    echo "❌ Error: dev-toolkit not found"
+    echo "Install: https://github.com/grimm00/dev-toolkit"
+    exit 1
+fi
+
+# Source utilities
+source "$TOOLKIT_ROOT/lib/git-flow/utils.sh"
+gf_init_git_flow_utils >/dev/null 2>&1 || true
+
+# Colors
+if [[ -t 1 ]] && command -v tput >/dev/null 2>&1; then
+    RED=$(tput setaf 1)
+    GREEN=$(tput setaf 2)
+    YELLOW=$(tput setaf 3)
+    BLUE=$(tput setaf 4)
+    PURPLE=$(tput setaf 5)
+    CYAN=$(tput setaf 6)
+    NC=$(tput sgr0)
+else
+    RED="" GREEN="" YELLOW="" BLUE="" PURPLE="" CYAN="" NC=""
+fi
+
+# ============================================================================
+# PROJECT-SPECIFIC CONFIGURATION (Customize this)
+# ============================================================================
+
+PROJECT_NAME="{{PROJECT_NAME}}"  # TODO: Change this
+PROJECT_DIR="$(gf_get_project_root)"
+
+# ============================================================================
+# HELPER FUNCTIONS (Auto-generated)
+# ============================================================================
+
+print_header() {
+    echo "${PURPLE}🚀 $PROJECT_NAME Workflow Helper${NC}"
+    echo "${CYAN}═══════════════════════════════════════${NC}"
+}
+
+print_section() {
+    echo ""
+    echo "${BLUE}$1${NC}"
+    echo "${CYAN}───────────────────────────────────────${NC}"
+}
+
+# ============================================================================
+# COMMAND ROUTING (Customize the commands below)
+# ============================================================================
+
+case "$1" in
+    # ========================================================================
+    # GIT FLOW SHORTCUTS (Pre-wired with dev-toolkit)
+    # ========================================================================
+    
+    "start-feature"|"sf")
+        if [ -z "$2" ]; then
+            echo "${RED}Usage: $0 start-feature <feature-name>${NC}"
+            exit 1
+        fi
+        echo "${GREEN}🌱 Starting new feature: $2${NC}"
+        gf_git_checkout $DEVELOP_BRANCH
+        gf_git_pull origin $DEVELOP_BRANCH
+        gf_git_checkout "feat/$2" true
+        echo "${GREEN}✅ Created and switched to feat/$2${NC}"
+        ;;
+    
+    "start-fix"|"fix")
+        if [ -z "$2" ]; then
+            echo "${RED}Usage: $0 start-fix <fix-name>${NC}"
+            exit 1
+        fi
+        echo "${GREEN}🔧 Starting new fix: $2${NC}"
+        gf_git_checkout $DEVELOP_BRANCH
+        gf_git_pull origin $DEVELOP_BRANCH
+        gf_git_checkout "fix/$2" true
+        echo "${GREEN}✅ Created and switched to fix/$2${NC}"
+        ;;
+    
+    "pr"|"pull-request")
+        echo "${GREEN}📤 Creating pull request${NC}"
+        gh pr create
+        ;;
+    
+    "pr-status"|"prs")
+        echo "${GREEN}📋 Pull request status${NC}"
+        gh pr list
+        ;;
+    
+    "push"|"p")
+        echo "${GREEN}⬆️  Pushing changes${NC}"
+        git push
+        ;;
+    
+    "pull")
+        echo "${GREEN}⬇️  Pulling changes${NC}"
+        git pull
+        ;;
+    
+    # ========================================================================
+    # PROJECT-SPECIFIC COMMANDS (TODO: Customize these!)
+    # ========================================================================
+    
+    "dev"|"start")
+        echo "${GREEN}🚀 Starting development servers${NC}"
+        # TODO: Add your project's dev server command
+        # Example: python -m backend.app & cd frontend && npm run dev
+        echo "${YELLOW}⚠️  TODO: Customize this command in workflow-helper.sh${NC}"
+        echo "${YELLOW}    Edit the 'dev' case to start your project's servers${NC}"
+        ;;
+    
+    "test"|"t")
+        echo "${GREEN}🧪 Running tests${NC}"
+        # TODO: Add your project's test command
+        # Example: npm test && pytest
+        echo "${YELLOW}⚠️  TODO: Customize this command in workflow-helper.sh${NC}"
+        echo "${YELLOW}    Edit the 'test' case to run your project's tests${NC}"
+        ;;
+    
+    "backend"|"be")
+        echo "${GREEN}🐍 Starting backend${NC}"
+        # TODO: Add your backend start command
+        # Example: python -m backend.app
+        echo "${YELLOW}⚠️  TODO: Customize this command in workflow-helper.sh${NC}"
+        echo "${YELLOW}    Edit the 'backend' case to start your backend${NC}"
+        ;;
+    
+    "frontend"|"fe")
+        echo "${GREEN}⚛️  Starting frontend${NC}"
+        # TODO: Add your frontend start command
+        # Example: cd frontend && npm run dev
+        echo "${YELLOW}⚠️  TODO: Customize this command in workflow-helper.sh${NC}"
+        echo "${YELLOW}    Edit the 'frontend' case to start your frontend${NC}"
+        ;;
+    
+    # ========================================================================
+    # DEV-TOOLKIT INTEGRATION (Pre-wired)
+    # ========================================================================
+    
+    "safety"|"check"|"safe")
+        echo "${GREEN}🛡️  Running Git Flow safety checks${NC}"
+        dt-git-safety check
+        ;;
+    
+    "install-hooks"|"hooks")
+        echo "${GREEN}🪝 Installing Git Flow safety hooks${NC}"
+        dt-install-hooks
+        ;;
+    
+    # ========================================================================
+    # HELP TEXT (Auto-generated)
+    # ========================================================================
+    
+    "help"|"h"|"")
+        print_header
+        echo ""
+        echo "${GREEN}Available commands:${NC}"
+        echo ""
+        
+        print_section "🌳 Git Flow (dev-toolkit)"
+        echo "  ${CYAN}start-feature, sf${NC} <name>   Start new feature branch"
+        echo "  ${CYAN}start-fix, fix${NC} <name>      Start new fix branch"
+        echo "  ${CYAN}pr${NC}                         Create pull request"
+        echo "  ${CYAN}pr-status, prs${NC}             List pull requests"
+        echo "  ${CYAN}push, p${NC}                    Push changes"
+        echo "  ${CYAN}pull${NC}                       Pull changes"
+        echo "  ${CYAN}safety, check${NC}              Run safety checks"
+        echo "  ${CYAN}install-hooks${NC}              Install pre-commit hooks"
+        
+        print_section "🚀 Development (TODO: Customize)"
+        echo "  ${CYAN}dev, start${NC}                 Start development servers"
+        echo "  ${CYAN}test, t${NC}                    Run tests"
+        echo "  ${CYAN}backend, be${NC}                Start backend"
+        echo "  ${CYAN}frontend, fe${NC}               Start frontend"
+        
+        echo ""
+        echo "${YELLOW}💡 Tip: Edit this file to customize project-specific commands${NC}"
+        echo "${YELLOW}    File: scripts/workflow-helper.sh${NC}"
+        ;;
+    
+    *)
+        echo "${RED}❌ Unknown command: $1${NC}"
+        echo "${YELLOW}Run '$0 help' for available commands${NC}"
+        exit 1
+        ;;
+esac
+```
+
+---
+
+## ✅ Success Criteria
+
+### Functional Requirements
+- [ ] `dt-init-workflow-helper` command exists and is executable
+- [ ] Command generates valid `scripts/workflow-helper.sh` file
+- [ ] Generated file is executable (chmod +x)
+- [ ] Generated file passes shellcheck
+- [ ] Pre-wired Git Flow commands work out of the box
+- [ ] Pre-wired dev-toolkit integration works
+- [ ] Help text is comprehensive and accurate
+- [ ] TODO markers clearly indicate customization points
+
+### Quality Requirements
+- [ ] Code follows dev-toolkit standards (set -euo pipefail, etc.)
+- [ ] Error messages are clear and actionable
+- [ ] Success messages guide next steps
+- [ ] Template is well-commented
+- [ ] Command has comprehensive help text
+
+### Testing Requirements
+- [ ] Unit tests pass (template variable replacement)
+- [ ] Integration tests pass (full command execution)
+- [ ] Generated script passes shellcheck
+- [ ] Manual testing confirms usability
+- [ ] Works in multiple project contexts
+
+### Documentation Requirements
+- [ ] README.md updated with feature
+- [ ] QUICK-START.md includes template generation
+- [ ] Usage examples are clear
+- [ ] Customization instructions are provided
+
+---
+
+## 🚀 Implementation Order
+
+### Day 1: Core Implementation
+1. **Morning:** Part A - Template Creation (A1-A6)
+   - Create directory structure
+   - Extract patterns from Pokehub
+   - Create base.sh template
+   - Add template variables and TODO markers
+
+2. **Afternoon:** Part B - Generator Command (B1-B5)
+   - Create dt-init-workflow-helper script
+   - Implement core functionality
+   - Add validation and error handling
+   - Add help text and output messages
+
+### Day 2: Testing & Documentation
+3. **Morning:** Part C - Testing (C1-C3)
+   - Write unit tests
+   - Write integration tests
+   - Manual testing in sample projects
+   - Fix any issues found
+
+4. **Afternoon:** Part D - Documentation (D1-D4)
+   - Update README and QUICK-START
+   - Create usage guide
+   - Add examples
+   - Final review and polish
+
+---
+
+## 📊 Testing Plan
+
+### Unit Tests (`tests/unit/templates/test-workflow-helper-template.bats`)
+```bash
+@test "template variable replacement works" {
+  # Test {{PROJECT_NAME}} replacement
+  # Test {{TOOLKIT_ROOT}} replacement
+  # Test {{GENERATED_DATE}} replacement
+}
+
+@test "template file is valid bash" {
+  # Run bash -n on template
+}
+
+@test "template passes shellcheck" {
+  # Run shellcheck on template
+}
+```
+
+### Integration Tests (`tests/integration/test-dt-init-workflow-helper.bats`)
+```bash
+@test "dt-init-workflow-helper creates file" {
+  # Run command in temp directory
+  # Verify file exists
+  # Verify file is executable
+}
+
+@test "generated script is valid" {
+  # Generate script
+  # Run bash -n on generated script
+  # Run shellcheck on generated script
+}
+
+@test "generated script help works" {
+  # Generate script
+  # Run ./scripts/workflow-helper.sh help
+  # Verify output
+}
+
+@test "pre-wired commands work" {
+  # Generate script
+  # Test safety command
+  # Test help command
+}
+```
+
+---
+
+## 🎯 Phase 1 Deliverables
+
+### Code
+- [ ] `lib/templates/workflow-helper/base.sh` - Template file
+- [ ] `bin/dt-init-workflow-helper` - Generator command
+- [ ] `tests/unit/templates/test-workflow-helper-template.bats` - Unit tests
+- [ ] `tests/integration/test-dt-init-workflow-helper.bats` - Integration tests
+
+### Documentation
+- [ ] Updated `README.md` with feature section
+- [ ] Updated `QUICK-START.md` with example
+- [ ] Updated `dev-setup.sh` with command
+- [ ] Usage examples in README
+
+### Validation
+- [ ] All tests pass
+- [ ] Generated script passes shellcheck
+- [ ] Manual testing confirms usability
+- [ ] Documentation is clear and complete
+
+---
+
+## 🔄 Next Steps After Phase 1
+
+### Immediate (v0.3.0)
+- [ ] Merge Phase 1 to develop
+- [ ] Test in multiple projects
+- [ ] Gather feedback
+- [ ] Fix any issues
+
+### Phase 2 (v0.3.0 or v0.3.1)
+- [ ] Add command-line options (--name, --output)
+- [ ] Create comprehensive guide (docs/WORKFLOW-HELPER-GUIDE.md)
+- [ ] Add more usage examples
+- [ ] Polish based on feedback
+
+### Phase 3 (v0.4.0)
+- [ ] Create stack-specific templates
+- [ ] Add --stack option
+- [ ] Community template gallery
+
+---
+
+## 📝 Notes
+
+### Design Decisions
+1. **Keep Phase 1 simple** - No command-line options, just basic generation
+2. **Focus on usability** - Clear TODO markers, helpful messages
+3. **Test thoroughly** - Unit, integration, and manual testing
+4. **Document well** - Make it easy for users to get started
+
+### Lessons from Testing Suite
+1. **Start with structure** - Create directories and files first
+2. **Test early** - Write tests as you implement
+3. **Document as you go** - Don't leave docs for the end
+4. **Get feedback** - Test in real projects early
+
+### Pokehub Patterns to Extract
+1. **Command routing** - case statement structure
+2. **Help text** - print_section, organized by category
+3. **Color output** - tput-based color system
+4. **Safety integration** - dt-git-safety check before operations
+5. **Error handling** - set -e, input validation
+
+---
+
+**Created:** October 6, 2025  
+**Status:** 📋 Ready for implementation  
+**Estimated Effort:** 1-2 days  
+**Target Version:** v0.3.0
