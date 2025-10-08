@@ -253,7 +253,7 @@ create_clean_output() {
         output+="## Overall Comments\n\n"
         output+="$overall_comments\n\n"
     fi
-    
+
     # Priority Matrix Template
     output+="## Priority Matrix Assessment\n\n"
     output+="Use this template to assess each comment:\n\n"
