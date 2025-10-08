@@ -47,6 +47,9 @@
     },
     {
       "pattern": "https://refspecs\\.linuxfoundation\\.org/FHS_3\\.0/fhs/index\\.html"
+    },
+    {
+      "pattern": "admin/docs/guides/.*\\.md"
     }
   ],
   "timeout": "20s",
