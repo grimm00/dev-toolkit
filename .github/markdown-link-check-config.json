@@ -17,6 +17,15 @@
     },
     {
       "pattern": "^[^/]*/[^/]*/[^/]*\\.md$"
+    },
+    {
+      "pattern": "notes/opportunities/external/workflow-helper-analysis\\.md"
+    },
+    {
+      "pattern": "notes/opportunities/external/workflow-helper-template-idea\\.md"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./scripts/workflow-helper\\.sh"
     }
   ],
   "timeout": "20s",
