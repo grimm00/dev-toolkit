@@ -193,7 +193,7 @@ needs: [lint, test]
 
 ### Planning
 - [README.md](README.md) - Hub with quick links
-- [Feature Plan](feature-plan.md) - Overview
+- [CI Plan](ci-plan.md) - Overview
 - [Status & Next Steps](status-and-next-steps.md) - Current status
 
 ### Analysis

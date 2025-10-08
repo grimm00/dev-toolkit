@@ -167,7 +167,7 @@
 
 ### Planning
 - [README.md](README.md) - Hub with quick links
-- [Feature Plan](feature-plan.md) - Overview
+- [CI Plan](ci-plan.md) - Overview
 
 ### Analysis
 - [Current CI Analysis](current-ci-analysis.md) - Deep dive

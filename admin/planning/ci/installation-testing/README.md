@@ -10,7 +10,7 @@
 ## 📋 Quick Links
 
 ### Core Documents
-- **[Feature Plan](feature-plan.md)** - High-level overview
+- **[CI Plan](ci-plan.md)** - High-level overview
 - **[Status & Next Steps](status-and-next-steps.md)** - Current status
 - **[Quick Start](quick-start.md)** - How to implement
 
@@ -45,6 +45,7 @@ Enhance the CI/CD pipeline to include comprehensive installation testing for `in
 | Phase | Description | Status |
 |-------|-------------|--------|
 | Analysis | Current CI/CD review | ✅ Complete |
+| Planning | Feature documentation and phases | ✅ Complete |
 
 ### ⏳ Planned
 
@@ -84,14 +85,16 @@ Enhance the CI/CD pipeline to include comprehensive installation testing for `in
 
 1. **Identified Gap** - CI doesn't test installation functionality
 2. **Clear Scope** - Focused on installation testing only
-3. **Reusable Pattern** - Other projects can use this approach
+3. **Complete Planning** - All phases documented with detailed implementation plans
+4. **Reusable Pattern** - Other projects can use this approach
+5. **Hub-and-Spoke Documentation** - Following established best practices
 
 ---
 
 ## 📚 Related Documents
 
 ### Planning
-- [Feature Plan](feature-plan.md) - Overview
+- [CI Plan](ci-plan.md) - Overview
 - [Status](status-and-next-steps.md) - Current status
 
 ### Analysis
@@ -104,4 +107,4 @@ Enhance the CI/CD pipeline to include comprehensive installation testing for `in
 
 **Last Updated:** 2025-01-06
 **Status:** 🟡 Planned
-**Next:** Create feature plan and phase 1 details
+**Next:** Implement Phase 1 installation test job

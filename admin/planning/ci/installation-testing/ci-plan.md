@@ -1,4 +1,4 @@
-# CI/CD Installation Testing - Feature Plan
+# CI/CD Installation Testing - CI Plan
 
 **Status:** 🟡 Planned
 **Created:** 2025-01-06
