@@ -62,6 +62,16 @@ if [ -z "$PR_NUMBER" ]; then
     exit 1
 fi
 
+# Validate PR number is numeric
+if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+    echo "❌ Error: PR number must be numeric (got: $PR_NUMBER)"
+    echo ""
+    echo "Usage: dt-review <PR_NUMBER> [OUTPUT_PATH]"
+    echo "  PR_NUMBER: Numeric pull request number"
+    echo "  OUTPUT_PATH: Optional custom output file path"
+    exit 1
+fi
+
 # Determine output file
 if [ -n "${2:-}" ]; then
     # Custom output path provided
