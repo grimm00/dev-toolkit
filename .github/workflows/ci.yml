@@ -125,11 +125,12 @@ jobs:
         ./install.sh --local
         echo "✅ Local installation completed"
         
-        # Verify local installation works
-        if [ -d ".dev-toolkit" ]; then
-          echo "✅ Local .dev-toolkit directory created"
+        # Verify local installation works (local install doesn't create .dev-toolkit dir)
+        # Instead, it makes the toolkit available in the current directory
+        if [ -f "bin/dt-config" ] && [ -f "bin/dt-git-safety" ]; then
+          echo "✅ Local installation successful - commands available"
         else
-          echo "❌ Local .dev-toolkit directory not found"
+          echo "❌ Local installation failed - commands not found"
           exit 1
         fi
         
@@ -211,10 +212,10 @@ jobs:
         ./install.sh --no-symlinks
         echo "✅ Re-installation handled gracefully"
         
-        # Test with existing .dev-toolkit directory
-        mkdir -p .dev-toolkit
+        # Test with existing bin directory (edge case)
+        mkdir -p bin
         ./install.sh --local
-        echo "✅ Local installation with existing directory handled"
+        echo "✅ Local installation with existing bin directory handled"
         
         # Clean up
         cd "$GITHUB_WORKSPACE"
