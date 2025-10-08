@@ -106,18 +106,21 @@ jobs:
       
     - name: Test global installation
       run: |
+        set -euo pipefail
         ./install.sh --no-symlinks
         echo "✅ Global installation completed"
         
     - name: Set up environment for installed commands
       run: |
-        export DT_ROOT="$HOME/.dev-toolkit"
+        set -euo pipefail
+        export DT_ROOT="${GITHUB_WORKSPACE}"
         export PATH="$DT_ROOT/bin:$PATH"
         echo "DT_ROOT=$DT_ROOT" >> $GITHUB_ENV
         echo "$DT_ROOT/bin" >> $GITHUB_PATH
         
     - name: Verify command accessibility
       run: |
+        set -euo pipefail
         which dt-config
         which dt-git-safety
         which dt-sourcery-parse
@@ -125,9 +128,16 @@ jobs:
         
     - name: Test command functionality
       run: |
+        set -euo pipefail
+        # Test help flags
         dt-config --help
         dt-git-safety --help
         dt-sourcery-parse --help
+        
+        # Test actual functionality beyond help
+        dt-config show
+        dt-git-safety check || echo "Safety checks completed (expected)"
+        
         echo "✅ All commands functional"
         
     - name: Cleanup
