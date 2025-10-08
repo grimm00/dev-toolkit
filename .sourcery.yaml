@@ -52,3 +52,9 @@ github:
   
   # Skip reviews for documentation-only PRs
   skip_docs_only: true
+  
+  # Only review files with actual code changes (not just whitespace)
+  ignore_whitespace: true
+  
+  # Skip reviews for very small changes (less than 5 lines)
+  min_lines_changed: 5
