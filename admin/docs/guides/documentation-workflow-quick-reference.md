@@ -38,6 +38,16 @@ git checkout develop && git merge docs/update-[feature-name] --no-ff
 git push origin develop && git branch -d docs/update-[feature-name]
 ```
 
+### 4. Minor Document Changes (Small Updates)
+```bash
+git checkout develop && git pull origin develop
+git checkout -b docs/minor-[description]
+# Make small changes
+git add admin/feedback/ admin/planning/ && git commit -m "Minor: [description of change]"
+git checkout develop && git merge docs/minor-[description] --no-ff
+git push origin develop && git branch -d docs/minor-[description]
+```
+
 ---
 
 ## 📁 Branch Types
@@ -47,6 +57,7 @@ git push origin develop && git branch -d docs/update-[feature-name]
 | Planning | `docs/planning-[name]` | Initial documentation | Direct to develop |
 | Implementation | `[type]/[name]` | Code changes | PR to develop |
 | Docs Update | `docs/update-[name]` | Post-implementation docs | Direct to develop |
+| Minor Docs | `docs/minor-[description]` | Small document changes | Direct to develop |
 
 ---
 
@@ -66,6 +77,13 @@ git push origin develop && git branch -d docs/update-[feature-name]
 - ✅ Marking phases complete
 - ✅ Updating success criteria
 - ✅ Adding implementation results
+
+### Minor Document Change Branch
+- ✅ Filling out Sourcery feedback matrices
+- ✅ Updating analysis files
+- ✅ Minor documentation fixes
+- ✅ Status updates
+- ✅ Small corrections
 
 ---
 
