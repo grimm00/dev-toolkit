@@ -11,9 +11,107 @@ permissions:
   pull-requests: write
 
 jobs:
+  detect-branch-type:
+    runs-on: ubuntu-latest
+    name: Detect Branch Type
+    outputs:
+      branch-type: ${{ steps.detect.outputs.type }}
+      needs-lint: ${{ steps.detect.outputs.needs-lint }}
+      needs-test: ${{ steps.detect.outputs.needs-test }}
+      needs-install: ${{ steps.detect.outputs.needs-install }}
+      needs-docs: ${{ steps.detect.outputs.needs-docs }}
+      needs-external-reviews: ${{ steps.detect.outputs.needs-external-reviews }}
+    
+    steps:
+      - name: Detect branch type and requirements
+        id: detect
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          
+          # Default values
+          echo "type=unknown" >> $GITHUB_OUTPUT
+          echo "needs-lint=false" >> $GITHUB_OUTPUT
+          echo "needs-test=false" >> $GITHUB_OUTPUT
+          echo "needs-install=false" >> $GITHUB_OUTPUT
+          echo "needs-docs=false" >> $GITHUB_OUTPUT
+          echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+          
+          # Feature branches
+          if [[ "$BRANCH_NAME" =~ ^feat/ ]]; then
+            echo "type=feature" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # Documentation branches
+          elif [[ "$BRANCH_NAME" =~ ^docs/ ]]; then
+            echo "type=documentation" >> $GITHUB_OUTPUT
+            echo "needs-lint=false" >> $GITHUB_OUTPUT
+            echo "needs-test=false" >> $GITHUB_OUTPUT
+            echo "needs-install=false" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # CI/CD branches
+          elif [[ "$BRANCH_NAME" =~ ^ci/ ]]; then
+            echo "type=ci" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # Bug fix branches
+          elif [[ "$BRANCH_NAME" =~ ^fix/ ]]; then
+            echo "type=fix" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # Maintenance branches
+          elif [[ "$BRANCH_NAME" =~ ^chore/ ]]; then
+            echo "type=chore" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=false" >> $GITHUB_OUTPUT
+            echo "needs-install=false" >> $GITHUB_OUTPUT
+            echo "needs-docs=false" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # Release branches
+          elif [[ "$BRANCH_NAME" =~ ^release/ ]]; then
+            echo "type=release" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=true" >> $GITHUB_OUTPUT
+            
+          # Default for unknown branches
+          else
+            echo "type=unknown" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=true" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "Detected branch type: ${{ steps.detect.outputs.type }}"
+          echo "Needs lint: ${{ steps.detect.outputs.needs-lint }}"
+          echo "Needs test: ${{ steps.detect.outputs.needs-test }}"
+          echo "Needs install: ${{ steps.detect.outputs.needs-install }}"
+          echo "Needs docs: ${{ steps.detect.outputs.needs-docs }}"
+          echo "Needs external reviews: ${{ steps.detect.outputs.needs-external-reviews }}"
+
   lint:
     runs-on: ubuntu-latest
     name: Lint Shell Scripts
+    needs: [detect-branch-type]
+    if: needs.detect-branch-type.outputs.needs-lint == 'true'
     
     steps:
     - name: Checkout code
@@ -29,6 +127,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Test Toolkit
+    needs: [detect-branch-type]
+    if: needs.detect-branch-type.outputs.needs-test == 'true'
     
     steps:
     - name: Checkout code
@@ -98,7 +198,8 @@ jobs:
   install:
     runs-on: ubuntu-latest
     name: Test Installation
-    needs: [lint, test]
+    needs: [detect-branch-type, lint, test]
+    if: needs.detect-branch-type.outputs.needs-install == 'true'
     
     steps:
     - name: Checkout code
@@ -258,6 +359,8 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     name: Check Documentation
+    needs: [detect-branch-type]
+    if: needs.detect-branch-type.outputs.needs-docs == 'true'
     
     steps:
     - name: Checkout code
