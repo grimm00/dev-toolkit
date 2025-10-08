@@ -33,6 +33,21 @@ github:
   
   # Only review files with significant changes (not just formatting)
   significant_changes_only: true
+  
+  # Branch-specific review control
+  # Only review release branches and main
+  branch_patterns:
+    - "release/*"  # Review release branches
+    - "main"       # Review main branch
+  
+  # Skip reviews for development branches
+  skip_branch_patterns:
+    - "feat/*"     # Skip feature branches
+    - "docs/*"     # Skip documentation branches
+    - "ci/*"       # Skip CI branches
+    - "fix/*"      # Skip fix branches
+    - "chore/*"    # Skip chore branches
+    - "develop"    # Skip develop branch
 
 # Shell-specific settings
 shell:
