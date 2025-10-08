@@ -37,6 +37,7 @@
     "admin/planning/releases/",
     "admin/planning/notes/",
     "admin/planning/features/",
+    "admin/planning/ci/",
     "admin/docs/guides/",
     "admin/planning/roadmap.md"
   ]
