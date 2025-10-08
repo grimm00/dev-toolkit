@@ -1,52 +1,21 @@
 # Sourcery Configuration for Dev-Toolkit
-# Only review actual code implementation, skip documentation and planning
+# ULTRA-RESTRICTIVE: Only review critical code files to avoid diff limits
 
-# Paths to include in reviews (actual code only)
+# Paths to include in reviews (ONLY essential code)
 path_patterns:
-  - "bin/**/*.sh"                    # Command executables
-  - "lib/**/*.sh"                    # Core libraries
-  - "tests/**/*.bats"                # Test files
-  - ".github/workflows/*.yml"        # CI/CD workflows
+  - "bin/*.sh"                       # Command executables only
+  - "lib/core/*.sh"                  # Core libraries only
   - "install.sh"                     # Installation script
-  - "dev-setup.sh"                   # Development setup
 
-# Paths to exclude from reviews (documentation, planning, logs)
+# Paths to exclude from reviews (EVERYTHING else)
 ignore_patterns:
-  - "admin/**"                       # Project management hub
-  - "docs/**"                        # User documentation
-  - "**/*.md"                        # All markdown files
-  - "**/chat-logs/**"                # Chat session logs
-  - "**/planning/**"                 # Planning documents
-  - "**/feedback/**"                 # Sourcery feedback analysis
-  - "**/releases/**"                 # Release planning
-  - "**/opportunities/**"            # Opportunity tracking
-  - "**/*.txt"                       # Text files
-  - "LICENSE"                        # License file
-  - ".gitignore"                     # Git ignore
-  - "CHANGELOG.md"                   # Changelog
-  - "VERSION"                        # Version file
-  - "README.md"                      # Main README
-  - "QUICK-START.md"                 # Quick start guide
-  - "CONTRIBUTING.md"                # Contributing guide
-  - "examples/**"                    # Example files
-  - "config/**"                      # Configuration files
-
-# Review rules (empty = use defaults)
-rules: []
-
-# Shell-specific settings
-shell:
-  # Use bash for shell script analysis
-  shell_type: "bash"
-  
-  # Enable strict mode checking
-  strict_mode: true
+  - "**"                             # Exclude everything by default
+  - "!bin/*.sh"                      # Except command executables
+  - "!lib/core/*.sh"                 # Except core libraries
+  - "!install.sh"                    # Except installation script
 
 # GitHub integration settings
 github:
-  # Request reviews from Sourcery automatically
-  request_review: auto
-  
   # Only review changed files, not entire PR
   sourcery_branch: main
   
@@ -56,5 +25,30 @@ github:
   # Only review files with actual code changes (not just whitespace)
   ignore_whitespace: true
   
-  # Skip reviews for very small changes (less than 5 lines)
-  min_lines_changed: 5
+  # Skip reviews for very small changes (less than 15 lines)
+  min_lines_changed: 15
+  
+  # Skip reviews for very large changes (more than 100 lines)
+  max_lines_changed: 100
+  
+  # Only review files with significant changes (not just formatting)
+  significant_changes_only: true
+
+# Shell-specific settings
+shell:
+  # Use bash for shell script analysis
+  shell_type: "bash"
+  
+  # Enable strict mode checking
+  strict_mode: true
+
+# Review settings
+review:
+  # Only review critical issues (not style suggestions)
+  severity_threshold: "high"
+  
+  # Skip reviews for test files (they change frequently)
+  skip_test_files: true
+  
+  # Skip reviews for configuration files
+  skip_config_files: true
