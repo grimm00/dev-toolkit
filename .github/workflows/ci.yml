@@ -95,6 +95,39 @@ jobs:
         test -x dev-setup.sh || exit 1
         echo "✅ All executables have correct permissions"
         
+  install:
+    runs-on: ubuntu-latest
+    name: Test Installation
+    needs: [lint, test]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Test global installation
+      run: |
+        ./install.sh
+        echo "✅ Global installation completed"
+        
+    - name: Verify command accessibility
+      run: |
+        which dt-config
+        which dt-git-safety
+        which dt-sourcery-parse
+        echo "✅ All commands accessible"
+        
+    - name: Test command functionality
+      run: |
+        dt-config --help
+        dt-git-safety --help
+        dt-sourcery-parse --help
+        echo "✅ All commands functional"
+        
+    - name: Cleanup
+      run: |
+        rm -rf ~/.dev-toolkit
+        echo "✅ Cleanup completed"
+        
   docs:
     runs-on: ubuntu-latest
     name: Check Documentation
