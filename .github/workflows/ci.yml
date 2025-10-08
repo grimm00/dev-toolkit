@@ -106,7 +106,7 @@ jobs:
       
     - name: Test global installation
       run: |
-        ./install.sh
+        ./install.sh --no-symlinks
         echo "✅ Global installation completed"
         
     - name: Set up environment for installed commands
