@@ -25,10 +25,10 @@
   "fallbackRetryDelay": "30s",
   "aliveStatusCodes": [200, 206],
   "ignoreFiles": [
-    "admin/planning/releases/**/*.md",
-    "admin/planning/notes/**/*.md",
-    "admin/planning/features/**/*.md",
-    "admin/docs/guides/**/*.md",
+    "admin/planning/releases/",
+    "admin/planning/notes/",
+    "admin/planning/features/",
+    "admin/docs/guides/",
     "admin/planning/roadmap.md"
   ]
 }
