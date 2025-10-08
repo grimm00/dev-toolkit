@@ -11,6 +11,29 @@ setup() {
 }
 
 # ============================================================================
+# Help Command Tests
+# ============================================================================
+
+@test "dt-review: shows help with --help flag" {
+  run dt-review --help
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Usage:" ]]
+  [[ "$output" =~ "dt-review" ]]
+}
+
+@test "dt-review: shows help with -h flag" {
+  run dt-review -h
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Usage:" ]]
+}
+
+@test "dt-review: shows usage with no arguments" {
+  run dt-review
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "Usage:" ]]
+}
+
+# ============================================================================
 # Core Functionality Tests (with real API calls)
 # ============================================================================
 
@@ -70,6 +93,20 @@ setup() {
 # ============================================================================
 # Error Handling Tests
 # ============================================================================
+
+@test "dt-review: handles invalid PR number format" {
+  run dt-review "abc"
+  [ "$status" -ne 0 ]
+  # Should show validation error for non-numeric PR number
+  [[ "$output" =~ "PR number must be numeric" ]]
+  [[ "$output" =~ "got: abc" ]]
+}
+
+@test "dt-review: handles missing PR number" {
+  run dt-review ""
+  [ "$status" -ne 0 ]
+  [[ "$output" =~ "Usage:" ]]
+}
 
 @test "dt-review: handles negative PR numbers" {
   run dt-review -1
