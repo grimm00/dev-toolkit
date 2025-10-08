@@ -14,6 +14,10 @@
 - **[Status & Next Steps](status-and-next-steps.md)** - Current status and options
 - **[Quick Start](quick-start.md)** - How to use dt-review
 
+### Phase Documentation
+- **[Phase 2](phase-2.md)** - Local Parser Integration (✅ Complete)
+- **[Phase 3](phase-3.md)** - Testing & Documentation (⏳ Planned)
+
 ### Analysis Documents
 - **[Architecture Analysis](architecture-analysis.md)** - Design decisions and rationale
 
