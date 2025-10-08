@@ -34,6 +34,9 @@
       "pattern": "\\.\\./\\.\\./\\.\\./\\.github/workflows/ci\\.yml"
     },
     {
+      "pattern": "\\.\\./\\.\\./\\.github/workflows/ci\\.yml"
+    },
+    {
       "pattern": "\\.\\./planning/features/"
     },
     {
