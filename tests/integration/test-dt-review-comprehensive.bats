@@ -159,6 +159,16 @@ setup() {
   [[ "$output" =~ "PR number must be numeric" ]]
 }
 
+@test "dt-review: handles PR number with embedded whitespace" {
+  run dt-review "1 2"
+  [ "$status" -ne 0 ]
+  [[ "$output" =~ "PR number must be numeric" ]]
+
+  run dt-review " 1 "
+  [ "$status" -ne 0 ]
+  [[ "$output" =~ "PR number must be numeric" ]]
+}
+
 # ============================================================================
 # Cleanup
 # ============================================================================
