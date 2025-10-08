@@ -26,6 +26,7 @@ GitHub API + Sourcery Data
 2. **Delegation** - Higher-level components delegate to lower-level ones
 3. **Leverage Existing** - Don't duplicate functionality that already exists
 4. **Simple Interface** - Keep the user interface simple and intuitive
+5. **Context Awareness** - Detect and use appropriate parser version
 
 ---
 
@@ -214,10 +215,10 @@ else
 fi
 ```
 
-### Installation Detection
+### Installation Detection (Current Issue)
 
 ```bash
-# Detect DT_ROOT
+# Current logic (has issues)
 if [ -n "${DT_ROOT:-}" ]; then
     TOOLKIT_ROOT="$DT_ROOT"
 elif [ -f "$HOME/.dev-toolkit/bin/dt-sourcery-parse" ]; then
@@ -227,6 +228,54 @@ else
     exit 1
 fi
 ```
+
+**Problem:** Doesn't detect local development installation when running from dev-toolkit directory.
+
+---
+
+## 🚨 Current Issue: Parser Path Detection
+
+### The Problem
+
+**Current Behavior:**
+- When running `dt-review` from dev-toolkit directory
+- It uses globally installed `dt-sourcery-parse` instead of local development version
+- Result: Overall Comments functionality not available
+
+**Evidence:**
+```bash
+# Local parser (direct call)
+bash lib/sourcery/parser.sh 9
+# Output: "Total Individual Comments: 4 + Overall Comments" ✅
+
+# dt-review (via wrapper)
+dt-review 9
+# Output: "Total Comments: 4" ❌
+```
+
+### The Solution
+
+**Improved Detection Logic Needed:**
+```bash
+# Enhanced logic
+if [ -n "${DT_ROOT:-}" ]; then
+    TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$(dirname "${BASH_SOURCE[0]}")/../lib/sourcery/parser.sh" ]; then
+    # Running from dev-toolkit directory
+    TOOLKIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+elif [ -f "$HOME/.dev-toolkit/bin/dt-sourcery-parse" ]; then
+    TOOLKIT_ROOT="$HOME/.dev-toolkit"
+else
+    echo "❌ Error: Cannot locate dev-toolkit installation"
+    exit 1
+fi
+```
+
+**Benefits:**
+- Detects local development installation
+- Falls back to global installation
+- Maintains backward compatibility
+- Enables Overall Comments functionality
 
 ---
 
@@ -260,48 +309,33 @@ fi
 
 ## 🔮 Future Considerations
 
-### 1. Overall Comments Detection
+### 1. Enhanced Path Detection
 
-**Current State:** Not implemented in `dt-review`
+**Current State:** Basic detection with known issues
 
-**Future Option:** Add detection that analyzes parser output
-```bash
-# After calling dt-sourcery-parse
-if grep -q "## Overall Comments" "$OUTPUT_FILE"; then
-    echo "🎉 Overall Comments detected!"
-fi
-```
+**Future Enhancement:** Robust detection that handles all scenarios
+- Local development directory
+- Global installation
+- Custom DT_ROOT
+- Symlinked installations
 
-**Considerations:**
-- Must analyze actual parser output, not raw Sourcery data
-- Should be simple and reliable
-- Should not duplicate parser functionality
+### 2. Better Error Messages
 
-### 2. Enhanced Feedback
+**Current State:** Basic error messages
 
-**Current State:** Basic success/failure messages
-
-**Future Option:** More detailed feedback
-```bash
-# Show review summary
-echo "📊 Review contains X individual comments"
-if [ -n "$OVERALL_COMMENTS" ]; then
-    echo "🎉 Overall Comments: $OVERALL_COMMENTS"
-fi
-```
+**Future Enhancement:** More helpful error messages
+- Specific guidance for common issues
+- Troubleshooting suggestions
+- Clear next steps
 
 ### 3. Integration with Other Tools
 
 **Current State:** Standalone command
 
-**Future Option:** Better integration
-```bash
-# Auto-open in editor
-dt-review 6 --open
-
-# Auto-process with other tools
-dt-review 6 --process
-```
+**Future Enhancement:** Better integration
+- Auto-open in editor
+- Auto-process with other tools
+- Workflow integration helpers
 
 ---
 
@@ -342,10 +376,14 @@ The `dt-review` architecture follows the principle of **delegation over duplicat
 - **Maintainability** - Single source of truth for parsing
 - **Flexibility** - Supports both standard and custom use cases
 
+**Current Issue:** Parser path detection needs improvement to use local development version when appropriate.
+
+**Next Step:** Fix the path detection logic to enable Overall Comments functionality through `dt-review`.
+
 This architecture serves as a good example of how to build convenience tools that enhance existing functionality without duplicating it.
 
 ---
 
 **Last Updated:** 2025-10-07
 **Status:** ✅ Current
-**Next:** Complete integration tests to validate architecture
+**Next:** Fix parser path detection to use local development version

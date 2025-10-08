@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
 # Dev Toolkit - Quick Sourcery Review Extractor
-# Alias for dt-sourcery-parse with convenient output location
+# Convenience wrapper for dt-sourcery-parse with standard output location
 
 set -euo pipefail
 
-# Detect DT_ROOT
+# Detect DT_ROOT with enhanced local development detection
 if [ -n "${DT_ROOT:-}" ]; then
     TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$(dirname "${BASH_SOURCE[0]}")/../lib/sourcery/parser.sh" ]; then
+    # Running from dev-toolkit directory - use local development version
+    TOOLKIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 elif [ -f "$HOME/.dev-toolkit/bin/dt-sourcery-parse" ]; then
     TOOLKIT_ROOT="$HOME/.dev-toolkit"
 else
@@ -18,18 +21,22 @@ fi
 
 # Handle help flags
 if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
-    echo "Usage: dt-review <PR_NUMBER>"
+    echo "Usage: dt-review <PR_NUMBER> [OUTPUT_PATH]"
     echo ""
-    echo "Extracts Sourcery review and saves to admin/feedback/sourcery/pr<NUMBER>.md"
+    echo "Extracts Sourcery review and saves to standard location or custom path"
     echo ""
     echo "This is a convenience wrapper for dt-sourcery-parse that:"
     echo "  - Automatically adds --rich-details flag"
-    echo "  - Saves to admin/feedback/sourcery/pr<NUMBER>.md"
+    echo "  - Saves to admin/feedback/sourcery/pr<NUMBER>.md by default"
+    echo "  - Accepts custom output path as second argument"
     echo "  - Formats PR number with leading zero (e.g., pr06.md)"
     echo ""
-    echo "Example:"
+    echo "Examples:"
     echo "  dt-review 6"
     echo "  # Saves to admin/feedback/sourcery/pr06.md"
+    echo ""
+    echo "  dt-review 6 custom-review.md"
+    echo "  # Saves to custom-review.md"
     echo ""
     echo "For more options, use dt-sourcery-parse directly:"
     echo "  dt-sourcery-parse --help"
@@ -40,28 +47,43 @@ fi
 PR_NUMBER="${1:-}"
 
 if [ -z "$PR_NUMBER" ]; then
-    echo "Usage: dt-review <PR_NUMBER>"
+    echo "Usage: dt-review <PR_NUMBER> [OUTPUT_PATH]"
     echo ""
-    echo "Extracts Sourcery review and saves to admin/feedback/sourcery/pr<NUMBER>.md"
+    echo "Extracts Sourcery review and saves to standard location or custom path"
     echo ""
-    echo "Example:"
+    echo "Examples:"
     echo "  dt-review 6"
     echo "  # Saves to admin/feedback/sourcery/pr06.md"
+    echo ""
+    echo "  dt-review 6 custom-review.md"
+    echo "  # Saves to custom-review.md"
     echo ""
     echo "Use --help for more information"
     exit 1
 fi
 
-# Format PR number with leading zero if needed
-PR_PADDED=$(printf "pr%02d" "$PR_NUMBER")
+# Validate PR number is numeric
+if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+    echo "❌ Error: PR number must be numeric (got: $PR_NUMBER)"
+    echo ""
+    echo "Usage: dt-review <PR_NUMBER> [OUTPUT_PATH]"
+    echo "  PR_NUMBER: Numeric pull request number"
+    echo "  OUTPUT_PATH: Optional custom output file path"
+    exit 1
+fi
 
-# Create output directory if it doesn't exist
-mkdir -p admin/feedback/sourcery
+# Determine output file
+if [ -n "${2:-}" ]; then
+    # Custom output path provided
+    OUTPUT_FILE="$2"
+else
+    # Default output path
+    PR_PADDED=$(printf "pr%02d" "$PR_NUMBER")
+    mkdir -p admin/feedback/sourcery
+    OUTPUT_FILE="admin/feedback/sourcery/${PR_PADDED}.md"
+fi
 
-# Output file
-OUTPUT_FILE="admin/feedback/sourcery/${PR_PADDED}.md"
-
-# Run the parser with rich details
+# Run the parser with rich details - let it do all the heavy lifting
 echo "📋 Extracting Sourcery review for PR #${PR_NUMBER}..."
 echo ""
 

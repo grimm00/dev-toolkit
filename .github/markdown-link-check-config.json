@@ -68,6 +68,39 @@
     },
     {
       "pattern": "^[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*\\.md$"
+    },
+    {
+      "pattern": "notes/opportunities/external/workflow-helper-analysis\\.md"
+    },
+    {
+      "pattern": "notes/opportunities/external/workflow-helper-template-idea\\.md"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./scripts/workflow-helper\\.sh"
+    },
+    {
+      "pattern": "admin/planning/ci/.*\\.md"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./\\.\\./\\.github/workflows/ci\\.yml"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./\\.github/workflows/ci\\.yml"
+    },
+    {
+      "pattern": "\\.\\./planning/features/"
+    },
+    {
+      "pattern": "\\.\\./planning/ci/"
+    },
+    {
+      "pattern": "\\.\\./planning/releases/"
+    },
+    {
+      "pattern": "https://refspecs\\.linuxfoundation\\.org/FHS_3\\.0/fhs/index\\.html"
+    },
+    {
+      "pattern": "admin/docs/guides/.*\\.md"
     }
   ],
   "timeout": "20s",
@@ -82,6 +115,7 @@
     "admin/planning/releases/**/*.md",
     "admin/planning/notes/**/*.md",
     "admin/planning/features/**/*.md",
+    "admin/planning/ci/**/*.md",
     "admin/docs/guides/**/*.md",
     "admin/planning/roadmap.md"
   ]

@@ -173,7 +173,25 @@ gh pr view 6
 dt-sourcery-parse 6 --help
 ```
 
-#### 3. Permission Denied
+#### 3. Overall Comments Not Showing
+
+**Symptom:**
+```
+# Summary shows: "Total Comments: 4"
+# Instead of: "Total Individual Comments: 4 + Overall Comments"
+```
+
+**Cause:** dt-review is using globally installed parser instead of local development version
+
+**Solution:**
+```bash
+# Use local parser directly for testing
+bash lib/sourcery/parser.sh 6 --output admin/feedback/sourcery/pr06.md
+
+# This is a known issue being fixed in the current development
+```
+
+#### 4. Permission Denied
 
 **Symptom:**
 ```
@@ -307,4 +325,4 @@ dt-review "$PR_NUMBER" && process-review.sh "$PR_NUMBER"
 
 **Last Updated:** 2025-10-07
 **Status:** ✅ Current
-**Next:** Complete integration tests
+**Next:** Fix local parser integration

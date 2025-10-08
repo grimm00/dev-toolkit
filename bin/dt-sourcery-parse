@@ -3,9 +3,12 @@
 # Dev Toolkit - Sourcery Review Parser Wrapper
 # Parses Sourcery AI reviews from GitHub PRs
 
-# Detect toolkit installation location
+# Detect toolkit installation location with enhanced local development detection
 if [ -n "${DT_ROOT:-}" ]; then
     TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$(dirname "${BASH_SOURCE[0]}")/../lib/sourcery/parser.sh" ]; then
+    # Running from dev-toolkit directory - use local development version
+    TOOLKIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 elif [ -f "$HOME/.dev-toolkit/lib/sourcery/parser.sh" ]; then
     TOOLKIT_ROOT="$HOME/.dev-toolkit"
 else

@@ -1,0 +1,54 @@
+# Cursor Bugbot Configuration for Dev-Toolkit
+# Only run on release branches to minimize quota usage
+
+# Branch-specific triggers
+triggers:
+  # Only run on release branches and main
+  branches:
+    - "release/*"  # Run on release branches
+    - "main"       # Run on main branch
+  
+  # Skip development branches
+  skip_branches:
+    - "feat/*"     # Skip feature branches
+    - "docs/*"     # Skip documentation branches
+    - "ci/*"       # Skip CI branches
+    - "fix/*"      # Skip fix branches
+    - "chore/*"    # Skip chore branches
+    - "develop"    # Skip develop branch
+
+# Review settings
+review:
+  # Only review critical issues
+  severity_threshold: "high"
+  
+  # Skip reviews for documentation-only changes
+  skip_docs_only: true
+  
+  # Only review files with significant changes
+  min_lines_changed: 15
+  max_lines_changed: 100
+  
+  # Skip reviews for configuration files
+  skip_config_files: true
+  
+  # Skip reviews for test files
+  skip_test_files: true
+
+# File patterns to include
+include_patterns:
+  - "bin/*.sh"                       # Command executables
+  - "lib/core/*.sh"                  # Core libraries
+  - "install.sh"                     # Installation script
+  - ".github/workflows/*.yml"        # CI workflows
+
+# File patterns to exclude
+exclude_patterns:
+  - "admin/**"                       # Planning and documentation
+  - "docs/**"                        # Documentation
+  - "tests/**"                       # Test files
+  - "*.md"                          # Markdown files
+  - "*.txt"                         # Text files
+  - "*.json"                        # Configuration files
+  - "*.yaml"                        # Configuration files
+  - "*.yml"                         # Configuration files
