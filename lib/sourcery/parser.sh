@@ -216,7 +216,9 @@ create_clean_output() {
     # Check for Overall Comments section first
     local overall_comments=""
     if echo "$content" | grep -q "## Overall Comments\|## Overall\|## Summary Comments"; then
+        echo "DEBUG: Overall Comments detected in content" >&2
         overall_comments=$(extract_overall_comments "$content")
+        echo "DEBUG: Overall Comments extracted, length: ${#overall_comments}" >&2
     fi
     
     # Individual Comments section

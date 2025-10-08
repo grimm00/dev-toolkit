@@ -5,9 +5,12 @@
 
 set -euo pipefail
 
-# Detect DT_ROOT
+# Detect DT_ROOT with enhanced local development detection
 if [ -n "${DT_ROOT:-}" ]; then
     TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$(dirname "${BASH_SOURCE[0]}")/../lib/sourcery/parser.sh" ]; then
+    # Running from dev-toolkit directory - use local development version
+    TOOLKIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 elif [ -f "$HOME/.dev-toolkit/bin/dt-sourcery-parse" ]; then
     TOOLKIT_ROOT="$HOME/.dev-toolkit"
 else
