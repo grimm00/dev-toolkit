@@ -393,8 +393,10 @@ install:
   - name: Verify commands
     run: |
       set -euo pipefail
-      export ${{ matrix.tool-root-var || 'TOOL_ROOT' }}="${GITHUB_WORKSPACE}"
-      export PATH="${{ matrix.tool-root-var || 'TOOL_ROOT' }}/bin:$PATH"
+      # Set tool root variable (defaults to TOOL_ROOT if not specified)
+      TOOL_ROOT_VAR="${{ matrix.tool-root-var || 'TOOL_ROOT' }}"
+      export "$TOOL_ROOT_VAR"="${GITHUB_WORKSPACE}"
+      export PATH="${!TOOL_ROOT_VAR}/bin:$PATH"
       ${{ matrix.verify-commands || 'which command-name && command-name --help' }}
       echo "✅ Commands verified"
       
