@@ -26,6 +26,21 @@
     },
     {
       "pattern": "\\.\\./\\.\\./scripts/workflow-helper\\.sh"
+    },
+    {
+      "pattern": "admin/planning/ci/.*\\.md"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./\\.\\./\\.github/workflows/ci\\.yml"
+    },
+    {
+      "pattern": "\\.\\./planning/features/"
+    },
+    {
+      "pattern": "\\.\\./planning/ci/"
+    },
+    {
+      "pattern": "\\.\\./planning/releases/"
     }
   ],
   "timeout": "20s",
