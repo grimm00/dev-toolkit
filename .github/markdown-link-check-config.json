@@ -26,6 +26,24 @@
     },
     {
       "pattern": "\\.\\./\\.\\./scripts/workflow-helper\\.sh"
+    },
+    {
+      "pattern": "admin/planning/ci/.*\\.md"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./\\.\\./\\.github/workflows/ci\\.yml"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./\\.github/workflows/ci\\.yml"
+    },
+    {
+      "pattern": "\\.\\./planning/features/"
+    },
+    {
+      "pattern": "\\.\\./planning/ci/"
+    },
+    {
+      "pattern": "\\.\\./planning/releases/"
     }
   ],
   "timeout": "20s",
@@ -37,6 +55,7 @@
     "admin/planning/releases/",
     "admin/planning/notes/",
     "admin/planning/features/",
+    "admin/planning/ci/",
     "admin/docs/guides/",
     "admin/planning/roadmap.md"
   ]
