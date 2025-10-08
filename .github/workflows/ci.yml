@@ -109,6 +109,13 @@ jobs:
         ./install.sh
         echo "✅ Global installation completed"
         
+    - name: Set up environment for installed commands
+      run: |
+        export DT_ROOT="$HOME/.dev-toolkit"
+        export PATH="$DT_ROOT/bin:$PATH"
+        echo "DT_ROOT=$DT_ROOT" >> $GITHUB_ENV
+        echo "$DT_ROOT/bin" >> $GITHUB_PATH
+        
     - name: Verify command accessibility
       run: |
         which dt-config
