@@ -1,231 +1,141 @@
-# Sourcery Optimization Guide
+# Sourcery AI Optimization Guide
 
-**Purpose:** Strategies to minimize Sourcery diffs and get focused reviews  
-**Status:** ✅ Current Best Practices  
-**Last Updated:** 2025-10-07
-
----
-
-## 🎯 Goal: Minimize Sourcery Diffs
-
-**Why:** Smaller, focused diffs lead to:
-- ✅ More relevant feedback
-- ✅ Faster review cycles
-- ✅ Lower quota usage
-- ✅ Better code quality focus
+**Purpose:** Comprehensive guide for optimizing Sourcery AI usage to avoid diff limits and rate limiting  
+**Created:** 2025-01-06  
+**Status:** Active
 
 ---
 
-## 📋 Pre-PR Checklist
+## 🚨 Critical Issues
 
-### ✅ File Scope
-- [ ] **Only code files changed** (no docs, planning, config)
-- [ ] **Minimal file count** (< 5 files ideal)
-- [ ] **Focused changes** (one clear purpose)
-- [ ] **No unrelated changes** (separate PRs for different features)
+### Diff Limit Problem
+- **Issue:** Sourcery AI has a diff limit that blocks reviews when too many files are changed
+- **Impact:** Prevents code reviews, blocks development workflow
+- **Cost:** Expensive rate limiting even with Pro subscription
 
-### ✅ Change Size
-- [ ] **Small diff** (< 50 lines ideal)
-- [ ] **Focused logic** (one function/feature)
-- [ ] **No refactoring** (separate PR for refactoring)
-- [ ] **No formatting** (separate PR for formatting)
-
-### ✅ Commit Strategy
-- [ ] **Single responsibility** (one clear purpose)
-- [ ] **Descriptive message** (clear what changed)
-- [ ] **Clean history** (no merge commits in feature branch)
-- [ ] **Atomic changes** (each commit is complete)
+### Rate Limiting
+- **Issue:** Sourcery reviews too many files, hitting API limits
+- **Impact:** Expensive, unsustainable development costs
+- **Solution:** Ultra-restrictive configuration
 
 ---
 
-## 🚀 Optimization Strategies
+## 🎯 Optimization Strategy
 
-### 1. **Enhanced .sourcery.yaml**
+### 1. Ultra-Restrictive File Scope
+**Only review these files:**
+- `bin/*.sh` - Command executables only
+- `lib/core/*.sh` - Core libraries only  
+- `install.sh` - Installation script
 
-**Current configuration optimizes for:**
-- ✅ **Code-only reviews** (excludes docs, planning, logs)
-- ✅ **Focused scope** (only changed files)
-- ✅ **Quality focus** (bash strict mode)
-- ✅ **Efficiency** (skip docs-only PRs)
+**Exclude everything else:**
+- All documentation (`admin/`, `docs/`, `*.md`)
+- All planning files (`admin/planning/`)
+- All test files (`tests/`)
+- All configuration files (`.github/workflows/`, `config/`)
+- All feedback and logs (`admin/feedback/`, `admin/chat-logs/`)
 
-### 2. **PR Size Strategy**
+### 2. Size Limits
+- **Minimum:** 15 lines changed (skip tiny changes)
+- **Maximum:** 100 lines changed (skip massive changes)
+- **Significant changes only:** Skip formatting-only changes
 
-**Ideal PR characteristics:**
-- **Files changed:** 1-3 files
-- **Lines changed:** 5-50 lines
-- **Purpose:** Single feature/fix
-- **Scope:** One component
+### 3. Severity Threshold
+- **Only review:** High severity issues
+- **Skip:** Style suggestions, minor improvements
+- **Focus:** Security, performance, critical bugs
 
-**Examples:**
-```bash
-# ✅ Good: Focused PR
-feat: Fix local parser integration for dt-review
-- 3 files changed
-- 8 lines added
-- Single purpose: path detection
+---
 
-# ❌ Bad: Mixed PR
-feat: Add new feature + fix bugs + update docs + refactor
-- 15 files changed
-- 200+ lines changed
-- Multiple purposes
-```
+## 📋 Configuration Details
 
-### 3. **File Organization**
+### Current `.sourcery.yaml`
+```yaml
+# ULTRA-RESTRICTIVE: Only review critical code files
+path_patterns:
+  - "bin/*.sh"                       # Command executables only
+  - "lib/core/*.sh"                  # Core libraries only
+  - "install.sh"                     # Installation script
 
-**Keep changes in focused files:**
-- ✅ **Core logic only** (`bin/`, `lib/`)
-- ✅ **No documentation** (excluded by `.sourcery.yaml`)
-- ✅ **No test files** (separate PRs for tests)
-- ✅ **No config changes** (separate PRs for config)
+ignore_patterns:
+  - "**"                             # Exclude everything by default
+  - "!bin/*.sh"                      # Except command executables
+  - "!lib/core/*.sh"                 # Except core libraries
+  - "!install.sh"                    # Except installation script
 
-### 4. **Branch Strategy**
+github:
+  min_lines_changed: 15              # Skip small changes
+  max_lines_changed: 100             # Skip large changes
+  significant_changes_only: true     # Skip formatting
+  ignore_whitespace: true            # Skip whitespace changes
 
-**Feature branches for focused changes:**
-- ✅ **Single feature** (`feat/feature-name`)
-- ✅ **Clear purpose** (one responsibility)
-- ✅ **Clean history** (no merge commits)
-- ✅ **Easy to review** (focused diff)
-
-### 5. **Commit Strategy**
-
-**Small, focused commits:**
-```bash
-# ✅ Good: Focused commit
-git commit -m "feat: Fix local parser integration for dt-review"
-
-# ❌ Bad: Mixed commit
-git commit -m "feat: Fix parser + update docs + add tests + refactor"
+review:
+  severity_threshold: "high"         # Only critical issues
+  skip_test_files: true              # Skip test files
+  skip_config_files: true            # Skip config files
 ```
 
 ---
 
-## 📊 Current PR Analysis
+## 🔧 Troubleshooting
 
-### ✅ **Phase 2 PR: Excellent Example**
+### If Sourcery Still Reviews Too Many Files
 
-**Files changed:** 3
-- `bin/dt-review` (path detection fix)
-- `bin/dt-sourcery-parse` (path detection fix)
-- `admin/feedback/sourcery/pr09.md` (cleanup)
+1. **Check file paths** - Ensure only essential files are included
+2. **Verify ignore patterns** - Make sure `**` excludes everything by default
+3. **Test with small PR** - Create a test PR with minimal changes
+4. **Monitor diff size** - Keep PRs under 100 lines changed
 
-**Lines changed:** 8 additions, 310 deletions
-- **Net change:** -302 lines (cleanup)
-- **Actual changes:** 8 lines (minimal)
-- **Purpose:** Single feature (local parser integration)
+### If Rate Limiting Continues
 
-**Sourcery impact:** Minimal
-- ✅ Only code files reviewed
-- ✅ Tiny diff (8 lines)
-- ✅ Single purpose
-- ✅ No documentation changes
+1. **Increase size limits** - Raise `min_lines_changed` to 20-25
+2. **Reduce file scope** - Only include `bin/*.sh` and `install.sh`
+3. **Disable auto-reviews** - Set `request_review: false`
+4. **Manual reviews only** - Use Sourcery only when explicitly requested
 
----
+### If Diff Limits Still Hit
 
-## 🎯 Best Practices
-
-### 1. **Single Responsibility Principle**
-
-**Each PR should have one clear purpose:**
-- ✅ **Feature addition** (one feature)
-- ✅ **Bug fix** (one bug)
-- ✅ **Refactoring** (one component)
-- ✅ **Documentation** (one section)
-
-### 2. **Minimal Scope**
-
-**Keep changes focused:**
-- ✅ **One component** (not multiple)
-- ✅ **One feature** (not multiple)
-- ✅ **One fix** (not multiple)
-- ✅ **One improvement** (not multiple)
-
-### 3. **Clean History**
-
-**Maintain clean git history:**
-- ✅ **Feature branches** (not direct to main)
-- ✅ **Focused commits** (one purpose each)
-- ✅ **Descriptive messages** (clear what changed)
-- ✅ **No merge commits** (in feature branches)
-
-### 4. **Separation of Concerns**
-
-**Separate different types of changes:**
-- ✅ **Code changes** (separate PR)
-- ✅ **Documentation** (separate PR)
-- ✅ **Tests** (separate PR)
-- ✅ **Configuration** (separate PR)
+1. **Split PRs** - Break large changes into smaller PRs
+2. **Use feature flags** - Implement changes incrementally
+3. **Separate concerns** - Keep code and documentation in separate PRs
+4. **Temporary disable** - Disable Sourcery for large refactoring PRs
 
 ---
 
-## 🚨 Anti-Patterns to Avoid
+## 📊 Expected Results
 
-### ❌ **Mixed Purpose PRs**
-```bash
-# Bad: Multiple purposes
-feat: Add new feature + fix bugs + update docs + refactor
-```
+### Before Optimization
+- ❌ Reviews 50+ files per PR
+- ❌ Hits diff limits frequently
+- ❌ Rate limiting issues
+- ❌ Expensive, unsustainable
 
-### ❌ **Large Diffs**
-```bash
-# Bad: Too many changes
-- 20 files changed
-- 500+ lines changed
-- Multiple features
-```
-
-### ❌ **Unrelated Changes**
-```bash
-# Bad: Unrelated changes
-feat: Fix parser integration
-+ Update README
-+ Add new tests
-+ Refactor other component
-```
-
-### ❌ **Documentation in Code PRs**
-```bash
-# Bad: Mixed content
-feat: Fix parser integration
-+ Update documentation
-+ Add planning notes
-+ Update changelog
-```
+### After Optimization
+- ✅ Reviews 1-3 files per PR
+- ✅ No diff limit issues
+- ✅ No rate limiting
+- ✅ Cost-effective, sustainable
 
 ---
 
-## 📈 Success Metrics
+## 🚀 Implementation Steps
 
-### **Ideal PR Characteristics:**
-- **Files changed:** 1-3 files
-- **Lines changed:** 5-50 lines
-- **Purpose:** Single feature/fix
-- **Scope:** One component
-- **Sourcery feedback:** 0-3 suggestions
-- **Review time:** < 1 hour
-
-### **Current Performance:**
-- ✅ **Phase 2 PR:** 3 files, 8 lines, single purpose
-- ✅ **Sourcery impact:** Minimal
-- ✅ **Review focus:** Path detection logic only
-- ✅ **Quality:** High (focused changes)
+1. **Update `.sourcery.yaml`** - Apply ultra-restrictive configuration
+2. **Test with small PR** - Verify configuration works
+3. **Monitor results** - Check diff size and review scope
+4. **Adjust if needed** - Fine-tune based on results
+5. **Document changes** - Update team on new workflow
 
 ---
 
-## 🎯 Summary
+## 📚 Related Documents
 
-**To minimize Sourcery diffs:**
-
-1. **Keep PRs small and focused** (1-3 files, 5-50 lines)
-2. **Single responsibility** (one clear purpose)
-3. **Separate concerns** (code vs docs vs tests)
-4. **Clean history** (focused commits)
-5. **Use .sourcery.yaml** (exclude non-code files)
-
-**Result:** More relevant feedback, faster reviews, better code quality.
+- [Documentation Branch Workflow](documentation-branch-workflow.md)
+- [Hub-and-Spoke Documentation Best Practices](hub-and-spoke-documentation-best-practices.md)
+- [CI Installation Testing Status](../planning/ci/installation-testing/status-and-next-steps.md)
 
 ---
 
-**Last Updated:** 2025-10-07  
-**Status:** ✅ Current Best Practices  
-**Based On:** Phase 2 PR Success
+**Last Updated:** 2025-01-06  
+**Status:** Active  
+**Priority:** Critical
