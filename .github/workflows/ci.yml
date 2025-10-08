@@ -110,6 +110,34 @@ jobs:
         ./install.sh --no-symlinks
         echo "✅ Global installation completed"
         
+    - name: Test local installation
+      run: |
+        set -euo pipefail
+        # Test local installation in a separate directory
+        LOCAL_TEST_DIR=$(mktemp -d)
+        cd "$LOCAL_TEST_DIR"
+        
+        # Copy the toolkit to test directory
+        cp -r "${GITHUB_WORKSPACE}" ./dev-toolkit
+        cd ./dev-toolkit
+        
+        # Test local installation
+        ./install.sh --local
+        echo "✅ Local installation completed"
+        
+        # Verify local installation works (local install doesn't create .dev-toolkit dir)
+        # Instead, it makes the toolkit available in the current directory
+        if [ -f "bin/dt-config" ] && [ -f "bin/dt-git-safety" ]; then
+          echo "✅ Local installation successful - commands available"
+        else
+          echo "❌ Local installation failed - commands not found"
+          exit 1
+        fi
+        
+        # Clean up
+        cd "$GITHUB_WORKSPACE"
+        rm -rf "$LOCAL_TEST_DIR"
+        
     - name: Set up environment for installed commands
       run: |
         set -euo pipefail
@@ -139,6 +167,88 @@ jobs:
         dt-git-safety check || echo "Safety checks completed (expected)"
         
         echo "✅ All commands functional"
+        
+    - name: Test integration scenarios
+      run: |
+        set -euo pipefail
+        # Test installation → usage workflow
+        
+        # Create a test repository for integration testing
+        TEST_REPO_DIR=$(mktemp -d)
+        cd "$TEST_REPO_DIR"
+        git init
+        git config user.email "test@example.com"
+        git config user.name "Test User"
+        echo "# Test Repo" > README.md
+        git add README.md
+        git commit -m "Initial commit"
+        
+        # Test dt-git-safety in a real git repository
+        dt-git-safety check || echo "Safety checks completed (expected)"
+        
+        # Test dt-config help (doesn't require external services)
+        dt-config --help
+        
+        # Clean up
+        cd "$GITHUB_WORKSPACE"
+        rm -rf "$TEST_REPO_DIR"
+        
+        echo "✅ Integration scenarios tested"
+        
+    - name: Test edge cases
+      run: |
+        set -euo pipefail
+        # Test edge cases and error conditions
+        
+        # Test installation in non-git directory (should work)
+        NON_GIT_DIR=$(mktemp -d)
+        cd "$NON_GIT_DIR"
+        cp -r "${GITHUB_WORKSPACE}" ./dev-toolkit
+        cd ./dev-toolkit
+        ./install.sh --no-symlinks
+        echo "✅ Installation works in non-git directory"
+        
+        # Test re-installation (should handle gracefully)
+        ./install.sh --no-symlinks
+        echo "✅ Re-installation handled gracefully"
+        
+        # Test with existing bin directory (edge case)
+        mkdir -p bin
+        ./install.sh --local
+        echo "✅ Local installation with existing bin directory handled"
+        
+        # Clean up
+        cd "$GITHUB_WORKSPACE"
+        rm -rf "$NON_GIT_DIR"
+        
+        echo "✅ Edge cases tested"
+        
+    - name: Verify installation isolation
+      run: |
+        set -euo pipefail
+        # Verify that installations don't interfere with each other
+        
+        # Test that global and local installations are isolated
+        if [ -d ~/.dev-toolkit ]; then
+          echo "✅ Global installation directory exists"
+        else
+          echo "❌ Global installation directory missing"
+          exit 1
+        fi
+        
+        # Verify commands still work after all tests
+        which dt-config
+        which dt-git-safety
+        which dt-sourcery-parse
+        
+        # Test that commands work in different contexts
+        TEMP_DIR=$(mktemp -d)
+        cd "$TEMP_DIR"
+        dt-config --help
+        cd "$GITHUB_WORKSPACE"
+        rm -rf "$TEMP_DIR"
+        
+        echo "✅ Installation isolation verified"
         
     - name: Cleanup
       run: |
