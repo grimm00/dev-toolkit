@@ -28,6 +28,7 @@
     "admin/planning/releases/**/*.md",
     "admin/planning/notes/**/*.md",
     "admin/planning/features/**/*.md",
-    "admin/docs/guides/**/*.md"
+    "admin/docs/guides/**/*.md",
+    "admin/planning/roadmap.md"
   ]
 }
