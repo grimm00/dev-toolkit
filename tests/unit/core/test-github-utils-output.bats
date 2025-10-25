@@ -168,13 +168,13 @@ setup() {
   
   # Create global config
   mkdir -p "$TEST_DIR/.dev-toolkit"
-  echo "MAIN_BRANCH=trunk" > "$TEST_DIR/.dev-toolkit/config"
+  echo "MAIN_BRANCH=trunk" > "$TEST_DIR/.dev-toolkit/config.conf"
   
   # Create project config
   echo "DEVELOP_BRANCH=dev" > "$TEST_DIR/.dt-config"
   
   # Load configs
-  CONFIG_FILE_GLOBAL="$TEST_DIR/.dev-toolkit/config"
+  CONFIG_FILE_GLOBAL="$TEST_DIR/.dev-toolkit/config.conf"
   CONFIG_FILE_PROJECT="$TEST_DIR/.dt-config"
   gh_load_config
   
@@ -193,13 +193,13 @@ setup() {
   
   # Create global config
   mkdir -p "$TEST_DIR/.dev-toolkit"
-  echo "MAIN_BRANCH=main" > "$TEST_DIR/.dev-toolkit/config"
+  echo "MAIN_BRANCH=main" > "$TEST_DIR/.dev-toolkit/config.conf"
   
   # Create project config with different value
   echo "MAIN_BRANCH=master" > "$TEST_DIR/.dt-config"
   
   # Load configs
-  CONFIG_FILE_GLOBAL="$TEST_DIR/.dev-toolkit/config"
+  CONFIG_FILE_GLOBAL="$TEST_DIR/.dev-toolkit/config.conf"
   CONFIG_FILE_PROJECT="$TEST_DIR/.dt-config"
   gh_load_config
   

@@ -516,7 +516,7 @@ Tests pass on your machine but fail in GitHub Actions or other CI environments.
 # CI may have different HOME directory
 @test "test with config" {
   # ❌ Assumes specific HOME location
-  [ -f "$HOME/.dev-toolkit/config" ]
+  [ -f "$HOME/.dev-toolkit/config.conf" ]
 }
 ```
 
@@ -527,7 +527,7 @@ Tests pass on your machine but fail in GitHub Actions or other CI environments.
   
   # ✅ Use temporary HOME
   HOME="$TEST_DIR" dt-config create
-  [ -f "$TEST_DIR/.dev-toolkit/config" ]
+  [ -f "$TEST_DIR/.dev-toolkit/config.conf" ]
   
   rm -rf "$TEST_DIR"
 }

@@ -158,8 +158,8 @@ Create `lib/core/config.sh`:
 ```bash
 # Load global config
 load_global_config() {
-    if [ -f "$HOME/.dev-toolkit/config" ]; then
-        source "$HOME/.dev-toolkit/config"
+    if [ -f "$HOME/.dev-toolkit/config.conf" ]; then
+        source "$HOME/.dev-toolkit/config.conf"
     fi
 }
 

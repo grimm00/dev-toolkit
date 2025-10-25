@@ -1,5 +1,5 @@
 # Dev Toolkit - GitHub Integration Configuration
-# Copy this file to ~/.dev-toolkit/config for global settings
+# Copy this file to ~/.dev-toolkit/config.conf for global settings
 # Or copy to .dev-toolkit.conf in your project root for project-specific settings
 
 # Main branches

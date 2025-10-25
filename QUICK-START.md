@@ -106,7 +106,7 @@ dt-git-safety check
 
 ## 📁 File Locations
 
-- **Global Config**: `~/.dev-toolkit/config`
+- **Global Config**: `~/.dev-toolkit/config.conf`
 - **Project Config**: `.dev-toolkit.conf` (in project root)
 - **Example Config**: `config/config.example`
 

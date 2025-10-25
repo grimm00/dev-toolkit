@@ -46,7 +46,7 @@ case "${1:-help}" in
         if [ "$config_type" = "project" ]; then
             config_file=".dev-toolkit.conf"
         else
-            config_file="$HOME/.dev-toolkit/config"
+            config_file="$HOME/.dev-toolkit/config.conf"
         fi
         
         if [ ! -f "$config_file" ]; then
