@@ -101,63 +101,63 @@ sanitize_block() {
 extract_sourcery_review() {
     local pr_number="$1"
     
-    gh_print_section "📋 Extracting Sourcery Review for PR #$pr_number"
+    gh_print_section "📋 Extracting Sourcery Review for PR #$pr_number" >&2
     
     # Get the review data
     local review_data=$(gh pr view "$pr_number" --json reviews --jq '.reviews[] | select(.author.login == "sourcery-ai") | .body' 2>/dev/null)
     
     if [ -z "$review_data" ] || [ "$review_data" = "null" ]; then
-        gh_print_status "WARNING" "No Sourcery review found for PR #$pr_number"
-        echo ""
-        echo -e "${GH_YELLOW}💡 Possible reasons:${GH_NC}"
-        echo "   - Sourcery hasn't reviewed yet (wait 1-2 minutes)"
-        echo "   - Sourcery is not installed on this repository"
-        echo "   - PR has no code changes to review"
-        echo ""
-        echo -e "${GH_CYAN}${GH_BOLD}💡 Remember: Sourcery is optional!${GH_NC}"
-        echo -e "   All core toolkit features work without it:"
-        echo -e "   ${GH_GREEN}✅${GH_NC} dt-git-safety, dt-config, dt-install-hooks"
-        echo ""
-        echo -e "${GH_BLUE}ℹ️  To install Sourcery: ${GH_BOLD}dt-setup-sourcery${GH_NC}"
-        echo -e "${GH_BLUE}ℹ️  Learn more: ${GH_BOLD}docs/OPTIONAL-FEATURES.md${GH_NC}"
+        gh_print_status "WARNING" "No Sourcery review found for PR #$pr_number" >&2
+        echo "" >&2
+        echo -e "${GH_YELLOW}💡 Possible reasons:${GH_NC}" >&2
+        echo "   - Sourcery hasn't reviewed yet (wait 1-2 minutes)" >&2
+        echo "   - Sourcery is not installed on this repository" >&2
+        echo "   - PR has no code changes to review" >&2
+        echo "" >&2
+        echo -e "${GH_CYAN}${GH_BOLD}💡 Remember: Sourcery is optional!${GH_NC}" >&2
+        echo -e "   All core toolkit features work without it:" >&2
+        echo -e "   ${GH_GREEN}✅${GH_NC} dt-git-safety, dt-config, dt-install-hooks" >&2
+        echo "" >&2
+        echo -e "${GH_BLUE}ℹ️  To install Sourcery: ${GH_BOLD}dt-setup-sourcery${GH_NC}" >&2
+        echo -e "${GH_BLUE}ℹ️  Learn more: ${GH_BOLD}docs/OPTIONAL-FEATURES.md${GH_NC}" >&2
         return 1
     fi
     
     # Check for rate limit message
     if echo "$review_data" | grep -q "rate limit"; then
-        gh_print_status "WARNING" "Sourcery rate limit reached"
-        echo ""
-        echo -e "${GH_YELLOW}📊 Rate Limit Information:${GH_NC}"
-        echo ""
+        gh_print_status "WARNING" "Sourcery rate limit reached" >&2
+        echo "" >&2
+        echo -e "${GH_YELLOW}📊 Rate Limit Information:${GH_NC}" >&2
+        echo "" >&2
         # Extract and display the rate limit message
         echo "$review_data" | head -10
-        echo ""
-        echo -e "${GH_CYAN}ℹ️  About Sourcery Rate Limits:${GH_NC}"
-        echo "   • Free tier: 500,000 diff characters per week"
-        echo "   • Resets weekly"
-        echo "   • Upgrade available for unlimited reviews"
-        echo ""
-        echo -e "${GH_CYAN}💡 What you can still do:${GH_NC}"
-        echo "   • View Sourcery comments on GitHub PR page"
-        echo "   • See security issues and suggestions inline"
-        echo "   • Wait for weekly reset"
-        echo "   • Upgrade at: https://sourcery.ai/pricing"
-        echo ""
+        echo "" >&2
+        echo -e "${GH_CYAN}ℹ️  About Sourcery Rate Limits:${GH_NC}" >&2
+        echo "   • Free tier: 500,000 diff characters per week" >&2
+        echo "   • Resets weekly" >&2
+        echo "   • Upgrade available for unlimited reviews" >&2
+        echo "" >&2
+        echo -e "${GH_CYAN}💡 What you can still do:${GH_NC}" >&2
+        echo "   • View Sourcery comments on GitHub PR page" >&2
+        echo "   • See security issues and suggestions inline" >&2
+        echo "   • Wait for weekly reset" >&2
+        echo "   • Upgrade at: https://sourcery.ai/pricing" >&2
+        echo "" >&2
         return 1
     fi
     
     # Check for security issues (different format)
     if echo "$review_data" | grep -q "security issues"; then
-        gh_print_status "INFO" "Sourcery found security issues"
-        echo ""
-        echo -e "${GH_YELLOW}🔒 Security Review Available:${GH_NC}"
-        echo ""
+        gh_print_status "INFO" "Sourcery found security issues" >&2
+        echo "" >&2
+        echo -e "${GH_YELLOW}🔒 Security Review Available:${GH_NC}" >&2
+        echo "" >&2
         echo "$review_data"
-        echo ""
-        echo -e "${GH_CYAN}💡 View detailed security issues:${GH_NC}"
-        echo "   gh pr view $pr_number --web"
-        echo ""
-        echo -e "${GH_YELLOW}Note: Security reviews may not include the full markdown format${GH_NC}"
+        echo "" >&2
+        echo -e "${GH_CYAN}💡 View detailed security issues:${GH_NC}" >&2
+        echo "   gh pr view $pr_number --web" >&2
+        echo "" >&2
+        echo -e "${GH_YELLOW}Note: Security reviews may not include the full markdown format${GH_NC}" >&2
         return 0
     fi
     
@@ -450,9 +450,22 @@ if ! gh api "repos/$PROJECT_OWNER/$PROJECT_NAME/pulls/$PR_NUMBER" >/dev/null 2>&
 fi
 
 # Extract and format the Sourcery review
-if extract_sourcery_review "$PR_NUMBER"; then
-    gh_print_status "SUCCESS" "Sourcery review parsing completed!"
+if [ -n "$OUTPUT_FILE" ]; then
+    # Write output to file
+    if extract_sourcery_review "$PR_NUMBER" > "$OUTPUT_FILE"; then
+        gh_print_status "SUCCESS" "Sourcery review parsing completed!"
+        echo ""
+        echo "✅ Review saved to: $OUTPUT_FILE"
+    else
+        gh_print_status "ERROR" "Failed to parse Sourcery review"
+        exit 1
+    fi
 else
-    gh_print_status "ERROR" "Failed to parse Sourcery review"
-    exit 1
+    # Print to stdout
+    if extract_sourcery_review "$PR_NUMBER"; then
+        gh_print_status "SUCCESS" "Sourcery review parsing completed!"
+    else
+        gh_print_status "ERROR" "Failed to parse Sourcery review"
+        exit 1
+    fi
 fi
