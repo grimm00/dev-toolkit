@@ -443,8 +443,8 @@ if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
     exit 1
 fi
 
-# Check if PR exists
-if ! gh pr view "$PR_NUMBER" >/dev/null 2>&1; then
+# Check if PR exists using GitHub API (more reliable than gh pr view)
+if ! gh api "repos/$PROJECT_OWNER/$PROJECT_NAME/pulls/$PR_NUMBER" >/dev/null 2>&1; then
     gh_print_status "ERROR" "PR #$PR_NUMBER not found"
     exit 1
 fi
