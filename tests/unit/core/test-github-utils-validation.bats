@@ -320,7 +320,7 @@ teardown() {
   
   # Create a minimal config
   mkdir -p "$TEST_DIR/.dev-toolkit"
-  echo "MAIN_BRANCH=main" > "$TEST_DIR/.dev-toolkit/config"
+  echo "MAIN_BRANCH=main" > "$TEST_DIR/.dev-toolkit/config.conf"
   
   # Mock git to succeed
   git() {
@@ -341,7 +341,7 @@ teardown() {
   export -f gh
   
   # Override config paths
-  CONFIG_FILE_GLOBAL="$TEST_DIR/.dev-toolkit/config"
+  CONFIG_FILE_GLOBAL="$TEST_DIR/.dev-toolkit/config.conf"
   CONFIG_FILE_PROJECT="$TEST_DIR/.dev-toolkit.conf"
   
   run gh_init_github_utils

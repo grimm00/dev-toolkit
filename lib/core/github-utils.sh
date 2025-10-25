@@ -65,7 +65,7 @@ fi
 
 # Configuration file paths (project-specific takes precedence)
 CONFIG_FILE_PROJECT=".dev-toolkit.conf"
-CONFIG_FILE_GLOBAL="${GITHUB_CONFIG_FILE:-$HOME/.dev-toolkit/config}"
+CONFIG_FILE_GLOBAL="${GITHUB_CONFIG_FILE:-$HOME/.dev-toolkit/config.conf}"
 
 # ============================================================================
 # STATUS PRINTING FUNCTIONS

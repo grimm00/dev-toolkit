@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `dt-config` - Configuration management tool
 
 - **Configuration**
-  - Support for both global (`~/.dev-toolkit/config`) and project-local (`.dev-toolkit.conf`) configuration
+  - Support for both global (`~/.dev-toolkit/config.conf`) and project-local (`.dev-toolkit.conf`) configuration
   - Example configuration file in `config/config.example`
   - Environment variable overrides for all settings
 

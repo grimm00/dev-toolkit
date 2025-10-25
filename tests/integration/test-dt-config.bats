@@ -90,7 +90,7 @@ setup() {
   [[ "$output" =~ "Created" ]] || [[ "$output" =~ "config" ]]
   
   # Verify config file was created
-  [ -f "$TEST_DIR/.dev-toolkit/config" ]
+  [ -f "$TEST_DIR/.dev-toolkit/config.conf" ]
   
   teardown_test_dir
 }
@@ -103,10 +103,10 @@ setup() {
   [ "$status" -eq 0 ]
   
   # Verify config file exists
-  [ -f "$TEST_DIR/.dev-toolkit/config" ]
+  [ -f "$TEST_DIR/.dev-toolkit/config.conf" ]
   
   # Verify it contains expected settings
-  grep -q "MAIN_BRANCH" "$TEST_DIR/.dev-toolkit/config"
+  grep -q "MAIN_BRANCH" "$TEST_DIR/.dev-toolkit/config.conf"
   
   teardown_test_dir
 }
@@ -179,7 +179,7 @@ setup() {
   
   run dt-config edit global
   [ "$status" -eq 0 ]
-  [[ "$output" =~ ".dev-toolkit/config" ]]
+  [[ "$output" =~ ".dev-toolkit/config.conf" ]]
   
   teardown_test_dir
 }
@@ -260,7 +260,7 @@ setup() {
   [ $? -eq 0 ]
   
   # Both config files should exist
-  [ -f "$TEST_DIR/.dev-toolkit/config" ]
+  [ -f "$TEST_DIR/.dev-toolkit/config.conf" ]
   [ -f "$TEST_DIR/.dev-toolkit.conf" ]
   
   # Cleanup
@@ -281,7 +281,7 @@ setup() {
   
   # Create global
   dt-config create global > /dev/null 2>&1
-  [ -f "$TEST_DIR/.dev-toolkit/config" ]
+  [ -f "$TEST_DIR/.dev-toolkit/config.conf" ]
   
   # Initialize git repo
   git init > /dev/null 2>&1
@@ -291,7 +291,7 @@ setup() {
   [ -f "$TEST_DIR/.dev-toolkit.conf" ]
   
   # Both should exist
-  [ -f "$TEST_DIR/.dev-toolkit/config" ]
+  [ -f "$TEST_DIR/.dev-toolkit/config.conf" ]
   [ -f "$TEST_DIR/.dev-toolkit.conf" ]
   
   teardown_test_dir
