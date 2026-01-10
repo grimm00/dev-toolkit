@@ -1,0 +1,24 @@
+# Git worktrees (created with `git worktree add`)
+worktrees/
+
+# Temporary files (handoff docs, scratch)
+tmp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Test output
+.bats-run-*
