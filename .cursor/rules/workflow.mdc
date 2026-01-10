@@ -1,0 +1,313 @@
+---
+alwaysApply: true
+---
+
+# Workflow Rules
+
+**Purpose:** Development workflow processes and commands for dev-toolkit  
+**Last Updated:** 2026-01-09  
+**Status:** ✅ Active
+
+---
+
+## 📋 Quick Links
+
+- **[Main Rules](main.mdc)** - Core project rules and standards
+- **[Script Standards](script-standards.mdc)** - Bash script quality and testing
+
+---
+
+## 🚀 Git Flow Workflow
+
+### Branch Strategy
+
+**ALWAYS follow this branching model:**
+
+- `main` - Production releases ONLY (protected)
+- `develop` - Ongoing development (protected)
+- `feat/*` - Feature branches (e.g., `feat/dt-review-dedup`)
+- `fix/*` - Bug fixes (e.g., `fix/parser-edge-case`)
+- `docs/*` - Documentation updates
+- `chore/*` - Maintenance tasks
+- `ci/*` - CI/CD changes
+- `release/*` - Release preparation branches
+
+### Commit Requirements
+
+1. **Feature/Fix/CI Branches**
+   - REQUIRE pull requests to develop/main
+   - Full testing required
+   - Use conventional commits format
+
+2. **Documentation/Chore Branches**
+   - CAN push directly to develop/main
+   - Minimal validation required
+   - Focus on clarity and accuracy
+
+3. **Commit Message Format**
+
+   ```
+   type(scope): brief description
+
+   Longer explanation if needed
+   ```
+
+   Types: feat, fix, docs, chore, test, refactor, ci
+
+   Examples:
+   - `feat(dt-review): add deduplication support`
+   - `fix(parser): handle empty Sourcery reviews`
+   - `docs(exploration): add dt-review-deduplication`
+   - `test(parser): add deduplication unit tests`
+
+---
+
+## 🔍 Pull Request Review Workflow
+
+### NEVER Merge Without Review
+
+**CRITICAL:** Do NOT merge pull requests automatically. Always follow this workflow:
+
+1. **Create PR** - Use `/pr` command when available
+2. **Stop and Wait** - Present PR link to user, do NOT proceed to merge
+3. **External Review** - User will run `dt-review` for Sourcery feedback
+4. **Priority Assessment** - Fill out priority matrix in review file
+5. **Fix Planning** - Use `/fix-plan` to create fix plans (when applicable)
+6. **User Approval** - Only merge after user explicitly approves
+7. **Post-Merge** - Use `/post-pr` to update documentation
+
+### Priority Matrix Assessment
+
+For each Sourcery comment, assess:
+
+- **Priority:** CRITICAL 🔴 / HIGH 🟠 / MEDIUM 🟡 / LOW 🟢
+- **Impact:** CRITICAL 🔴 / HIGH 🟠 / MEDIUM 🟡 / LOW 🟢
+- **Effort:** LOW 🟢 / MEDIUM 🟡 / HIGH 🟠 / VERY_HIGH 🔴
+
+---
+
+## 🔄 Exploration → Research → Decision Workflow
+
+### When to Use
+
+Use this workflow for:
+- New feature ideas
+- Significant enhancements
+- Architecture decisions
+- Complex problems with multiple solutions
+
+### Workflow
+
+```
+/explore [topic]
+    → Creates exploration document
+    → Identifies research questions
+    → Outputs: research-topics.md
+
+/research [topic] --from-explore [topic]
+    → Investigates research questions
+    → Documents findings
+    → Outputs: research documents
+
+/decision [topic] --from-research
+    → Makes decisions based on research
+    → Creates ADR if significant
+    → Outputs: decision document
+
+/transition-plan --from-adr
+    → Creates feature plan
+    → Breaks into phases
+    → Ready for implementation
+```
+
+### File Locations
+
+- **Explorations:** `admin/explorations/[topic]/`
+- **Research:** `admin/research/[topic]/` (when created)
+- **Decisions:** `admin/decisions/[topic]/` (when created)
+- **Features:** `admin/planning/features/[feature-name]/`
+
+---
+
+## 📊 Feature Development Process
+
+### Creating New Features
+
+**ALWAYS follow this structure when creating features:**
+
+1. **Create Feature Directory**
+
+   ```
+   admin/planning/features/[feature-name]/
+   ```
+
+2. **Required Files**
+
+   - `README.md` - Feature hub with quick links
+   - `feature-plan.md` - High-level overview and phases
+   - `status-and-next-steps.md` - Current progress tracking
+   - `phase-1.md` - First phase details (additional phases as needed)
+
+3. **Feature Plan Structure**
+
+   ```markdown
+   # [Feature Name] - Feature Plan
+
+   **Status:** [Status Indicator]
+   **Created:** [YYYY-MM-DD]
+   **Priority:** [High/Medium/Low]
+
+   ## 📋 Overview
+
+   [Feature description]
+
+   ## 🎯 Success Criteria
+
+   - [ ] Measurable criterion 1
+   - [ ] Measurable criterion 2
+
+   ## 📅 Implementation Phases
+
+   ### Phase 1: [Name]
+
+   - [ ] Task 1
+   - [ ] Task 2
+
+   ## 🚀 Next Steps
+
+   [Immediate next actions]
+   ```
+
+### Feature Development Lifecycle
+
+1. **Discovery** - Identify need (exploration, user request, bug)
+2. **Planning** - Write feature-plan.md, break into phases
+3. **Implementation** - Execute phases with TDD
+4. **Testing** - Comprehensive test coverage
+5. **Documentation** - Update user docs
+6. **Release** - Include in next release
+
+---
+
+## 🔄 CI/CD Integration
+
+### Testing Requirements
+
+- **Feature branches:** Full test suite (215 tests)
+- **Documentation branches:** Markdown validation only
+- **Release branches:** Full validation + manual testing
+- **CI branches:** Full validation + workflow testing
+
+### Before Committing
+
+```bash
+# Run all tests
+./scripts/test.sh
+
+# Or run specific tests
+bats tests/unit/
+bats tests/integration/
+```
+
+---
+
+## 📝 Release Process
+
+### Standard Release Workflow
+
+**Phase 1: Feature Development (on develop)**
+
+- Develop features on `develop` branch
+- Create feature branches from `develop`
+- Merge features to `develop` after review
+- Accumulate features over time
+
+**Phase 2: Release Preparation**
+
+1. Create release branch from develop
+2. Update CHANGELOG.md
+3. Update VERSION file
+4. Create release notes
+5. Fix critical bugs only
+
+**Phase 3: Release Distribution**
+
+- Merge release branch to `main`
+- Create GitHub release
+- Tag release version
+- Update documentation
+
+**Phase 4: Post-Release**
+
+- Merge main back to develop
+- Update roadmap
+- Plan next release
+
+---
+
+## 🧪 TDD for Bash Scripts
+
+**Pattern:** Use RED-GREEN-REFACTOR cycle for shell scripts.
+
+**Framework:** Bats (Bash Automated Testing System)
+
+**Workflow:**
+
+1. **RED:** Write failing test first
+
+   ```bash
+   @test "dt-review deduplicates comments by location" {
+       run "$DT_REVIEW" 59 --no-output
+       [ "$status" -eq 0 ]
+       # Count unique comments
+       unique_count=$(echo "$output" | grep -c "^### Comment")
+       [ "$unique_count" -lt "$total_count" ]
+   }
+   ```
+
+2. **GREEN:** Implement minimum code to pass
+3. **REFACTOR:** Clean up while tests pass
+
+**Test Location:** `tests/unit/` or `tests/integration/`
+
+**Running Tests:**
+
+```bash
+bats tests/unit/[test-file].bats
+```
+
+---
+
+## 🚩 Script Flag Conventions
+
+**Standard flags for all dt-* commands:**
+
+| Flag | Purpose | Example |
+|------|---------|---------|
+| `--help` | Show usage information | `dt-review --help` |
+| `--version` | Show version | `dt-review --version` |
+| `--debug` | Enable debug output | `dt-review 59 --debug` |
+| `--output FILE` | Save to file | `dt-review 59 --output review.md` |
+| `--no-details` | Compact output | `dt-sourcery-parse 59 --no-details` |
+| `--rich-details` | Structured details | `dt-sourcery-parse 59 --rich-details` |
+
+**Key Principles:**
+
+- `--help` for every command
+- `--debug` for troubleshooting
+- Positional args before optional flags
+- Clear error messages with suggestions
+
+---
+
+## 🔗 Related
+
+- **Main Rules:** [main.mdc](main.mdc) - Core project rules
+- **Script Standards:** [script-standards.mdc](script-standards.mdc) - Bash standards
+- **Command Documentation:** `.cursor/commands/` - Workflow automation
+- **Roadmap:** `admin/planning/roadmap.md` - Project direction
+
+---
+
+**Last Updated:** 2026-01-09  
+**Status:** ✅ Active

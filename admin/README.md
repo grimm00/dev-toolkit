@@ -4,6 +4,15 @@ This directory contains project management, documentation, and coordination mate
 
 ## Structure
 
+### 🔬 `/explorations`
+Active explorations and proof of concepts before research/decision phases.
+- **[Explorations Hub](explorations/README.md)** - All active explorations
+- Each exploration has its own directory with `exploration.md` and `research-topics.md`
+- Workflow: `/explore` → `/research` → `/decision` → `/transition-plan`
+
+**Active Explorations:**
+- **[dt-review-deduplication](explorations/dt-review-deduplication/README.md)** - Deduplicate Sourcery comments (🔴 Exploration)
+
 ### 📋 `/planning`
 Project planning and organization hub.
 
@@ -61,6 +70,9 @@ The `admin/` directory serves as the coordination hub for:
 - ✅ **Testing Suite** - 215 automated tests, comprehensive documentation
 - ✅ **Optional Sourcery** - Clear core vs optional feature documentation
 
+### Active Explorations
+- 🔴 **dt-review Deduplication** - Exploring duplicate comment handling (NEW)
+
 ### Active Planning
 - 🎯 **v0.3.0: Workflow Helper Template** - Next feature (HIGH priority)
 - 📋 **Phase 4: Test Enhancements** - Deferred (optional)
@@ -114,6 +126,7 @@ The `admin/` directory serves as the coordination hub for:
 ## Key Files
 
 - **[roadmap.md](planning/roadmap.md)** - Project direction and priorities
+- **[explorations/README.md](explorations/README.md)** - Active explorations hub
 - **[releases/history.md](planning/releases/history.md)** - All releases timeline
 - **[releases/README.md](planning/releases/README.md)** - Release process guide
 - **[features/README.md](planning/features/README.md)** - Feature workflow guide
@@ -131,4 +144,4 @@ This structure is designed to work seamlessly with:
 
 ---
 
-*Last Updated: October 6, 2025 (v0.2.0 release)*
+*Last Updated: January 9, 2026 (dt-review deduplication exploration)*

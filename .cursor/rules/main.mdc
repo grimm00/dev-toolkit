@@ -1,0 +1,296 @@
+---
+alwaysApply: true
+---
+
+# Dev-Toolkit - Cursor AI Rules
+
+**Purpose:** Guide AI assistance to align with dev-toolkit best practices and workflows  
+**Identity:** 🔧 Portable CLI Toolkit  
+**Last Updated:** 2026-01-09  
+**Status:** ✅ Active
+
+---
+
+## 📋 Quick Links
+
+### Rules Files
+
+- **[Workflow Rules](workflow.mdc)** - Git Flow, PR workflow, development processes
+- **[Script Standards](script-standards.mdc)** - Bash script quality and testing
+
+---
+
+## 🎯 Project Overview
+
+Dev-toolkit is a portable, project-agnostic development toolkit that provides:
+
+- **Sourcery Integration** - Parse and extract Sourcery code reviews
+- **Git Flow Safety** - Automated branch and commit safety checks
+- **GitHub Integration** - CLI utilities for GitHub operations
+- **Pre-commit Hooks** - Automated quality gates
+
+### Key Principles
+
+- **Portability** - Works in any project without modification
+- **Auto-Detection** - Intelligently discovers project context
+- **Modularity** - Use individual tools or the full suite
+- **Zero Dependencies** - Core features work with minimal requirements
+- **AI-Friendly** - Designed for seamless AI assistant integration
+
+---
+
+## 🔧 Project Identity: Portable CLI Toolkit
+
+**Dev-toolkit's primary identity is "portable CLI toolkit."**
+
+### What This Means
+
+1. **Tools are products** - Each `dt-*` command is a standalone utility
+2. **Portability is paramount** - Must work across any Git repository
+3. **Auto-detection over configuration** - Minimize user setup
+4. **Bash for maximum compatibility** - No exotic dependencies
+
+### Work Categories
+
+When planning work, classify it:
+
+| Category | Where It Goes | Example |
+|----------|---------------|---------|
+| 🎯 **New Command** | `admin/planning/features/` | `dt-review` |
+| 🔧 **Enhancement** | `admin/explorations/` → features | Deduplication |
+| 🐛 **Bug Fix** | Direct fix or `admin/feedback/` | Script errors |
+| 📚 **Documentation** | `docs/` or `admin/docs/` | Guides |
+
+---
+
+## 📁 Documentation Standards
+
+### Hub-and-Spoke Pattern
+
+**ALWAYS follow this pattern when creating or updating documentation:**
+
+1. **Hub Files (README.md)**
+   - Serve as navigation entry points
+   - Include "📋 Quick Links" section at the top
+   - Provide overview of the directory/feature
+   - Link to spoke documents
+   - Include status indicators and last updated date
+
+2. **Spoke Documents**
+   - Focus on single topics or phases
+   - Link back to hub files
+   - Use descriptive filenames (e.g., `feature-plan.md`, `phase-1.md`)
+   - Include status and date metadata
+
+3. **Progressive Disclosure**
+   - Start with high-level overview
+   - Provide links to detailed documents
+   - Use clear section hierarchy
+   - Avoid overwhelming users with too much detail in hub files
+
+### Status Indicators
+
+Use these **consistently** across all documentation:
+
+- 🔴 **Not Started / Exploration** - Initial exploration or planning
+- 🟡 **Planned / Research** - Approved but not yet begun
+- 🟠 **In Progress** - Active development
+- ✅ **Active/Complete** - Operational or finished
+
+### Date Format
+
+Always use: `YYYY-MM-DD` format (e.g., 2026-01-09)
+
+### File Naming Conventions
+
+- Use **kebab-case** for file names: `feature-plan.md`, `status-and-next-steps.md`
+- Use **descriptive names**: `phase-1-foundation.md` not `p1.md`
+- README.md files are always **UPPERCASE**
+
+---
+
+## 🏗️ Project Structure
+
+### Directory Organization
+
+**Respect this structure when creating files:**
+
+```
+dev-toolkit/
+├── bin/                    # Executable commands (dt-*)
+│   ├── dt-review           # Quick Sourcery review extraction
+│   ├── dt-sourcery-parse   # Full Sourcery parser
+│   ├── dt-git-safety       # Git Flow safety checks
+│   ├── dt-config           # Configuration management
+│   └── dt-install-hooks    # Pre-commit hook installer
+├── lib/                    # Core libraries
+│   ├── core/               # Shared utilities
+│   │   └── github-utils.sh # GitHub CLI operations
+│   ├── sourcery/           # Sourcery-related
+│   │   └── parser.sh       # Review parser
+│   └── git-flow/           # Git workflow
+│       ├── safety.sh       # Safety checks
+│       └── utils.sh        # Git utilities
+├── config/                 # Configuration templates
+├── docs/                   # User documentation
+├── tests/                  # Test suite (bats-core)
+│   ├── unit/               # Unit tests
+│   ├── integration/        # Integration tests
+│   └── helpers/            # Test utilities
+├── scripts/                # Development scripts
+├── admin/                  # Project management
+│   ├── explorations/       # Active explorations
+│   ├── planning/           # Features, releases
+│   │   ├── features/       # Feature development
+│   │   ├── releases/       # Version management
+│   │   └── roadmap.md      # Project roadmap
+│   ├── feedback/           # Code reviews
+│   └── chat-logs/          # AI session history
+└── .cursor/                # Cursor IDE configuration
+    ├── commands/           # Workflow automation
+    └── rules/              # AI assistant rules
+```
+
+### File Location Rules
+
+1. **Commands** → `bin/dt-*`
+2. **Libraries** → `lib/[category]/`
+3. **Feature Planning** → `admin/planning/features/[feature-name]/`
+4. **Explorations** → `admin/explorations/[topic]/`
+5. **Release Management** → `admin/planning/releases/vX.Y.Z/`
+6. **User Documentation** → `docs/`
+7. **Tests** → `tests/[unit|integration]/`
+8. **Cursor Commands** → `.cursor/commands/`
+
+---
+
+## 🤖 AI Assistant Guidelines
+
+### When Suggesting Changes
+
+1. **Respect existing patterns** - Don't introduce new organizational patterns
+2. **Update documentation** - When creating features, update relevant hub files
+3. **Maintain consistency** - Use established status indicators and date formats
+4. **Test before committing** - All script changes MUST be tested
+5. **Link bidirectionally** - Hub → Spoke and Spoke → Hub
+
+### When Creating New Features
+
+1. Start with exploration (`/explore`) for new ideas
+2. Conduct research (`/research`) to investigate options
+3. Make decisions (`/decision`) with ADRs if significant
+4. Plan implementation with feature-plan.md
+5. Implement with tests (TDD preferred)
+
+### When Making Script Changes
+
+1. Check if documentation needs updating
+2. **TEST ALL CHANGES** before committing
+3. Verify portability across different repositories
+4. Update relevant README files
+5. Consider backward compatibility
+
+### Response Style
+
+- Be clear and actionable
+- Provide rationale for suggestions
+- Reference project patterns
+- Offer to implement rather than just suggest
+- Ask clarifying questions when scope is unclear
+
+---
+
+## 📝 Testing Requirements
+
+### CRITICAL: NEVER COMMIT WITHOUT TESTING
+
+- **MANDATORY**: Test ALL script changes before committing
+- **MANDATORY**: Verify scripts work in different project contexts
+- **MANDATORY**: Check for portability issues (hardcoded paths, project names)
+- **MANDATORY**: Test the specific scenario the user reported
+- **NEVER**: Commit changes with hardcoded project-specific values
+- **ALWAYS**: Ask user to test across multiple projects if unsure
+
+### Testing Commands
+
+```bash
+# Test script syntax
+bash -n script.sh
+
+# Run unit tests
+bats tests/unit/
+
+# Run integration tests
+bats tests/integration/
+
+# Run all tests
+./scripts/test.sh
+
+# Test in other project
+cd ~/Projects/other && ~/.dev-toolkit/bin/dt-review 123
+```
+
+---
+
+## 🚧 Current Project State
+
+**Version:** v0.2.0  
+**Stage:** Feature Development  
+**Updated:** 2026-01-09
+
+### ✅ Completed
+
+**Core Commands:**
+- ✅ `dt-review` - Quick Sourcery review extraction
+- ✅ `dt-sourcery-parse` - Full parser with options
+- ✅ `dt-git-safety` - Git Flow safety checks
+- ✅ `dt-config` - Configuration management
+- ✅ `dt-install-hooks` - Pre-commit hook installer
+- ✅ `dt-setup-sourcery` - Interactive Sourcery setup
+
+**Infrastructure:**
+- ✅ Installation system (install.sh, dev-setup.sh)
+- ✅ Pre-commit hooks with safety checks
+- ✅ GitHub Actions CI/CD pipeline
+- ✅ Test suite (215 tests, <15 seconds)
+- ✅ Comprehensive documentation
+
+### 🔴 Active Explorations
+
+- 🔴 **dt-review Deduplication** - Handling duplicate Sourcery comments
+
+### 🟡 Planned
+
+- 🟡 **v0.3.0: Workflow Helper Template** - Project workflow generator
+- 🟡 **v0.4.0: Batch Operations** - Multiple PR processing
+
+---
+
+## 📞 Maintenance
+
+### Updating These Rules
+
+**Update this file when:**
+
+- New patterns are established
+- Project structure changes
+- Workflow processes change
+- New commands are added
+- Best practices evolve
+
+**Update Process:**
+
+1. Make changes to appropriate rule file
+2. Commit with message: `docs(cursor-rules): [description]`
+3. Push to develop branch (docs/* can push directly)
+
+**Split Files:**
+
+- **Workflow changes:** Update [workflow.mdc](workflow.mdc)
+- **Script standards:** Update [script-standards.mdc](script-standards.mdc)
+
+---
+
+**Last Updated:** 2026-01-09  
+**Status:** ✅ Active  
+**Next:** dt-review deduplication exploration
