@@ -2,7 +2,7 @@
 
 **Purpose:** Active explorations and proof of concepts  
 **Status:** ✅ Active  
-**Last Updated:** 2026-01-09
+**Last Updated:** 2026-01-16
 
 ---
 
@@ -10,6 +10,7 @@
 
 ### Active Explorations
 
+- **[doc-infrastructure](doc-infrastructure/README.md)** - `dt-doc-gen` and `dt-doc-validate` commands from dev-infra specs (✅ Expanded)
 - **[dt-review-deduplication](dt-review-deduplication/README.md)** - Deduplicate Sourcery comments across multiple review runs (🔴 Exploration)
 
 ---
@@ -37,4 +38,4 @@ This directory contains active explorations, proof of concepts, and abstract ide
 
 ---
 
-**Last Updated:** 2026-01-09
+**Last Updated:** 2026-01-16
