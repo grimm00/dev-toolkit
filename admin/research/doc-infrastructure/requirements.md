@@ -468,6 +468,124 @@ The following requirements were established in dev-infra research and are adopte
 
 ---
 
+## ✅ Functional Requirements (Type Detection - Topic 4)
+
+### FR-TD1: Explicit Type Override
+
+**Description:** dt-doc-validate MUST support `--type` flag for explicit type override
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-TD2: Path-Based Detection
+
+**Description:** dt-doc-validate MUST implement path-based type detection
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-TD3: Content-Based Fallback
+
+**Description:** dt-doc-validate MUST implement content-based type detection as fallback
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-TD4: Detection Failure Reporting
+
+**Description:** dt-doc-validate MUST report TYPE_DETECTION_FAILED with available types
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-TD5: Full Subtype Coverage
+
+**Description:** dt-doc-validate MUST detect all 17 document subtypes
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+## 🎯 Non-Functional Requirements (Type Detection - Topic 4)
+
+### NFR-TD1: Fast Detection
+
+**Description:** Type detection MUST complete in <50ms per file
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-TD2: Documented Detection Order
+
+**Description:** Detection order MUST be documented (explicit → path → content)
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-TD3: Helpful Error Messages
+
+**Description:** Error messages MUST list all available type values
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+## ⚠️ Constraints (Type Detection - Topic 4)
+
+### C-TD1: README.md Path Requirement
+
+**Description:** README.md files REQUIRE path context (cannot detect from content alone)
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+---
+
+### C-TD2: Pattern Ordering
+
+**Description:** Path patterns must be ordered from most specific to least specific
+
+**Source:** [research-type-detection.md](research-type-detection.md)
+
+---
+
 ## 💭 Assumptions
 
 ### A-1: dev-infra Available Locally

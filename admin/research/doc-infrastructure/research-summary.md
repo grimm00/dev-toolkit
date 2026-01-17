@@ -16,7 +16,7 @@ This research supports the implementation of two new dev-toolkit commands:
 
 **Research Topics:** 7 topics  
 **Research Documents:** 7 documents  
-**Status:** 🟠 In Progress (3/7 complete)
+**Status:** 🟠 In Progress (4/7 complete)
 
 ---
 
@@ -27,7 +27,7 @@ This research supports the implementation of two new dev-toolkit commands:
 | 1 | Template Fetching Strategy | 🔴 High | ✅ Complete |
 | 2 | YAML Parsing in Bash | 🔴 High | ✅ Complete |
 | 3 | Command Workflow Integration | 🔴 High | ✅ Complete |
-| 4 | Document Type Detection | 🟡 Medium | 🔴 Not Started |
+| 4 | Document Type Detection | 🟡 Medium | ✅ Complete |
 | 5 | Variable Expansion Edge Cases | 🟡 Medium | 🔴 Not Started |
 | 6 | Error Output Format | 🟡 Medium | 🔴 Not Started |
 | 7 | Shared Infrastructure Design | 🟢 Low | 🔴 Not Started |
@@ -144,6 +144,8 @@ The `/explore` and `/research` commands have setup/conduct modes that map cleanl
 - [x] **Insight 5:** Pre-compiled bash files are faster and more portable
 - [x] **Insight 6:** Commands already invoke shell commands - dt-doc-gen fits existing pattern
 - [x] **Insight 7:** Migration is incremental - /explore first, then /research
+- [x] **Insight 8:** Path-based type detection is highly reliable (100% in testing)
+- [x] **Insight 9:** README.md files require path context (content is generic)
 
 ---
 
@@ -211,6 +213,24 @@ The `/explore` and `/research` commands have setup/conduct modes that map cleanl
 - C-CI2: AI generates content only (not structure)
 - C-CI3: Inline templates as fallback during migration
 
+### Requirements from Type Detection Research
+
+**Functional:**
+- FR-TD1: `--type` flag for explicit override
+- FR-TD2: Path-based type detection
+- FR-TD3: Content-based fallback detection
+- FR-TD4: TYPE_DETECTION_FAILED error with available types
+- FR-TD5: Detect all 17 document subtypes
+
+**Non-Functional:**
+- NFR-TD1: Detection <50ms per file
+- NFR-TD2: Documented detection order
+- NFR-TD3: Helpful error messages with type list
+
+**Constraints:**
+- C-TD1: README.md requires path context
+- C-TD2: Path patterns ordered most-to-least specific
+
 **Prior Requirements (from dev-infra):**
 - FR-16: Tooling in dev-toolkit (`bin/dt-doc-gen`, `bin/dt-doc-validate`)
 - FR-26: Commands invoke `dt-doc-gen` for structure
@@ -236,6 +256,9 @@ The `/explore` and `/research` commands have setup/conduct modes that map cleanl
 - [x] **Recommendation 12:** Commands invoke dt-doc-validate before every commit
 - [x] **Recommendation 13:** Start migration with `/explore` command (highest complexity/value)
 - [x] **Recommendation 14:** Use fixture-based testing for both commands
+- [x] **Recommendation 15:** Implement path-based detection as primary method
+- [x] **Recommendation 16:** Implement content-based detection as fallback
+- [x] **Recommendation 17:** Provide clear error with available types when detection fails
 
 ---
 
@@ -244,8 +267,8 @@ The `/explore` and `/research` commands have setup/conduct modes that map cleanl
 1. ✅ ~~Research Topic 1: Template Fetching Strategy~~ Complete
 2. ✅ ~~Research Topic 2: YAML Parsing in Bash~~ Complete
 3. ✅ ~~Research Topic 3: Command Workflow Integration~~ Complete
-4. **All high-priority blocking research complete!**
-5. Optional: Continue with medium/low priority topics (4-7)
+4. ✅ ~~Research Topic 4: Document Type Detection~~ Complete
+5. Optional: Continue with remaining topics (5-7)
 6. Ready for: `/decision doc-infrastructure --from-research`
 
 ---
