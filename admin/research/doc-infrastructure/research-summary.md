@@ -16,7 +16,7 @@ This research supports the implementation of two new dev-toolkit commands:
 
 **Research Topics:** 7 topics  
 **Research Documents:** 7 documents  
-**Status:** 🟠 In Progress (1/7 complete)
+**Status:** 🟠 In Progress (2/7 complete)
 
 ---
 
@@ -25,7 +25,7 @@ This research supports the implementation of two new dev-toolkit commands:
 | # | Topic | Priority | Status |
 |---|-------|----------|--------|
 | 1 | Template Fetching Strategy | 🔴 High | ✅ Complete |
-| 2 | YAML Parsing in Bash | 🔴 High | 🔴 Not Started |
+| 2 | YAML Parsing in Bash | 🔴 High | ✅ Complete |
 | 3 | Command Workflow Integration | 🔴 High | 🔴 Not Started |
 | 4 | Document Type Detection | 🟡 Medium | 🔴 Not Started |
 | 5 | Variable Expansion Edge Cases | 🟡 Medium | 🔴 Not Started |
@@ -75,13 +75,41 @@ Template paths follow pattern: `{TEMPLATES_ROOT}/{doc_type}/{template_name}.tmpl
 
 ---
 
+### Finding 4: Build-Time YAML Conversion is Optimal
+
+Rather than parsing YAML at runtime in bash (complex, fragile), the recommended approach is:
+1. Use yq during build/release to convert YAML to bash-native format
+2. Ship pre-compiled `.bash` files with dt-doc-validate
+3. Runtime uses simple `source` command - no parsing needed
+
+This eliminates the runtime YAML parsing problem entirely.
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+---
+
+### Finding 5: Validation YAML Uses a Constrained Subset
+
+Analysis of all 6 validation rule files shows they use a predictable, constrained YAML subset:
+- Maximum 3-4 levels of nesting
+- No anchors, aliases, or flow-style collections
+- Consistent 2-space indentation
+- Multi-line strings only in examples section
+
+This makes pure bash fallback parsing feasible if needed.
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+---
+
 ## 💡 Key Insights
 
 - [x] **Insight 1:** Environment variable approach aligns with dev-toolkit's existing patterns
 - [x] **Insight 2:** Remote fetching is useful as fallback but shouldn't be primary
 - [x] **Insight 3:** Local clone with config is simplest UX for regular users
-- [ ] Insight 4: *Pending from YAML Parsing research*
-- [ ] Insight 5: *Pending from Command Integration research*
+- [x] **Insight 4:** Build-time conversion eliminates runtime YAML parsing complexity
+- [x] **Insight 5:** Pre-compiled bash files are faster and more portable
+- [ ] Insight 6: *Pending from Command Integration research*
 
 ---
 
@@ -108,6 +136,26 @@ Template paths follow pattern: `{TEMPLATES_ROOT}/{doc_type}/{template_name}.tmpl
 - C-DT-1: No bundled templates
 - C-DT-2: Bash-only core functionality
 
+### Requirements from YAML Parsing Research
+
+**Functional:**
+- FR-YP1: Pre-compiled bash validation rules
+- FR-YP2: Build-time YAML to bash conversion
+- FR-YP3: yq for conversion script
+- FR-YP4: Optional direct YAML parsing with yq
+- FR-YP5: Clear error if no rules available
+- FR-YP6: Support path patterns, required sections, error messages
+
+**Non-Functional:**
+- NFR-YP1: Rule loading <100ms
+- NFR-YP2: Offline operation without yq
+- NFR-YP3: Documented YAML subset
+
+**Constraints:**
+- C-YP1: YAML must conform to supported subset
+- C-YP2: Pre-compiled rules must regenerate on YAML changes
+- C-YP3: yq is dev dependency only (not runtime)
+
 **Prior Requirements (from dev-infra):**
 - FR-16: Tooling in dev-toolkit (`bin/dt-doc-gen`, `bin/dt-doc-validate`)
 - FR-26: Commands invoke `dt-doc-gen` for structure
@@ -125,19 +173,22 @@ Template paths follow pattern: `{TEMPLATES_ROOT}/{doc_type}/{template_name}.tmpl
 - [x] **Recommendation 4:** Add config file support for persistent configuration
 - [x] **Recommendation 5:** Implement optional remote fetch with `--fetch` flag and version pinning
 - [x] **Recommendation 6:** Provide clear error messages with setup instructions
-- [ ] Recommendation 7: *Pending from YAML Parsing research*
-- [ ] Recommendation 8: *Pending from Command Integration research*
+- [x] **Recommendation 7:** Implement build-time YAML → bash conversion script
+- [x] **Recommendation 8:** Ship pre-compiled `.bash` rule files with dt-doc-validate
+- [x] **Recommendation 9:** Use yq for conversion (not runtime)
+- [x] **Recommendation 10:** Document supported YAML subset
+- [ ] Recommendation 11: *Pending from Command Integration research*
 
 ---
 
 ## 🚀 Next Steps
 
 1. ✅ ~~Research Topic 1: Template Fetching Strategy~~ Complete
-2. Continue with remaining high-priority topics:
-   - `/research doc-infrastructure --conduct --topic-num 2` (YAML Parsing)
+2. ✅ ~~Research Topic 2: YAML Parsing in Bash~~ Complete
+3. Continue with remaining high-priority topic:
    - `/research doc-infrastructure --conduct --topic-num 3` (Command Integration)
-3. Review requirements in `requirements.md`
-4. Use `/decision doc-infrastructure --from-research` when all research complete
+4. Review requirements in `requirements.md`
+5. Use `/decision doc-infrastructure --from-research` when all research complete
 
 ---
 

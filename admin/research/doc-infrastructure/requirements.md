@@ -180,6 +180,144 @@ The following requirements were established in dev-infra research and are adopte
 
 ---
 
+## ✅ Functional Requirements (YAML Parsing - Topic 2)
+
+### FR-YP1: Pre-compiled Bash Rules
+
+**Description:** dt-doc-validate MUST load pre-compiled bash validation rules
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-YP2: Build-Time YAML Conversion
+
+**Description:** Build system MUST convert YAML rules to bash format before release
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-YP3: yq for Conversion
+
+**Description:** Conversion script MUST use yq for reliable YAML parsing
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-YP4: Optional Direct YAML Parsing
+
+**Description:** dt-doc-validate SHOULD support direct YAML parsing if yq available
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🟢 Low
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-YP5: Clear Rule Loading Errors
+
+**Description:** dt-doc-validate MUST provide clear error if no rules available
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-YP6: Rule Content Support
+
+**Description:** Validation rules MUST support: path patterns, required sections, error messages
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+## 🎯 Non-Functional Requirements (YAML Parsing - Topic 2)
+
+### NFR-YP1: Fast Rule Loading
+
+**Description:** Rule loading MUST complete in <100ms (pre-compiled target)
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-YP2: Offline Operation
+
+**Description:** dt-doc-validate MUST work offline without yq (using pre-compiled rules)
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-YP3: Documented YAML Subset
+
+**Description:** YAML subset restrictions MUST be documented
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+## ⚠️ Constraints (YAML Parsing - Topic 2)
+
+### C-YP1: YAML Subset Conformance
+
+**Description:** Validation rules YAML must conform to supported subset (no anchors, no flow style)
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+---
+
+### C-YP2: Rule Regeneration Required
+
+**Description:** Pre-compiled bash rules must be regenerated when YAML changes
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+---
+
+### C-YP3: yq as Dev Dependency
+
+**Description:** yq is required for build-time conversion (dev dependency only, not runtime)
+
+**Source:** [research-yaml-parsing.md](research-yaml-parsing.md)
+
+---
+
 ## 💭 Assumptions
 
 ### A-1: dev-infra Available Locally
