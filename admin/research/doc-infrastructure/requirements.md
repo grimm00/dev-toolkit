@@ -862,6 +862,120 @@ The following requirements were established in dev-infra research and are adopte
 
 ---
 
+## ✅ Functional Requirements (Shared Infrastructure - Topic 7)
+
+### FR-SI1: Color Output with TTY Detection
+
+**Description:** Shared library MUST provide color output with TTY detection
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-SI2: Debug Output
+
+**Description:** Shared library MUST provide debug output controlled by DT_DEBUG
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-SI3: dev-infra Location Detection
+
+**Description:** Shared library MUST provide dev-infra location detection function
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-SI4: Function Prefix Convention
+
+**Description:** Commands MUST use `dt_*` prefix for doc-infrastructure functions
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+## 🎯 Non-Functional Requirements (Shared Infrastructure - Topic 7)
+
+### NFR-SI1: Source-able Library
+
+**Description:** Shared library MUST be source-able (not executable)
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-SI2: Export Functions
+
+**Description:** Shared library MUST export functions for use by commands
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-SI3: Color Degradation
+
+**Description:** Shared library MUST gracefully degrade without colors in non-TTY
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+## ⚠️ Constraints (Shared Infrastructure - Topic 7)
+
+### C-SI1: Follow TOOLKIT_ROOT Pattern
+
+**Description:** Follow existing TOOLKIT_ROOT detection pattern exactly
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+---
+
+### C-SI2: Monorepo Versioning
+
+**Description:** Use monorepo versioning (no independent library version)
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+---
+
+### C-SI3: Command-Specific Separation
+
+**Description:** Command-specific code stays in command-specific lib directories
+
+**Source:** [research-shared-infrastructure.md](research-shared-infrastructure.md)
+
+---
+
 ## 💭 Assumptions
 
 ### A-1: dev-infra Available Locally
