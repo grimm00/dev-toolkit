@@ -586,6 +586,132 @@ The following requirements were established in dev-infra research and are adopte
 
 ---
 
+## ✅ Functional Requirements (Variable Expansion - Topic 5)
+
+### FR-VE1: Selective envsubst Mode
+
+**Description:** dt-doc-gen MUST use selective envsubst mode (explicit variable list)
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-VE2: Variables Per Template Type
+
+**Description:** dt-doc-gen MUST define required variables per template type
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-VE3: envsubst Availability Check
+
+**Description:** dt-doc-gen MUST check for envsubst availability at startup
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-VE4: Missing envsubst Error
+
+**Description:** dt-doc-gen MUST provide helpful error if envsubst is missing
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-VE5: Variable Export
+
+**Description:** dt-doc-gen MUST export all required variables before expansion
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+## 🎯 Non-Functional Requirements (Variable Expansion - Topic 5)
+
+### NFR-VE1: Preserve Dollar Syntax
+
+**Description:** Variable expansion MUST preserve `$VAR` syntax (no braces)
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-VE2: Preserve HTML Comments
+
+**Description:** Variable expansion MUST preserve HTML comments (AI markers)
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-VE3: Unicode Support
+
+**Description:** Variable expansion MUST handle Unicode/emoji correctly
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+## ⚠️ Constraints (Variable Expansion - Topic 5)
+
+### C-VE1: gettext Dependency
+
+**Description:** envsubst requires gettext package (not pre-installed on macOS)
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+---
+
+### C-VE2: No Backslash Escape
+
+**Description:** Backslash escaping does NOT work - must use selective mode
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+---
+
+### C-VE3: Multi-line Values
+
+**Description:** Multi-line variable values may affect markdown formatting
+
+**Source:** [research-variable-expansion.md](research-variable-expansion.md)
+
+---
+
 ## 💭 Assumptions
 
 ### A-1: dev-infra Available Locally
