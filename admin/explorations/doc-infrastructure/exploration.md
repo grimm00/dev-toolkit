@@ -195,6 +195,67 @@ lib/
 
 ---
 
+### Theme 5: Command Workflow Integration
+
+Based on dev-infra research (research-command-integration.md), commands will use the tooling in a specific pattern:
+
+**Integration Architecture:**
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  Command (e.g., /explore)                                │
+│  - Orchestrates workflow                                  │
+│  - Handles user prompts                                   │
+│  - Invokes scripts for structure                          │
+│  - Generates AI content for placeholders                  │
+│  - Validates output                                       │
+│  - Commits changes                                        │
+└──────────────────────────────────────────────────────────┘
+                          │
+          ┌───────────────┴───────────────┐
+          ▼                               ▼
+┌─────────────────────┐     ┌─────────────────────────────┐
+│  dt-doc-gen          │     │  AI (Cursor)                 │
+│  - Generate structure│     │  - Fill placeholders         │
+│  - Variable expansion│     │  - Creative content          │
+│  - Mode handling     │     │  - Analysis/insights         │
+└─────────────────────┘     └─────────────────────────────┘
+          │                               │
+          └───────────────┬───────────────┘
+                          ▼
+┌──────────────────────────────────────────────────────────┐
+│  dt-doc-validate                                          │
+│  - Check structure compliance                             │
+│  - Verify required sections                               │
+│  - Report issues before commit                            │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Command Migration Strategy:**
+
+| Phase | Action |
+|-------|--------|
+| **Phase 1** | Create templates (no command changes) |
+| **Phase 2** | Update commands incrementally (inline fallback) |
+| **Phase 3** | Remove inline templates (scripts only) |
+
+**Connections:**
+- Prior research in dev-infra provides 36 functional requirements
+- Commands remain orchestrators (C-13 constraint)
+- Hybrid pattern: script generates base, AI customizes
+
+**Implications:**
+- dt-doc-gen must support same modes as commands (setup/conduct → scaffolding/full)
+- dt-doc-validate must integrate at command commit step
+- Migration requires careful coordination with dev-infra command updates
+
+**Concerns:**
+- 23 commands need migration - significant coordination effort
+- Two-mode commands (`/explore`, `/research`) most complex to migrate
+- Fallback to inline templates during transition adds complexity
+
+---
+
 ## ❓ Key Questions
 
 ### Question 1: How should template fetching work?

@@ -119,6 +119,51 @@
 
 ---
 
+### Topic 7: Command Workflow Integration
+
+**Question:** How will Cursor commands (`/explore`, `/research`, `/decision`, etc.) invoke dt-doc-gen and dt-doc-validate?
+
+**Context:** Dev-infra research (research-command-integration.md) established that commands should invoke scripts for structure generation while AI fills content. This creates a three-layer architecture: Library → CLI → Command Integration. The migration from 154 inline templates across 23 commands must be incremental.
+
+**Prior Research (dev-infra):**
+- Commands invoke `dt-doc-gen` for structure (FR-26)
+- Commands invoke `dt-doc-validate` before commit (FR-27)
+- Templates have three placeholder types: `${VAR}`, `<!-- AI: -->`, `<!-- EXPAND: -->` (FR-28)
+- Migration is incremental, one command at a time (FR-30)
+- Commands remain orchestrators; scripts are tools (C-13)
+
+**Priority:** High
+
+**Rationale:** This defines how the tooling actually gets used. Without clear integration patterns, the tooling may not fit the workflow.
+
+**Suggested Approach:**
+- Review dev-infra research-command-integration.md findings
+- Design command invocation patterns for dev-toolkit context
+- Define migration order (start with `/explore`, `/research` per R7)
+- Document how two-mode commands (setup/conduct) map to dt-doc-gen modes
+- Plan integration testing strategy
+
+**Key Integration Patterns from Dev-Infra:**
+
+| Pattern | Description |
+|---------|-------------|
+| **Hybrid** | Script generates base, AI customizes |
+| **Validation-After** | AI generates content, script validates before commit |
+| **Mode Mapping** | Setup mode → scaffolding, Conduct mode → full + AI expansion |
+
+**Command-to-DocType Mapping:**
+
+| Command | Doc Types | Mode Pattern |
+|---------|-----------|--------------|
+| `/explore` | exploration.md, research-topics.md, README.md | Two-mode (Setup + Conduct) |
+| `/research` | research-*.md, requirements.md | Two-mode (Setup + Conduct) |
+| `/decision` | adr-NNN.md, decisions-summary.md | Single (Full) |
+| `/transition-plan` | feature-plan.md, phase-N.md | Single (Full) |
+| `/handoff` | handoff.md | Single (Full) |
+| `/fix-plan` | fix-batch-N.md | Single (Full) |
+
+---
+
 ## 🎯 Research Workflow
 
 1. Use `/research doc-infrastructure --from-explore doc-infrastructure` to start research
@@ -134,12 +179,33 @@
 |-------|----------|-----------|------------------|
 | Template Fetching Strategy | High | Yes (dt-doc-gen) | 1-2 hours |
 | YAML Parsing in Bash | High | Yes (dt-doc-validate) | 2-3 hours |
+| Command Workflow Integration | High | Yes (adoption) | 1-2 hours |
 | Document Type Detection | Medium | No | 1 hour |
 | Variable Expansion Edge Cases | Medium | No | 1 hour |
 | Error Output Format | Medium | No | 1 hour |
 | Shared Infrastructure Design | Low | No | 30 min |
 
-**Total Estimated Research Time:** 6-8 hours
+**Total Estimated Research Time:** 8-11 hours
+
+---
+
+## 📚 Prior Research (dev-infra)
+
+The template-doc-infrastructure feature in dev-infra completed comprehensive research that informs our implementation:
+
+| Research Document | Key Findings |
+|-------------------|--------------|
+| `research-generation-architecture.md` | Shared library + template files pattern; sed/envsubst rendering |
+| `research-validation-approach.md` | On-demand CLI primary; layered architecture; counter-based tracking |
+| `research-command-integration.md` | Commands invoke scripts; hybrid generation; incremental migration |
+| `requirements.md` | 36 functional requirements, 18 NFRs, 18 constraints defined |
+
+**Key Requirements to Implement:**
+- FR-16: Tooling in dev-toolkit (`bin/dt-doc-gen`, `bin/dt-doc-validate`)
+- FR-26: Commands invoke `dt-doc-gen` for structure
+- FR-27: Commands invoke `dt-doc-validate` before commit
+- C-7: Scripts generate structure, AI fills content
+- C-13: Commands remain orchestrators
 
 ---
 
