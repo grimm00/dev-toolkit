@@ -1,9 +1,9 @@
 # Doc Infrastructure - Research Hub
 
 **Purpose:** Research for dt-doc-gen and dt-doc-validate implementation  
-**Status:** 🔴 Research  
+**Status:** 🟠 In Progress  
 **Created:** 2026-01-16  
-**Last Updated:** 2026-01-16
+**Last Updated:** 2026-01-17
 
 ---
 
@@ -16,7 +16,7 @@
 
 | # | Topic | Priority | Status | Document |
 |---|-------|----------|--------|----------|
-| 1 | Template Fetching Strategy | 🔴 High | 🔴 Not Started | [research-template-fetching.md](research-template-fetching.md) |
+| 1 | Template Fetching Strategy | 🔴 High | ✅ Complete | [research-template-fetching.md](research-template-fetching.md) |
 | 2 | YAML Parsing in Bash | 🔴 High | 🔴 Not Started | [research-yaml-parsing.md](research-yaml-parsing.md) |
 | 3 | Command Workflow Integration | 🔴 High | 🔴 Not Started | [research-command-integration.md](research-command-integration.md) |
 | 4 | Document Type Detection | 🟡 Medium | 🔴 Not Started | [research-type-detection.md](research-type-detection.md) |
@@ -70,4 +70,4 @@ Significant research was completed in dev-infra that informs our implementation:
 
 ---
 
-**Last Updated:** 2026-01-16
+**Last Updated:** 2026-01-17

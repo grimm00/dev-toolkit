@@ -3,7 +3,7 @@
 **Source:** Research on doc-infrastructure  
 **Status:** Draft  
 **Created:** 2026-01-16  
-**Last Updated:** 2026-01-16
+**Last Updated:** 2026-01-17
 
 ---
 
@@ -52,15 +52,73 @@ The following requirements were established in dev-infra research and are adopte
 
 ## ✅ Functional Requirements (New)
 
-*Requirements discovered during dev-toolkit research will be added here.*
+### FR-DT-1: Explicit Template Path Flag
 
-### FR-DT-1: [Requirement Name]
+**Description:** dt-doc-gen MUST support explicit template path via `--template-path` CLI flag
 
-**Description:** [Requirement description]
+**Source:** [research-template-fetching.md](research-template-fetching.md)
 
-**Source:** [research-*.md](research-*.md)
+**Priority:** 🔴 High
 
-**Priority:** [High | Medium | Low]
+**Status:** 🔴 Pending
+
+---
+
+### FR-DT-2: Environment Variable Template Discovery
+
+**Description:** dt-doc-gen MUST check `$DT_TEMPLATES_PATH` environment variable for template location
+
+**Source:** [research-template-fetching.md](research-template-fetching.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-DT-3: Config File Template Path
+
+**Description:** dt-doc-gen MUST check config file for `DT_TEMPLATES_PATH` setting
+
+**Source:** [research-template-fetching.md](research-template-fetching.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-DT-4: Default Template Locations
+
+**Description:** dt-doc-gen SHOULD check common default locations (`$HOME/Projects/dev-infra/...`, `$HOME/.dev-infra/...`)
+
+**Source:** [research-template-fetching.md](research-template-fetching.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-DT-5: Optional Remote Fetch
+
+**Description:** dt-doc-gen MAY support remote template fetch with `--fetch` flag (requires version pinning)
+
+**Source:** [research-template-fetching.md](research-template-fetching.md)
+
+**Priority:** 🟢 Low
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-DT-6: Version Pinning for Remote Fetch
+
+**Description:** Remote fetch MUST require version pinning (`$DT_TEMPLATES_VERSION`)
+
+**Source:** [research-template-fetching.md](research-template-fetching.md)
+
+**Priority:** 🟢 Low (only if FR-DT-5 implemented)
 
 **Status:** 🔴 Pending
 
@@ -68,15 +126,37 @@ The following requirements were established in dev-infra research and are adopte
 
 ## 🎯 Non-Functional Requirements (New)
 
-*Requirements discovered during dev-toolkit research will be added here.*
+### NFR-DT-1: Offline Template Discovery
 
-### NFR-DT-1: [Requirement Name]
+**Description:** Template discovery MUST work offline (network not required for local paths)
 
-**Description:** [Requirement description]
+**Source:** [research-template-fetching.md](research-template-fetching.md)
 
-**Source:** [research-*.md](research-*.md)
+**Priority:** 🔴 High
 
-**Priority:** [High | Medium | Low]
+**Status:** 🔴 Pending
+
+---
+
+### NFR-DT-2: Clear Setup Error Messages
+
+**Description:** Error messages MUST include clear setup instructions when templates not found
+
+**Source:** [research-template-fetching.md](research-template-fetching.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-DT-3: Documented Discovery Order
+
+**Description:** Template discovery order MUST be documented and predictable
+
+**Source:** [research-template-fetching.md](research-template-fetching.md)
+
+**Priority:** 🟡 Medium
 
 **Status:** 🔴 Pending
 
@@ -84,13 +164,19 @@ The following requirements were established in dev-infra research and are adopte
 
 ## ⚠️ Constraints (New)
 
-*Constraints discovered during dev-toolkit research will be added here.*
+### C-DT-1: No Bundled Templates
 
-### C-DT-1: [Constraint Name]
+**Description:** Templates are NOT bundled with dev-toolkit (single source of truth in dev-infra)
 
-**Description:** [Constraint description]
+**Source:** [research-template-fetching.md](research-template-fetching.md)
 
-**Source:** [research-*.md](research-*.md)
+---
+
+### C-DT-2: Bash-Only Core Functionality
+
+**Description:** Bash-only implementation (no external dependencies for core functionality)
+
+**Source:** [research-template-fetching.md](research-template-fetching.md)
 
 ---
 
@@ -130,4 +216,4 @@ The following requirements were established in dev-infra research and are adopte
 
 ---
 
-**Last Updated:** 2026-01-16
+**Last Updated:** 2026-01-17
