@@ -16,7 +16,7 @@ This research supports the implementation of two new dev-toolkit commands:
 
 **Research Topics:** 7 topics  
 **Research Documents:** 7 documents  
-**Status:** 🟠 In Progress (5/7 complete)
+**Status:** 🟠 In Progress (6/7 complete)
 
 ---
 
@@ -29,7 +29,7 @@ This research supports the implementation of two new dev-toolkit commands:
 | 3 | Command Workflow Integration | 🔴 High | ✅ Complete |
 | 4 | Document Type Detection | 🟡 Medium | ✅ Complete |
 | 5 | Variable Expansion Edge Cases | 🟡 Medium | ✅ Complete |
-| 6 | Error Output Format | 🟡 Medium | 🔴 Not Started |
+| 6 | Error Output Format | 🟡 Medium | ✅ Complete |
 | 7 | Shared Infrastructure Design | 🟢 Low | 🔴 Not Started |
 
 ---
@@ -148,6 +148,8 @@ The `/explore` and `/research` commands have setup/conduct modes that map cleanl
 - [x] **Insight 9:** README.md files require path context (content is generic)
 - [x] **Insight 10:** Selective envsubst mode is MANDATORY for safe expansion
 - [x] **Insight 11:** `$VAR` (no braces) is NOT expanded - only `${VAR}` syntax
+- [x] **Insight 12:** Two output modes needed: text (default) and JSON (--json)
+- [x] **Insight 13:** Exit codes are critical for CI integration (0/1/2)
 
 ---
 
@@ -252,6 +254,27 @@ The `/explore` and `/research` commands have setup/conduct modes that map cleanl
 - C-VE2: Backslash escaping does NOT work
 - C-VE3: Multi-line values may affect formatting
 
+### Requirements from Error Output Research
+
+**Functional:**
+- FR-EO1: Text output format (default)
+- FR-EO2: JSON output format (`--json`)
+- FR-EO3: Every error includes file, message, fix
+- FR-EO4: Exit codes 0/1/2
+- FR-EO5: Multi-file summary statistics
+- FR-EO6: Error code `CATEGORY_SPECIFIC_ERROR` convention
+
+**Non-Functional:**
+- NFR-EO1: Human-readable text without tooling
+- NFR-EO2: Valid JSON parseable by jq
+- NFR-EO3: Color output detects TTY and degrades
+- NFR-EO4: Fix suggestions specific and actionable
+
+**Constraints:**
+- C-EO1: ERROR causes exit 1; WARNING does not
+- C-EO2: JSON mode disables colors/emoji
+- C-EO3: Exit code 2 for system errors only
+
 **Prior Requirements (from dev-infra):**
 - FR-16: Tooling in dev-toolkit (`bin/dt-doc-gen`, `bin/dt-doc-validate`)
 - FR-26: Commands invoke `dt-doc-gen` for structure
@@ -283,6 +306,9 @@ The `/explore` and `/research` commands have setup/conduct modes that map cleanl
 - [x] **Recommendation 18:** ALWAYS use selective envsubst mode
 - [x] **Recommendation 19:** Check for envsubst availability at startup
 - [x] **Recommendation 20:** Define variable lists per template type
+- [x] **Recommendation 21:** Implement dual output modes (text default, --json)
+- [x] **Recommendation 22:** Detect TTY for color support, gracefully degrade
+- [x] **Recommendation 23:** Include file, line, and actionable fix in every error
 
 ---
 
@@ -293,8 +319,9 @@ The `/explore` and `/research` commands have setup/conduct modes that map cleanl
 3. ✅ ~~Research Topic 3: Command Workflow Integration~~ Complete
 4. ✅ ~~Research Topic 4: Document Type Detection~~ Complete
 5. ✅ ~~Research Topic 5: Variable Expansion Edge Cases~~ Complete
-6. Optional: Continue with remaining topics (6-7)
-7. Ready for: `/decision doc-infrastructure --from-research`
+6. ✅ ~~Research Topic 6: Error Output Format~~ Complete
+7. Optional: Topic 7 (Shared Infrastructure Design - Low priority)
+8. Ready for: `/decision doc-infrastructure --from-research`
 
 ---
 

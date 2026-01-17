@@ -712,6 +712,156 @@ The following requirements were established in dev-infra research and are adopte
 
 ---
 
+## ✅ Functional Requirements (Error Output - Topic 6)
+
+### FR-EO1: Text Output Format
+
+**Description:** dt-doc-validate MUST support text output format (default)
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-EO2: JSON Output Format
+
+**Description:** dt-doc-validate MUST support JSON output format (`--json`)
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-EO3: Complete Error Information
+
+**Description:** Every error MUST include file, message, and fix suggestion
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-EO4: Exit Codes
+
+**Description:** dt-doc-validate MUST return exit code 0 (success), 1 (validation error), 2 (system error)
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-EO5: Summary Statistics
+
+**Description:** Multi-file validation MUST provide summary statistics
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-EO6: Error Code Convention
+
+**Description:** Error codes MUST follow `CATEGORY_SPECIFIC_ERROR` convention
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+## 🎯 Non-Functional Requirements (Error Output - Topic 6)
+
+### NFR-EO1: Human Readable Text
+
+**Description:** Text output MUST be human-readable without tooling
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-EO2: Valid JSON
+
+**Description:** JSON output MUST be valid JSON parseable by jq
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-EO3: Color Degradation
+
+**Description:** Color output MUST detect TTY and degrade gracefully
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-EO4: Actionable Fixes
+
+**Description:** Fix suggestions MUST be specific and actionable
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+## ⚠️ Constraints (Error Output - Topic 6)
+
+### C-EO1: Severity Impact
+
+**Description:** ERROR severity causes exit 1; WARNING does not affect exit code
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+---
+
+### C-EO2: JSON Mode Colors
+
+**Description:** JSON output disables colors and emoji symbols
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+---
+
+### C-EO3: Exit Code 2 Reserved
+
+**Description:** Exit code 2 reserved for system errors (not validation failures)
+
+**Source:** [research-error-output.md](research-error-output.md)
+
+---
+
 ## 💭 Assumptions
 
 ### A-1: dev-infra Available Locally
