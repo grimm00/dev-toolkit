@@ -318,6 +318,156 @@ The following requirements were established in dev-infra research and are adopte
 
 ---
 
+## ✅ Functional Requirements (Command Integration - Topic 3)
+
+### FR-CI1: Two-Mode Support
+
+**Description:** dt-doc-gen MUST support `--mode setup|conduct` for two-mode commands
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-CI2: Output Path Control
+
+**Description:** dt-doc-gen MUST output files to specified `--output` path
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-CI3: Directory Validation
+
+**Description:** dt-doc-validate MUST accept directory path for batch validation
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-CI4: Exit Codes
+
+**Description:** dt-doc-validate MUST return exit code 0 (pass), 1 (errors), 2 (system error)
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-CI5: Pre-Commit Validation
+
+**Description:** Commands MUST invoke dt-doc-validate before commit
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+### FR-CI6: Script Invocation
+
+**Description:** Commands MUST invoke dt-doc-gen instead of inline templates (post-migration)
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+## 🎯 Non-Functional Requirements (Command Integration - Topic 3)
+
+### NFR-CI1: Incremental Migration
+
+**Description:** Migration MUST be incremental (one command at a time)
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-CI2: Backward Compatibility
+
+**Description:** Migration MUST NOT break existing command workflows
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-CI3: Output Compatibility
+
+**Description:** dt-doc-gen output MUST match current inline template output
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🔴 High
+
+**Status:** 🔴 Pending
+
+---
+
+### NFR-CI4: Fast Invocation
+
+**Description:** Command invocation time for dt-doc-gen MUST be <1 second
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+**Priority:** 🟡 Medium
+
+**Status:** 🔴 Pending
+
+---
+
+## ⚠️ Constraints (Command Integration - Topic 3)
+
+### C-CI1: Commands as Orchestrators
+
+**Description:** Commands remain workflow orchestrators (no change to orchestration logic)
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+---
+
+### C-CI2: AI Content Scope
+
+**Description:** AI generates content only for placeholders, not structure
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+---
+
+### C-CI3: Migration Fallback
+
+**Description:** Inline templates may remain as fallback during migration (Phase 2)
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+---
+
 ## 💭 Assumptions
 
 ### A-1: dev-infra Available Locally

@@ -16,7 +16,7 @@ This research supports the implementation of two new dev-toolkit commands:
 
 **Research Topics:** 7 topics  
 **Research Documents:** 7 documents  
-**Status:** 🟠 In Progress (2/7 complete)
+**Status:** 🟠 In Progress (3/7 complete)
 
 ---
 
@@ -26,7 +26,7 @@ This research supports the implementation of two new dev-toolkit commands:
 |---|-------|----------|--------|
 | 1 | Template Fetching Strategy | 🔴 High | ✅ Complete |
 | 2 | YAML Parsing in Bash | 🔴 High | ✅ Complete |
-| 3 | Command Workflow Integration | 🔴 High | 🔴 Not Started |
+| 3 | Command Workflow Integration | 🔴 High | ✅ Complete |
 | 4 | Document Type Detection | 🟡 Medium | 🔴 Not Started |
 | 5 | Variable Expansion Edge Cases | 🟡 Medium | 🔴 Not Started |
 | 6 | Error Output Format | 🟡 Medium | 🔴 Not Started |
@@ -102,6 +102,39 @@ This makes pure bash fallback parsing feasible if needed.
 
 ---
 
+### Finding 6: Commands Already Invoke Shell Commands
+
+Current Cursor commands already use `run_terminal_cmd` to execute shell commands (git operations). The same pattern applies for dt-doc-gen and dt-doc-validate:
+
+```markdown
+**Generate structure:**
+\`\`\`bash
+dt-doc-gen exploration my-topic --mode setup
+\`\`\`
+
+**Validate before commit:**
+\`\`\`bash
+dt-doc-validate admin/explorations/my-topic/
+\`\`\`
+```
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+---
+
+### Finding 7: Two-Mode Commands Map to dt-doc-gen Modes
+
+The `/explore` and `/research` commands have setup/conduct modes that map cleanly:
+
+| Command Mode | dt-doc-gen Mode | Output | AI Role |
+|--------------|-----------------|--------|---------|
+| Setup | `--mode setup` | Scaffolding (~60-80 lines) | Variable substitution only |
+| Conduct | `--mode conduct` | Full document (~200-300 lines) | Fill expansion zones |
+
+**Source:** [research-command-integration.md](research-command-integration.md)
+
+---
+
 ## 💡 Key Insights
 
 - [x] **Insight 1:** Environment variable approach aligns with dev-toolkit's existing patterns
@@ -109,7 +142,8 @@ This makes pure bash fallback parsing feasible if needed.
 - [x] **Insight 3:** Local clone with config is simplest UX for regular users
 - [x] **Insight 4:** Build-time conversion eliminates runtime YAML parsing complexity
 - [x] **Insight 5:** Pre-compiled bash files are faster and more portable
-- [ ] Insight 6: *Pending from Command Integration research*
+- [x] **Insight 6:** Commands already invoke shell commands - dt-doc-gen fits existing pattern
+- [x] **Insight 7:** Migration is incremental - /explore first, then /research
 
 ---
 
@@ -156,6 +190,27 @@ This makes pure bash fallback parsing feasible if needed.
 - C-YP2: Pre-compiled rules must regenerate on YAML changes
 - C-YP3: yq is dev dependency only (not runtime)
 
+### Requirements from Command Integration Research
+
+**Functional:**
+- FR-CI1: `--mode setup|conduct` for two-mode support
+- FR-CI2: `--output` path control
+- FR-CI3: Directory validation support
+- FR-CI4: Exit codes 0/1/2
+- FR-CI5: Pre-commit validation
+- FR-CI6: Script invocation (post-migration)
+
+**Non-Functional:**
+- NFR-CI1: Incremental migration
+- NFR-CI2: Backward compatibility
+- NFR-CI3: Output compatibility with inline templates
+- NFR-CI4: <1 second invocation time
+
+**Constraints:**
+- C-CI1: Commands remain orchestrators
+- C-CI2: AI generates content only (not structure)
+- C-CI3: Inline templates as fallback during migration
+
 **Prior Requirements (from dev-infra):**
 - FR-16: Tooling in dev-toolkit (`bin/dt-doc-gen`, `bin/dt-doc-validate`)
 - FR-26: Commands invoke `dt-doc-gen` for structure
@@ -177,7 +232,10 @@ This makes pure bash fallback parsing feasible if needed.
 - [x] **Recommendation 8:** Ship pre-compiled `.bash` rule files with dt-doc-validate
 - [x] **Recommendation 9:** Use yq for conversion (not runtime)
 - [x] **Recommendation 10:** Document supported YAML subset
-- [ ] Recommendation 11: *Pending from Command Integration research*
+- [x] **Recommendation 11:** Implement dt-doc-gen with `--mode setup|conduct` support
+- [x] **Recommendation 12:** Commands invoke dt-doc-validate before every commit
+- [x] **Recommendation 13:** Start migration with `/explore` command (highest complexity/value)
+- [x] **Recommendation 14:** Use fixture-based testing for both commands
 
 ---
 
@@ -185,10 +243,10 @@ This makes pure bash fallback parsing feasible if needed.
 
 1. ✅ ~~Research Topic 1: Template Fetching Strategy~~ Complete
 2. ✅ ~~Research Topic 2: YAML Parsing in Bash~~ Complete
-3. Continue with remaining high-priority topic:
-   - `/research doc-infrastructure --conduct --topic-num 3` (Command Integration)
-4. Review requirements in `requirements.md`
-5. Use `/decision doc-infrastructure --from-research` when all research complete
+3. ✅ ~~Research Topic 3: Command Workflow Integration~~ Complete
+4. **All high-priority blocking research complete!**
+5. Optional: Continue with medium/low priority topics (4-7)
+6. Ready for: `/decision doc-infrastructure --from-research`
 
 ---
 

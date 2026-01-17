@@ -18,7 +18,7 @@
 |---|-------|----------|--------|----------|
 | 1 | Template Fetching Strategy | 🔴 High | ✅ Complete | [research-template-fetching.md](research-template-fetching.md) |
 | 2 | YAML Parsing in Bash | 🔴 High | ✅ Complete | [research-yaml-parsing.md](research-yaml-parsing.md) |
-| 3 | Command Workflow Integration | 🔴 High | 🔴 Not Started | [research-command-integration.md](research-command-integration.md) |
+| 3 | Command Workflow Integration | 🔴 High | ✅ Complete | [research-command-integration.md](research-command-integration.md) |
 | 4 | Document Type Detection | 🟡 Medium | 🔴 Not Started | [research-type-detection.md](research-type-detection.md) |
 | 5 | Variable Expansion Edge Cases | 🟡 Medium | 🔴 Not Started | [research-variable-expansion.md](research-variable-expansion.md) |
 | 6 | Error Output Format | 🟡 Medium | 🔴 Not Started | [research-error-output.md](research-error-output.md) |
