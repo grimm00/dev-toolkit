@@ -49,6 +49,11 @@ lib/
 ```bash
 # lib/core/output-utils.sh
 
+# XDG Base Directory helpers (consistent with proj-cli)
+dt_get_config_dir()   # ${XDG_CONFIG_HOME:-~/.config}/dev-toolkit
+dt_get_data_dir()     # ${XDG_DATA_HOME:-~/.local/share}/dev-toolkit
+dt_get_config_file()  # Config file path
+
 # Color setup with TTY detection
 dt_setup_colors()
 
@@ -95,7 +100,7 @@ dt_print_status "INFO" "Processing template..."
 
 | Layer | Contents | Changes Often? |
 |-------|----------|----------------|
-| **Shared** (`lib/core/output-utils.sh`) | Color, TTY, debug, version, dev-infra detection | Rarely |
+| **Shared** (`lib/core/output-utils.sh`) | XDG paths, Color, TTY, debug, version, dev-infra detection | Rarely |
 | **dt-doc-gen** (`lib/doc-gen/`) | Template fetching, variable expansion, rendering | Per sprint |
 | **dt-doc-validate** (`lib/doc-validate/`) | Validation rules, error formatting, type detection | Per sprint |
 
