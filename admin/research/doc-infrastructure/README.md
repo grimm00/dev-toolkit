@@ -9,9 +9,11 @@
 
 ## 📋 Quick Links
 
+- **[Decisions Hub](../../decisions/doc-infrastructure/README.md)** - 🎯 Architectural decisions (7 ADRs)
 - **[HANDOFF](HANDOFF.md)** - 📎 Handoff document for this research phase
 - **[Research Summary](research-summary.md)** - Summary of all research findings
 - **[Requirements](requirements.md)** - Requirements discovered during research (80 total)
+- **[Iteration Plan](iteration-plan.md)** - Per-command iteration strategy for implementation
 
 ### Research Documents
 
@@ -62,18 +64,23 @@ Significant research was completed in dev-infra that informs our implementation:
 
 ## 🚀 Next Steps
 
-**All research complete!** Proceed to Decision Phase:
+**Research and Decision phases complete!**
+
+### ✅ Completed
+- Research Phase: 7 topics investigated
+- Decision Phase: 7 ADRs created
+
+### 📍 Current Status
+See [Decisions Hub](../../decisions/doc-infrastructure/README.md) for all architectural decisions.
+
+### ▶️ Next
+Proceed to Implementation Planning:
 
 ```bash
-/decision doc-infrastructure --from-research
+/transition-plan doc-infrastructure --from-adr
 ```
 
-This will:
-1. Review all 7 research documents
-2. Consolidate 80 requirements
-3. Make architectural decisions
-4. Create ADR documents
-5. Prepare for implementation planning
+This will create the feature plan and phase documents for implementation.
 
 ---
 

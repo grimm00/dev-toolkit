@@ -47,6 +47,7 @@ admin/research/doc-infrastructure/
 ├── README.md                          # Research hub (updated)
 ├── requirements.md                    # 80 requirements consolidated
 ├── research-summary.md                # All findings summarized
+├── iteration-plan.md                  # Per-command iteration strategy ✅ NEW
 ├── research-template-fetching.md      # Topic 1 ✅
 ├── research-yaml-parsing.md           # Topic 2 ✅
 ├── research-command-integration.md    # Topic 3 ✅
@@ -123,6 +124,33 @@ d3bc974 docs(research): create doc-infrastructure research structure
 
 ---
 
+## 📋 Iteration Plan
+
+An **iteration plan** has been created for per-command template refinement. See [iteration-plan.md](iteration-plan.md).
+
+### Command Sprint Order
+
+| Sprint | Command | Complexity | Rationale |
+|--------|---------|------------|-----------|
+| 1 | `/explore` | 🔴 High | Two-mode, sets patterns |
+| 2 | `/research` | 🔴 High | Two-mode, builds on Sprint 1 |
+| 3 | `/decision` | 🟡 Medium | Single-mode, ADR format |
+| 4 | `/transition-plan` | 🟡 Medium | Single-mode, planning |
+| 5 | `/handoff` | 🟢 Low | Single-mode, simpler |
+| 6 | `/fix-plan` | 🟢 Low | Single-mode, simpler |
+
+### Decision Points for Decision Phase
+
+| ID | Question | Research Recommendation |
+|----|----------|------------------------|
+| DP-1 | Template override mechanism | Layered discovery (flag → env → config → defaults) |
+| DP-2 | Dev-infra coordination model | PR per sprint (batched) |
+| DP-3 | Migration fallback duration | Remove fallback when next sprint validates |
+| DP-4 | Validation strictness strategy | Match inline behavior first, then tighten |
+| DP-5 | Test fixture source | Capture baseline from inline templates |
+
+---
+
 ## 🚀 Next Step
 
 **Run the Decision Phase:**
@@ -133,11 +161,12 @@ cd /Users/cdwilson/Projects/dev-toolkit/worktrees/feat-doc-infrastructure
 ```
 
 This will:
-1. Review all 7 research documents
+1. Review all 7 research documents + iteration plan
 2. Consolidate 80 requirements
-3. Make architectural decisions
-4. Create ADR documents
-5. Prepare for implementation planning
+3. Resolve 5 decision points (DP-1 through DP-5)
+4. Make architectural decisions
+5. Create ADR documents
+6. Prepare for implementation planning (Sprint 1: /explore)
 
 ---
 
@@ -147,6 +176,7 @@ This will:
 - [Research Hub](admin/research/doc-infrastructure/README.md)
 - [Requirements](admin/research/doc-infrastructure/requirements.md)
 - [Research Summary](admin/research/doc-infrastructure/research-summary.md)
+- [Iteration Plan](admin/research/doc-infrastructure/iteration-plan.md)
 
 ### In Main Repository
 - [Original Handoff](../tmp/handoff-doc-infrastructure.md)
