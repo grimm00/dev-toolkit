@@ -9,8 +9,9 @@
 
 ## 📋 Quick Links
 
+- **[HANDOFF](HANDOFF.md)** - 📎 Handoff document for this research phase
 - **[Research Summary](research-summary.md)** - Summary of all research findings
-- **[Requirements](requirements.md)** - Requirements discovered during research
+- **[Requirements](requirements.md)** - Requirements discovered during research (80 total)
 
 ### Research Documents
 
@@ -61,13 +62,19 @@ Significant research was completed in dev-infra that informs our implementation:
 
 ## 🚀 Next Steps
 
-1. Conduct research for high-priority blocking topics first:
-   - `/research doc-infrastructure --conduct --topic-num 1` (Template Fetching)
-   - `/research doc-infrastructure --conduct --topic-num 2` (YAML Parsing)
-   - `/research doc-infrastructure --conduct --topic-num 3` (Command Integration)
-2. Review requirements in `requirements.md`
-3. Use `/decision doc-infrastructure --from-research` to make decisions
+**All research complete!** Proceed to Decision Phase:
+
+```bash
+/decision doc-infrastructure --from-research
+```
+
+This will:
+1. Review all 7 research documents
+2. Consolidate 80 requirements
+3. Make architectural decisions
+4. Create ADR documents
+5. Prepare for implementation planning
 
 ---
 
-**Last Updated:** 2026-01-17
+**Last Updated:** 2026-01-20
