@@ -71,6 +71,10 @@ dt_show_version()
 
 # dev-infra location detection
 dt_detect_dev_infra()
+
+# Project structure detection (admin vs docs/maintainers)
+dt_detect_project_structure()  # Returns "admin" or "docs/maintainers"
+dt_get_docs_root()             # Convenience wrapper
 ```
 
 ### Usage Pattern

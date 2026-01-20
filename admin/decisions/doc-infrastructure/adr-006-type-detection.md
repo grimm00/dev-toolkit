@@ -20,6 +20,11 @@ dt-doc-validate must determine the document type to apply the correct validation
 - FR-TD2: Path-based type detection
 - FR-TD3: Content-based fallback detection
 
+**Backward Compatibility:**
+- Some projects use `admin/` directory (legacy/dev-infra style)
+- Newer projects may use `docs/maintainers/` directory
+- Detection must support both with `admin/` taking priority
+
 ---
 
 ## Decision
@@ -56,6 +61,53 @@ dt-doc-validate must determine the document type to apply the correct validation
 | `*/planning/fix/fix-batch-*.md` | fix_batch |
 | `*/handoff*.md` | handoff |
 | `*/reflection*.md` | reflection |
+
+### Project Structure Detection (Backward Compatibility)
+
+Projects may use different directory structures for planning/documentation:
+
+| Structure | Root Directory | Example Path |
+|-----------|---------------|--------------|
+| **Legacy (admin)** | `admin/` | `admin/decisions/my-topic/adr-001.md` |
+| **Modern (docs)** | `docs/maintainers/` | `docs/maintainers/decisions/my-topic/adr-001.md` |
+
+**Detection Priority:** Check `admin/` first for backward compatibility with existing projects.
+
+```bash
+dt_detect_project_structure() {
+    # Check for admin directory (legacy/dev-infra style) FIRST
+    if [ -d "admin/explorations" ] || [ -d "admin/research" ] || [ -d "admin/decisions" ] || [ -d "admin/planning" ]; then
+        echo "admin"
+        return 0
+    fi
+    
+    # Check for docs/maintainers directory (modern style)
+    if [ -d "docs/maintainers/explorations" ] || [ -d "docs/maintainers/research" ] || [ -d "docs/maintainers/decisions" ]; then
+        echo "docs/maintainers"
+        return 0
+    fi
+    
+    # Default to admin (will be created if needed)
+    echo "admin"
+    return 0
+}
+
+dt_get_docs_root() {
+    local structure
+    structure=$(dt_detect_project_structure)
+    echo "$structure"
+}
+```
+
+**Usage in path resolution:**
+```bash
+# Instead of hardcoded paths, use detected structure
+DOCS_ROOT=$(dt_get_docs_root)
+EXPLORATIONS_DIR="$DOCS_ROOT/explorations"
+RESEARCH_DIR="$DOCS_ROOT/research"
+DECISIONS_DIR="$DOCS_ROOT/decisions"
+PLANNING_DIR="$DOCS_ROOT/planning"
+```
 
 ### Implementation
 
@@ -141,6 +193,7 @@ detect_from_content() {
 - **Reliable:** Path-based detection is 100% reliable in testing
 - **Helpful errors:** Lists all available types when detection fails
 - **Flexible:** Supports non-standard locations via content detection
+- **Backward compatible:** Supports both `admin/` and `docs/maintainers/` structures
 
 ### Negative
 
