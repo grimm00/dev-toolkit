@@ -1048,12 +1048,12 @@ dt_create_output_dir() {
 
 #### 5.1 RED - Write failing integration tests
 
-- [ ] Write test: `dt-doc-gen --help` shows usage
-- [ ] Write test: `dt-doc-gen --version` shows version
-- [ ] Write test: `dt-doc-gen` with no args shows error
-- [ ] Write test: `dt-doc-gen exploration topic` generates files
-- [ ] Write test: `dt-doc-gen --mode setup` generates scaffolding
-- [ ] Write test: `dt-doc-gen --output path` respects output override
+- [x] Write test: `dt-doc-gen --help` shows usage
+- [x] Write test: `dt-doc-gen --version` shows version
+- [x] Write test: `dt-doc-gen` with no args shows error
+- [x] Write test: `dt-doc-gen exploration topic` generates files
+- [x] Write test: `dt-doc-gen --mode setup` generates scaffolding
+- [x] Write test: `dt-doc-gen --output path` respects output override
 - [x] Verify tests fail
 
 **Test code:**
@@ -1255,11 +1255,11 @@ teardown() {
 
 #### 5.2 GREEN - Implement CLI main function
 
-- [ ] Implement argument parsing
-- [ ] Implement `--help` and `--version`
-- [ ] Implement document generation logic
-- [ ] Implement `--mode` handling (setup/conduct)
-- [ ] Implement `--output` handling
+- [x] Implement argument parsing
+- [x] Implement `--help` and `--version`
+- [x] Implement document generation logic
+- [x] Implement `--mode` handling (setup/conduct)
+- [x] Implement `--output` handling
 - [x] Run tests, verify they pass
 
 **Implementation (update bin/dt-doc-gen):**
