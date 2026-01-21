@@ -61,3 +61,83 @@ setup() {
     [ "$status" -eq 0 ]
     [ "$output" = "$HOME/.config/dev-toolkit/config" ]
 }
+
+# ============================================================================
+# Color Setup Tests
+# ============================================================================
+
+@test "dt_setup_colors: sets color variables" {
+    # Reset any existing colors
+    DT_RED=""
+    DT_GREEN=""
+    dt_setup_colors
+    # Colors should be set (either with codes or empty for non-TTY)
+    [ -n "${DT_NC+x}" ]  # Variable exists (may be empty)
+}
+
+# ============================================================================
+# Print Status Tests
+# ============================================================================
+
+@test "dt_print_status: ERROR includes error emoji and message" {
+    dt_setup_colors
+    run dt_print_status "ERROR" "Test error message"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "❌" ]]
+    [[ "$output" =~ "Test error message" ]]
+}
+
+@test "dt_print_status: WARNING includes warning emoji and message" {
+    dt_setup_colors
+    run dt_print_status "WARNING" "Test warning"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "⚠️" ]]
+    [[ "$output" =~ "Test warning" ]]
+}
+
+@test "dt_print_status: SUCCESS includes success emoji and message" {
+    dt_setup_colors
+    run dt_print_status "SUCCESS" "Test success"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "✅" ]]
+    [[ "$output" =~ "Test success" ]]
+}
+
+@test "dt_print_status: INFO includes info emoji and message" {
+    dt_setup_colors
+    run dt_print_status "INFO" "Test info"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "ℹ️" ]]
+    [[ "$output" =~ "Test info" ]]
+}
+
+# ============================================================================
+# Debug Output Tests
+# ============================================================================
+
+@test "dt_print_debug: outputs when DT_DEBUG=true" {
+    export DT_DEBUG=true
+    dt_setup_colors
+    run dt_print_debug "Debug message"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Debug message" ]]
+}
+
+@test "dt_print_debug: silent when DT_DEBUG not set" {
+    unset DT_DEBUG
+    dt_setup_colors
+    run dt_print_debug "Debug message"
+    [ "$status" -eq 0 ]
+    [ -z "$output" ]
+}
+
+# ============================================================================
+# Print Header Tests
+# ============================================================================
+
+@test "dt_print_header: outputs header with title" {
+    dt_setup_colors
+    run dt_print_header "Test Header"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Test Header" ]]
+}
