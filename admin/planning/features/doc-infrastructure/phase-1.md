@@ -2,7 +2,7 @@
 
 **Phase:** 1 - Shared Infrastructure  
 **Duration:** 2-3 days  
-**Status:** ✅ Expanded  
+**Status:** 🟠 In Progress  
 **Prerequisites:** ADR-005, ADR-001 (XDG), ADR-006 (project structure) accepted
 
 ---
@@ -32,8 +32,8 @@ Create the shared infrastructure library (`lib/core/output-utils.sh`) that both 
 
 **Steps:**
 
-- [ ] Create `lib/core/output-utils.sh` with header comment and empty structure
-- [ ] Create `tests/unit/core/test-output-utils.bats` with test setup
+- [x] Create `lib/core/output-utils.sh` with header comment and empty structure
+- [x] Create `tests/unit/core/test-output-utils.bats` with test setup
 
 **Library scaffolding:**
 
@@ -80,9 +80,9 @@ setup() {
 ```
 
 **Checklist:**
-- [ ] `lib/core/output-utils.sh` created with structure
-- [ ] `tests/unit/core/test-output-utils.bats` created
-- [ ] Test setup sources the library correctly
+- [x] `lib/core/output-utils.sh` created with structure
+- [x] `tests/unit/core/test-output-utils.bats` created
+- [x] Test setup sources the library correctly
 
 ---
 
@@ -692,7 +692,7 @@ dt_get_docs_root() {
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Task 1: Test Setup and Library Scaffolding | 🔴 Not Started | |
+| Task 1: Test Setup and Library Scaffolding | ✅ Complete | |
 | Task 2: XDG Helper Functions | 🔴 Not Started | |
 | Task 3: Output Functions | 🔴 Not Started | |
 | Task 4: Detection Functions | 🔴 Not Started | |
