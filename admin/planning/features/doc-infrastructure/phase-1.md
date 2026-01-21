@@ -320,6 +320,7 @@ dt_get_config_file() {
 - [ ] Implement `dt_print_status()` for ERROR, WARNING, SUCCESS, INFO
 - [ ] Implement `dt_print_debug()` with DT_DEBUG check
 - [ ] Implement `dt_print_header()`
+- [ ] Implement `dt_show_version()` for VERSION file
 - [ ] Run tests, verify they pass
 
 **Implementation:**
@@ -382,6 +383,15 @@ dt_print_header() {
     local title=$1
     echo -e "${DT_BOLD}${DT_CYAN}$title${DT_NC}"
     echo -e "${DT_CYAN}$(printf '═%.0s' $(seq 1 ${#title}))${DT_NC}"
+}
+
+dt_show_version() {
+    local version_file="${TOOLKIT_ROOT:-$(dirname "${BASH_SOURCE[0]}")/../..}/VERSION"
+    if [ -f "$version_file" ]; then
+        cat "$version_file"
+    else
+        echo "unknown"
+    fi
 }
 ```
 
@@ -649,6 +659,7 @@ dt_get_docs_root() {
     [ "$(type -t dt_print_status)" = "function" ]
     [ "$(type -t dt_print_debug)" = "function" ]
     [ "$(type -t dt_print_header)" = "function" ]
+    [ "$(type -t dt_show_version)" = "function" ]
     
     # Detection functions
     [ "$(type -t dt_detect_dev_infra)" = "function" ]
@@ -733,6 +744,7 @@ dt_get_docs_root() {
 ## 🔗 Related Documents
 
 - [Feature Hub](README.md)
+- [Phase 1 Review](phase-1-review.md)
 - [ADR-005: Shared Infrastructure](../../../decisions/doc-infrastructure/adr-005-shared-infrastructure.md)
 - [ADR-001: Template Location](../../../decisions/doc-infrastructure/adr-001-template-location-strategy.md) (XDG section)
 - [ADR-006: Type Detection](../../../decisions/doc-infrastructure/adr-006-type-detection.md) (project structure section)
@@ -740,6 +752,24 @@ dt_get_docs_root() {
 
 ---
 
+## 🔮 Future Work
+
+### Enhancement: Consolidate with github-utils.sh
+
+After Phase 1 is complete, consider refactoring `github-utils.sh` to:
+
+- Source `output-utils.sh` for colors and print functions
+- Use `dt_*` XDG helpers for config path consistency  
+- Keep `gh_*` function wrappers for backward compatibility
+
+This will eliminate code duplication and standardize XDG config paths across all dev-toolkit commands.
+
+**Tracking:** See [`admin/planning/notes/opportunities/internal/consolidate-output-libs.md`](../../../planning/notes/opportunities/internal/consolidate-output-libs.md)
+
+**Note:** This is intentional duplication for Phase 1. The consolidation should happen after doc-infrastructure feature is complete.
+
+---
+
 **Last Updated:** 2026-01-21  
-**Status:** ✅ Expanded  
-**Next:** Begin implementation with Task 1
+**Status:** 🟠 In Progress  
+**Next:** Continue with Task 2
