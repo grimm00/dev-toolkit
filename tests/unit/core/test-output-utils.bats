@@ -228,3 +228,41 @@ setup() {
     [ "$output" = "$test_dir/docs/maintainers" ]
     rm -rf "$test_dir"
 }
+
+# ============================================================================
+# Integration Tests
+# ============================================================================
+
+@test "output-utils.sh: sources without errors" {
+    run source "$PROJECT_ROOT/lib/core/output-utils.sh"
+    [ "$status" -eq 0 ]
+}
+
+@test "output-utils.sh: all dt_* functions are defined" {
+    source "$PROJECT_ROOT/lib/core/output-utils.sh"
+    
+    # XDG helpers
+    [ "$(type -t dt_get_xdg_config_home)" = "function" ]
+    [ "$(type -t dt_get_xdg_data_home)" = "function" ]
+    [ "$(type -t dt_get_config_dir)" = "function" ]
+    [ "$(type -t dt_get_data_dir)" = "function" ]
+    [ "$(type -t dt_get_config_file)" = "function" ]
+    
+    # Output functions
+    [ "$(type -t dt_setup_colors)" = "function" ]
+    [ "$(type -t dt_print_status)" = "function" ]
+    [ "$(type -t dt_print_debug)" = "function" ]
+    [ "$(type -t dt_print_header)" = "function" ]
+    [ "$(type -t dt_show_version)" = "function" ]
+    
+    # Detection functions
+    [ "$(type -t dt_detect_dev_infra)" = "function" ]
+    [ "$(type -t dt_detect_project_structure)" = "function" ]
+    [ "$(type -t dt_get_docs_root)" = "function" ]
+}
+
+@test "dt_show_version: outputs version from VERSION file" {
+    run dt_show_version
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]
+}
