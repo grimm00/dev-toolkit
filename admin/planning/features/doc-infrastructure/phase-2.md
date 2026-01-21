@@ -826,10 +826,10 @@ dt_set_planning_vars() {
 - [ ] Verify tests still pass
 
 **Checklist:**
-- [ ] All variable expansion tests pass
-- [ ] envsubst check provides helpful installation message
-- [ ] Selective expansion preserves unmatched patterns
-- [ ] AI markers (`<!-- AI: -->`, `<!-- EXPAND: -->`) preserved
+- [x] All variable expansion tests pass
+- [x] envsubst check provides helpful installation message
+- [x] Selective expansion preserves unmatched patterns
+- [x] AI markers (`<!-- AI: -->`, `<!-- EXPAND: -->`) preserved
 
 ---
 
