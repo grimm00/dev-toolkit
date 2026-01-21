@@ -2,7 +2,7 @@
 
 **Phase:** 2 - dt-doc-gen  
 **Duration:** 3-4 days  
-**Status:** ✅ Expanded  
+**Status:** 🟠 In Progress  
 **Prerequisites:** Phase 1 complete, dev-infra templates accessible
 
 ---
@@ -33,12 +33,12 @@ Implement the `dt-doc-gen` command for generating documentation from dev-infra t
 
 **Steps:**
 
-- [ ] Create `bin/dt-doc-gen` with header comment and empty structure
-- [ ] Create `lib/doc-gen/templates.sh` with empty structure
-- [ ] Create `lib/doc-gen/render.sh` with empty structure
-- [ ] Create `tests/unit/doc-gen/test-templates.bats` with test setup
-- [ ] Create `tests/unit/doc-gen/test-render.bats` with test setup
-- [ ] Create `tests/integration/test-dt-doc-gen.bats` with test setup
+- [x] Create `bin/dt-doc-gen` with header comment and empty structure
+- [x] Create `lib/doc-gen/templates.sh` with empty structure
+- [x] Create `lib/doc-gen/render.sh` with empty structure
+- [x] Create `tests/unit/doc-gen/test-templates.bats` with test setup
+- [x] Create `tests/unit/doc-gen/test-render.bats` with test setup
+- [x] Create `tests/integration/test-dt-doc-gen.bats` with test setup
 
 **CLI scaffolding:**
 
@@ -171,8 +171,8 @@ setup() {
 - [ ] `bin/dt-doc-gen` created with structure
 - [ ] `lib/doc-gen/templates.sh` created
 - [ ] `lib/doc-gen/render.sh` created
-- [ ] Test files created with setup
-- [ ] All files source correctly without errors
+- [x] Test files created with setup
+- [x] All files source correctly without errors
 
 ---
 
@@ -1671,5 +1671,5 @@ scripts/doc-gen/templates/
 ---
 
 **Last Updated:** 2026-01-21  
-**Status:** ✅ Expanded  
+**Status:** 🟠 In Progress  
 **Next:** Begin implementation with Task 1

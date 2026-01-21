@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+# ============================================================================
+# DT-DOC-GEN - Generate documentation from dev-infra templates
+# Usage: dt-doc-gen <type> <topic> [OPTIONS]
+# ============================================================================
+
+set -euo pipefail
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+
+VERSION="1.0.0"
+SCRIPT_NAME=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
+
+# Source shared libraries
+source "$TOOLKIT_ROOT/lib/core/output-utils.sh"
+# source "$TOOLKIT_ROOT/lib/doc-gen/templates.sh"  # After implementation
+# source "$TOOLKIT_ROOT/lib/doc-gen/render.sh"     # After implementation
+
+# ============================================================================
+# FUNCTIONS
+# ============================================================================
+
+show_help() {
+    cat << EOF
+Usage: $SCRIPT_NAME <type> <topic> [OPTIONS]
+
+Generate documentation from dev-infra templates.
+
+Arguments:
+    type              Document type (exploration, research, decision, planning, etc.)
+    topic             Topic or feature name for the document
+
+Options:
+    --mode MODE       Generation mode: setup (scaffolding) or conduct (expand)
+    --output PATH     Output directory (default: auto-detect from project structure)
+    --template-path   Explicit path to templates directory
+    --help            Show this help message
+    --version         Show version information
+    --debug           Enable debug output
+
+Document Types:
+    exploration       Exploration documents (exploration.md, research-topics.md, README.md)
+    research          Research documents (research-topic.md, requirements.md, etc.)
+    decision          Decision documents (adr.md, decisions-summary.md)
+    planning          Planning documents (feature-plan.md, phase.md, etc.)
+    handoff           Session handoff document
+    fix-batch         Fix batch planning document
+
+Examples:
+    $SCRIPT_NAME exploration my-feature
+    $SCRIPT_NAME research my-topic --mode setup
+    $SCRIPT_NAME decision auth-system --output admin/decisions/auth/
+
+EOF
+}
+
+show_version() {
+    echo "$SCRIPT_NAME version $VERSION"
+}
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+main() {
+    # Handle help and version flags
+    if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
+        show_help
+        exit 0
+    fi
+    
+    if [[ "${1:-}" == "--version" ]] || [[ "${1:-}" == "-v" ]]; then
+        show_version
+        exit 0
+    fi
+    
+    # Parse arguments (to be implemented)
+    echo "dt-doc-gen: Not yet implemented"
+    exit 1
+}
+
+main "$@"
