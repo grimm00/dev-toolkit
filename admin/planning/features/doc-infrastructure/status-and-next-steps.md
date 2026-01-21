@@ -10,10 +10,10 @@
 | Phase | Name | Status | Progress | Notes |
 |-------|------|--------|----------|-------|
 | Phase 1 | Shared Infrastructure | ✅ Complete | 100% | Merged PR #29 |
-| Phase 2 | dt-doc-gen | ✅ Expanded | 0% impl | Ready for implementation |
+| Phase 2 | dt-doc-gen | ✅ Complete | 100% | All 6 tasks complete, 37 tests passing |
 | Phase 3 | dt-doc-validate | 🔴 Scaffolding | 0% | Needs expansion |
 
-**Overall:** 🟠 Phase 2 Ready (33% complete, Phase 2 expanded)
+**Overall:** 🟠 Phase 3 Next (67% complete, Phase 2 complete)
 
 ---
 
@@ -21,9 +21,9 @@
 
 ### Immediate
 
-1. **Begin Phase 2 Task 1** - Create test setup and CLI scaffolding
-2. **Follow TDD workflow** - RED → GREEN → REFACTOR for each task
-3. **Create PR for Phase 2** - After all 6 tasks complete
+1. **Create PR for Phase 2** - Use `/pr --phase 2` command
+2. **Review and merge** - After PR approval
+3. **Begin Phase 3** - Expand and implement dt-doc-validate
 
 ### Phase 2 Tasks
 
@@ -81,6 +81,7 @@ None currently identified.
 ## ✅ Completed Milestones
 
 - **Phase 1:** Shared Infrastructure ✅ (PR #29, 2026-01-21) - Created `lib/core/output-utils.sh` with XDG helpers, output functions, and detection functions. All 26 tests passing. Merged to develop.
+- **Phase 2:** dt-doc-gen ✅ (2026-01-21) - Implemented `dt-doc-gen` CLI with template discovery, variable expansion, output path handling, and full CLI. All 37 tests passing (18 unit templates, 9 unit render, 10 integration). Ready for PR.
 
 ---
 
