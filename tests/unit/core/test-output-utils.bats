@@ -141,3 +141,90 @@ setup() {
     [ "$status" -eq 0 ]
     [[ "$output" =~ "Test Header" ]]
 }
+
+# ============================================================================
+# dev-infra Detection Tests
+# ============================================================================
+
+@test "dt_detect_dev_infra: returns path when DEV_INFRA_PATH set" {
+    local test_dir=$(mktemp -d)
+    mkdir -p "$test_dir"
+    export DEV_INFRA_PATH="$test_dir"
+    run dt_detect_dev_infra
+    [ "$status" -eq 0 ]
+    [ "$output" = "$test_dir" ]
+    rm -rf "$test_dir"
+    unset DEV_INFRA_PATH
+}
+
+@test "dt_detect_dev_infra: returns error when not found" {
+    unset DEV_INFRA_PATH
+    # Create temp dir with no dev-infra sibling and not in Projects
+    local test_dir=$(mktemp -d)
+    # Temporarily change HOME to isolate from real dev-infra
+    local old_home="$HOME"
+    export HOME="$test_dir"
+    cd "$test_dir"
+    run dt_detect_dev_infra
+    [ "$status" -eq 1 ]
+    export HOME="$old_home"
+    rm -rf "$test_dir"
+}
+
+# ============================================================================
+# Project Structure Detection Tests
+# ============================================================================
+
+@test "dt_detect_project_structure: returns 'admin' when admin/ exists" {
+    local test_dir=$(mktemp -d)
+    mkdir -p "$test_dir/admin/explorations"
+    run dt_detect_project_structure "$test_dir"
+    [ "$status" -eq 0 ]
+    [ "$output" = "admin" ]
+    rm -rf "$test_dir"
+}
+
+@test "dt_detect_project_structure: returns 'docs/maintainers' when that exists" {
+    local test_dir=$(mktemp -d)
+    mkdir -p "$test_dir/docs/maintainers/explorations"
+    run dt_detect_project_structure "$test_dir"
+    [ "$status" -eq 0 ]
+    [ "$output" = "docs/maintainers" ]
+    rm -rf "$test_dir"
+}
+
+@test "dt_detect_project_structure: prioritizes 'admin' over 'docs/maintainers'" {
+    local test_dir=$(mktemp -d)
+    mkdir -p "$test_dir/admin/explorations"
+    mkdir -p "$test_dir/docs/maintainers/explorations"
+    run dt_detect_project_structure "$test_dir"
+    [ "$status" -eq 0 ]
+    [ "$output" = "admin" ]
+    rm -rf "$test_dir"
+}
+
+@test "dt_detect_project_structure: returns 'unknown' when neither exists" {
+    local test_dir=$(mktemp -d)
+    run dt_detect_project_structure "$test_dir"
+    [ "$status" -eq 0 ]
+    [ "$output" = "unknown" ]
+    rm -rf "$test_dir"
+}
+
+@test "dt_get_docs_root: returns 'admin' path for admin structure" {
+    local test_dir=$(mktemp -d)
+    mkdir -p "$test_dir/admin/explorations"
+    run dt_get_docs_root "$test_dir"
+    [ "$status" -eq 0 ]
+    [ "$output" = "$test_dir/admin" ]
+    rm -rf "$test_dir"
+}
+
+@test "dt_get_docs_root: returns 'docs/maintainers' path for that structure" {
+    local test_dir=$(mktemp -d)
+    mkdir -p "$test_dir/docs/maintainers/explorations"
+    run dt_get_docs_root "$test_dir"
+    [ "$status" -eq 0 ]
+    [ "$output" = "$test_dir/docs/maintainers" ]
+    rm -rf "$test_dir"
+}
