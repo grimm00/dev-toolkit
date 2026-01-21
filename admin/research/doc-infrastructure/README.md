@@ -64,24 +64,23 @@ Significant research was completed in dev-infra that informs our implementation:
 
 ## 🚀 Next Steps
 
-**Research and Decision phases complete!**
+**Research, Decision, and Planning phases complete!**
 
 ### ✅ Completed
 - Research Phase: 7 topics investigated
 - Decision Phase: 7 ADRs created
+- Planning Phase: Transition plan and phase scaffolding created
 
 ### 📍 Current Status
-See [Decisions Hub](../../decisions/doc-infrastructure/README.md) for all architectural decisions.
+See [Planning Hub](../../planning/features/doc-infrastructure/README.md) for implementation planning.
 
 ### ▶️ Next
-Proceed to Implementation Planning:
+Expand phase scaffolding and begin implementation:
 
 ```bash
-/transition-plan doc-infrastructure --from-adr
+/transition-plan doc-infrastructure --expand --phase 1
 ```
-
-This will create the feature plan and phase documents for implementation.
 
 ---
 
-**Last Updated:** 2026-01-20
+**Last Updated:** 2026-01-21

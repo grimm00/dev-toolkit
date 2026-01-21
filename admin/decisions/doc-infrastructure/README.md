@@ -10,6 +10,7 @@
 ## 📋 Quick Links
 
 - **[Decisions Summary](decisions-summary.md)** - Summary of all decisions
+- **[Planning Hub](../../planning/features/doc-infrastructure/README.md)** - 🎯 Implementation planning
 - **[Research Hub](../../research/doc-infrastructure/README.md)** - Related research
 - **[Requirements](../../research/doc-infrastructure/requirements.md)** - 80 requirements
 - **[Iteration Plan](../../research/doc-infrastructure/iteration-plan.md)** - Per-command iteration strategy
@@ -88,8 +89,9 @@ This hub documents the architectural decisions for implementing the doc-infrastr
 
 1. ✅ Review ADR documents
 2. ✅ Decisions accepted
-3. **Next:** Use `/transition-plan doc-infrastructure --from-adr` to create implementation plan
+3. ✅ Implementation planning created
+4. **Next:** Expand phase scaffolding with `/transition-plan doc-infrastructure --expand --phase 1`
 
 ---
 
-**Last Updated:** 2026-01-20
+**Last Updated:** 2026-01-21
