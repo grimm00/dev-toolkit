@@ -524,10 +524,10 @@ dt_list_document_types() {
 - [ ] Verify tests still pass
 
 **Checklist:**
-- [ ] All template discovery tests pass
-- [ ] Layered discovery works correctly
-- [ ] Error message includes setup instructions
-- [ ] Legacy config path supported with deprecation warning
+- [x] All template discovery tests pass
+- [x] Layered discovery works correctly
+- [x] Error message includes setup instructions
+- [x] Legacy config path supported with deprecation warning
 
 ---
 
