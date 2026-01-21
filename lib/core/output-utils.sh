@@ -71,6 +71,10 @@ dt_print_status() {
         "WARNING") echo -e "${DT_YELLOW}⚠️  $message${DT_NC}" ;;
         "SUCCESS") echo -e "${DT_GREEN}✅ $message${DT_NC}" ;;
         "INFO")    echo -e "${DT_BLUE}ℹ️  $message${DT_NC}" ;;
+        *)
+            echo -e "${DT_BLUE}ℹ️  [UNKNOWN:${msg_type}] $message${DT_NC}" >&2
+            return 1
+            ;;
     esac
 }
 

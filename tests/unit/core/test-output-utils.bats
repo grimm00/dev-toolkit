@@ -111,6 +111,14 @@ setup() {
     [[ "$output" =~ "Test info" ]]
 }
 
+@test "dt_print_status: unknown type returns error and shows UNKNOWN prefix" {
+    dt_setup_colors
+    run dt_print_status "INVALID" "Test message"
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "UNKNOWN:INVALID" ]]
+    [[ "$output" =~ "Test message" ]]
+}
+
 # ============================================================================
 # Debug Output Tests
 # ============================================================================
