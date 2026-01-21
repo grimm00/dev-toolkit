@@ -9,11 +9,11 @@
 
 | Phase | Name | Status | Progress | Notes |
 |-------|------|--------|----------|-------|
-| Phase 1 | Shared Infrastructure | 🔴 Scaffolding | 0% | Needs expansion |
+| Phase 1 | Shared Infrastructure | ✅ Expanded | 0% impl | Ready for implementation |
 | Phase 2 | dt-doc-gen | 🔴 Scaffolding | 0% | Needs expansion |
 | Phase 3 | dt-doc-validate | 🔴 Scaffolding | 0% | Needs expansion |
 
-**Overall:** 🔴 Not Started (0% complete)
+**Overall:** 🟡 Planning (Phase 1 ready for implementation)
 
 ---
 
@@ -21,9 +21,9 @@
 
 ### Immediate
 
-1. **Review scaffolding** - Verify phase breakdown matches expectations
-2. **Expand Phase 1** - Run `/transition-plan doc-infrastructure --expand --phase 1`
-3. **Implement Phase 1** - Begin with shared infrastructure
+1. **Review Phase 1** - Phase 1 is expanded with detailed TDD tasks
+2. **Implement Phase 1** - Run `/task-phase 1` to begin implementation
+3. **Start with Task 1** - Create library scaffolding and test file
 
 ### After Phase 1
 
@@ -48,11 +48,10 @@
 
 | Action | Command |
 |--------|---------|
-| Expand Phase 1 | `/transition-plan doc-infrastructure --expand --phase 1` |
+| Start Phase 1 | `/task-phase 1` |
 | Expand Phase 2 | `/transition-plan doc-infrastructure --expand --phase 2` |
 | Expand Phase 3 | `/transition-plan doc-infrastructure --expand --phase 3` |
-| Expand All | `/transition-plan doc-infrastructure --expand --all` |
-| Start Phase 1 | `/task-phase 1` |
+| Expand All Remaining | `/transition-plan doc-infrastructure --expand --all` |
 
 ---
 

@@ -17,7 +17,7 @@
 
 | Phase | Name | Status | Estimate |
 |-------|------|--------|----------|
-| [Phase 1](phase-1.md) | Shared Infrastructure | 🔴 Scaffolding | 2-3 days |
+| [Phase 1](phase-1.md) | Shared Infrastructure | ✅ Expanded | 2-3 days |
 | [Phase 2](phase-2.md) | dt-doc-gen | 🔴 Scaffolding | 3-4 days |
 | [Phase 3](phase-3.md) | dt-doc-validate | 🔴 Scaffolding | 3-4 days |
 
