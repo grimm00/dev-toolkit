@@ -1128,6 +1128,24 @@ Add priority assessment after the comment:
 - Can be deferred to future PR
 - Proceed with merge approval
 
+**MEDIUM Priority Discretion:**
+
+Use judgment when deciding whether to fix MEDIUM issues now or defer:
+
+| Factor | Fix Now | Defer |
+|--------|---------|-------|
+| **Effort** | LOW effort (quick fix) | HIGH effort (significant work) |
+| **Scope** | Isolated change | Touches multiple files/systems |
+| **Risk** | Low risk of regression | Could introduce new issues |
+| **Context** | Aligns with PR's purpose | Tangential to PR's goal |
+| **Future Work** | No planned refactoring | Related consolidation planned |
+
+**Examples:**
+- **Fix now:** Adding a default case to a switch statement (LOW effort, defensive coding)
+- **Defer:** Centralizing version detection across multiple files (MEDIUM effort, future consolidation planned)
+
+**Key principle:** Don't let perfect be the enemy of good. If a MEDIUM fix would delay the PR significantly or expand its scope unnecessarily, document it and defer.
+
 ---
 
 ### 7. Update PR Description (If Needed)
