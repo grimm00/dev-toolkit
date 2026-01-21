@@ -1515,9 +1515,9 @@ main "$@"
 - [ ] Verify tests still pass
 
 **Checklist:**
-- [ ] All CLI tests pass
-- [ ] Help text is comprehensive
-- [ ] Error messages are helpful
+- [x] All CLI tests pass
+- [x] Help text is comprehensive
+- [x] Error messages are helpful
 - [ ] All document types supported
 
 ---
