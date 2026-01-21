@@ -416,14 +416,14 @@ dt_show_version() {
 
 #### 4.1 RED - Write failing tests for detection functions
 
-- [ ] Write test: `dt_detect_dev_infra` finds dev-infra in sibling directory
-- [ ] Write test: `dt_detect_dev_infra` returns error if not found
-- [ ] Write test: `dt_detect_project_structure` returns "admin" when admin/ exists
-- [ ] Write test: `dt_detect_project_structure` returns "docs/maintainers" when that exists
-- [ ] Write test: `dt_detect_project_structure` returns "unknown" when neither exists
-- [ ] Write test: `dt_get_docs_root` returns correct path for admin structure
-- [ ] Write test: `dt_get_docs_root` returns correct path for docs/maintainers structure
-- [ ] Verify tests fail
+- [x] Write test: `dt_detect_dev_infra` finds dev-infra in sibling directory
+- [x] Write test: `dt_detect_dev_infra` returns error if not found
+- [x] Write test: `dt_detect_project_structure` returns "admin" when admin/ exists
+- [x] Write test: `dt_detect_project_structure` returns "docs/maintainers" when that exists
+- [x] Write test: `dt_detect_project_structure` returns "unknown" when neither exists
+- [x] Write test: `dt_get_docs_root` returns correct path for admin structure
+- [x] Write test: `dt_get_docs_root` returns correct path for docs/maintainers structure
+- [x] Verify tests fail
 
 **Test code:**
 
@@ -510,10 +510,10 @@ dt_show_version() {
 
 #### 4.2 GREEN - Implement detection functions
 
-- [ ] Implement `dt_detect_dev_infra()` with layered discovery
-- [ ] Implement `dt_detect_project_structure()` with admin/ priority
-- [ ] Implement `dt_get_docs_root()` convenience wrapper
-- [ ] Run tests, verify they pass
+- [x] Implement `dt_detect_dev_infra()` with layered discovery
+- [x] Implement `dt_detect_project_structure()` with admin/ priority
+- [x] Implement `dt_get_docs_root()` convenience wrapper
+- [x] Run tests, verify they pass
 
 **Implementation:**
 
@@ -614,9 +614,9 @@ dt_get_docs_root() {
 - [ ] Verify tests still pass
 
 **Checklist:**
-- [ ] All detection tests pass
-- [ ] dev-infra detection follows layered discovery
-- [ ] Project structure detection prioritizes admin/ for backward compatibility
+- [x] All detection tests pass
+- [x] dev-infra detection follows layered discovery
+- [x] Project structure detection prioritizes admin/ for backward compatibility
 
 ---
 
@@ -706,7 +706,7 @@ dt_get_docs_root() {
 | Task 1: Test Setup and Library Scaffolding | ✅ Complete | |
 | Task 2: XDG Helper Functions | ✅ Complete | RED + GREEN phases done |
 | Task 3: Output Functions | ✅ Complete | RED + GREEN phases done |
-| Task 4: Detection Functions | 🔴 Not Started | |
+| Task 4: Detection Functions | ✅ Complete | RED + GREEN phases done |
 | Task 5: Integration Testing | 🔴 Not Started | |
 
 ---
