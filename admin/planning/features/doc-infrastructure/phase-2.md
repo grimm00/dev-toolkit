@@ -545,14 +545,14 @@ dt_list_document_types() {
 
 #### 3.1 RED - Write failing tests for variable expansion
 
-- [ ] Write test: `dt_check_envsubst` returns success if envsubst available
-- [ ] Write test: `dt_check_envsubst` returns error with message if missing
-- [ ] Write test: `dt_get_template_vars` returns correct vars for exploration
-- [ ] Write test: `dt_get_template_vars` returns correct vars for research
-- [ ] Write test: `dt_get_template_vars` returns correct vars for decision
-- [ ] Write test: `dt_render_template` expands only listed variables
-- [ ] Write test: `dt_render_template` preserves `$VAR` syntax (no braces)
-- [ ] Write test: `dt_render_template` preserves AI markers (`<!-- AI: -->`)
+- [x] Write test: `dt_check_envsubst` returns success if envsubst available
+- [x] Write test: `dt_check_envsubst` returns error with message if missing
+- [x] Write test: `dt_get_template_vars` returns correct vars for exploration
+- [x] Write test: `dt_get_template_vars` returns correct vars for research
+- [x] Write test: `dt_get_template_vars` returns correct vars for decision
+- [x] Write test: `dt_render_template` expands only listed variables
+- [x] Write test: `dt_render_template` preserves `$VAR` syntax (no braces)
+- [x] Write test: `dt_render_template` preserves AI markers (`<!-- AI: -->`)
 - [x] Verify tests fail (no implementation yet)
 
 **Test code:**
@@ -688,11 +688,11 @@ EOF
 
 #### 3.2 GREEN - Implement variable expansion functions
 
-- [ ] Implement `dt_check_envsubst()` with helpful error
-- [ ] Implement `dt_get_template_vars()` per template type
-- [ ] Implement `dt_render_template()` with selective expansion
-- [ ] Implement `dt_set_common_vars()` for DATE, STATUS, etc.
-- [ ] Implement variable setters for each doc type
+- [x] Implement `dt_check_envsubst()` with helpful error
+- [x] Implement `dt_get_template_vars()` per template type
+- [x] Implement `dt_render_template()` with selective expansion
+- [x] Implement `dt_set_common_vars()` for DATE, STATUS, etc.
+- [x] Implement variable setters for each doc type
 - [x] Run tests, verify they pass
 
 **Implementation:**
