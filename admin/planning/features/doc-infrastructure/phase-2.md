@@ -191,14 +191,14 @@ setup() {
 
 #### 2.1 RED - Write failing tests for template discovery
 
-- [ ] Write test: `dt_find_templates` returns explicit path when provided
-- [ ] Write test: `dt_find_templates` returns `$DT_TEMPLATES_PATH` if set
-- [ ] Write test: `dt_find_templates` reads config file path
-- [ ] Write test: `dt_find_templates` checks default locations
-- [ ] Write test: `dt_find_templates` returns error if not found
-- [ ] Write test: `dt_get_template_path` returns correct path for doc type
-- [ ] Write test: `dt_validate_templates_dir` checks required files exist
-- [ ] Verify tests fail (no implementation yet)
+- [x] Write test: `dt_find_templates` returns explicit path when provided
+- [x] Write test: `dt_find_templates` returns `$DT_TEMPLATES_PATH` if set
+- [x] Write test: `dt_find_templates` reads config file path
+- [x] Write test: `dt_find_templates` checks default locations
+- [x] Write test: `dt_find_templates` returns error if not found
+- [x] Write test: `dt_get_template_path` returns correct path for doc type
+- [x] Write test: `dt_validate_templates_dir` checks required files exist
+- [x] Verify tests fail (no implementation yet)
 
 **Test code:**
 
@@ -331,11 +331,11 @@ setup() {
 
 #### 2.2 GREEN - Implement template discovery functions
 
-- [ ] Implement `dt_find_templates()` with layered discovery
-- [ ] Implement `dt_get_template_path()` for doc type to path mapping
-- [ ] Implement `dt_validate_templates_dir()` for validation
-- [ ] Implement `dt_list_document_types()` helper
-- [ ] Run tests, verify they pass
+- [x] Implement `dt_find_templates()` with layered discovery
+- [x] Implement `dt_get_template_path()` for doc type to path mapping
+- [x] Implement `dt_validate_templates_dir()` for validation
+- [x] Implement `dt_list_document_types()` helper
+- [x] Run tests, verify they pass
 
 **Implementation:**
 
@@ -553,7 +553,7 @@ dt_list_document_types() {
 - [ ] Write test: `dt_render_template` expands only listed variables
 - [ ] Write test: `dt_render_template` preserves `$VAR` syntax (no braces)
 - [ ] Write test: `dt_render_template` preserves AI markers (`<!-- AI: -->`)
-- [ ] Verify tests fail (no implementation yet)
+- [x] Verify tests fail (no implementation yet)
 
 **Test code:**
 
@@ -693,7 +693,7 @@ EOF
 - [ ] Implement `dt_render_template()` with selective expansion
 - [ ] Implement `dt_set_common_vars()` for DATE, STATUS, etc.
 - [ ] Implement variable setters for each doc type
-- [ ] Run tests, verify they pass
+- [x] Run tests, verify they pass
 
 **Implementation:**
 
@@ -914,7 +914,7 @@ dt_set_planning_vars() {
 - [ ] Implement `dt_get_output_dir()` using project structure detection
 - [ ] Implement `dt_get_output_filename()` per document type
 - [ ] Implement `dt_create_output_dir()` for directory creation
-- [ ] Run tests, verify they pass
+- [x] Run tests, verify they pass
 
 **Implementation:**
 
@@ -1260,7 +1260,7 @@ teardown() {
 - [ ] Implement document generation logic
 - [ ] Implement `--mode` handling (setup/conduct)
 - [ ] Implement `--output` handling
-- [ ] Run tests, verify they pass
+- [x] Run tests, verify they pass
 
 **Implementation (update bin/dt-doc-gen):**
 
