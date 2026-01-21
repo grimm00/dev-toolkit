@@ -4,6 +4,7 @@
 **Duration:** 2-3 days  
 **Status:** ✅ Complete  
 **Completed:** 2026-01-21  
+**Merged:** PR #29 (2026-01-21)  
 **Prerequisites:** ADR-005, ADR-001 (XDG), ADR-006 (project structure) accepted
 
 ---

@@ -21,9 +21,9 @@
 
 ### Immediate
 
-1. **Create PR for Phase 1** - Run `/pr --phase 1` to create PR for review
-2. **Review and merge** - After PR approval, merge to develop
-3. **Begin Phase 2** - Expand Phase 2 scaffolding after Phase 1 merged
+1. **Expand Phase 2** - Run `/transition-plan doc-infrastructure --expand --phase 2` to add detailed TDD tasks
+2. **Implement Phase 2** - Begin dt-doc-gen implementation
+3. **Create PR for Phase 2** - After implementation complete
 
 ### After Phase 1
 
@@ -48,8 +48,8 @@
 
 | Action | Command |
 |--------|---------|
-| Create PR for Phase 1 | `/pr --phase 1` |
 | Expand Phase 2 | `/transition-plan doc-infrastructure --expand --phase 2` |
+| Start Phase 2 Task | `/task-phase 2 [task-number]` |
 | Expand Phase 3 | `/transition-plan doc-infrastructure --expand --phase 3` |
 | Expand All Remaining | `/transition-plan doc-infrastructure --expand --all` |
 
@@ -76,7 +76,7 @@ None currently identified.
 
 ## ✅ Completed Milestones
 
-- **Phase 1:** Shared Infrastructure ✅ (2026-01-21) - Created `lib/core/output-utils.sh` with XDG helpers, output functions, and detection functions. All 26 tests passing.
+- **Phase 1:** Shared Infrastructure ✅ (PR #29, 2026-01-21) - Created `lib/core/output-utils.sh` with XDG helpers, output functions, and detection functions. All 26 tests passing. Merged to develop.
 
 ---
 
