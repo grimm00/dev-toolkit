@@ -9,11 +9,11 @@
 
 | Phase | Name | Status | Progress | Notes |
 |-------|------|--------|----------|-------|
-| Phase 1 | Shared Infrastructure | ✅ Complete | 100% | All tasks complete, ready for PR |
-| Phase 2 | dt-doc-gen | 🔴 Scaffolding | 0% | Needs expansion |
+| Phase 1 | Shared Infrastructure | ✅ Complete | 100% | Merged PR #29 |
+| Phase 2 | dt-doc-gen | ✅ Expanded | 0% impl | Ready for implementation |
 | Phase 3 | dt-doc-validate | 🔴 Scaffolding | 0% | Needs expansion |
 
-**Overall:** 🟢 Phase 1 Complete (33% of core implementation)
+**Overall:** 🟠 Phase 2 Ready (33% complete, Phase 2 expanded)
 
 ---
 
@@ -21,14 +21,18 @@
 
 ### Immediate
 
-1. **Expand Phase 2** - Run `/transition-plan doc-infrastructure --expand --phase 2` to add detailed TDD tasks
-2. **Implement Phase 2** - Begin dt-doc-gen implementation
-3. **Create PR for Phase 2** - After implementation complete
+1. **Begin Phase 2 Task 1** - Create test setup and CLI scaffolding
+2. **Follow TDD workflow** - RED → GREEN → REFACTOR for each task
+3. **Create PR for Phase 2** - After all 6 tasks complete
 
-### After Phase 1
+### Phase 2 Tasks
 
-1. **Expand Phase 2** - `/transition-plan doc-infrastructure --expand --phase 2`
-2. **Implement Phase 2** - dt-doc-gen implementation
+1. Task 1: Test Setup and CLI Scaffolding
+2. Task 2: Template Discovery Functions
+3. Task 3: Variable Expansion Functions
+4. Task 4: Output Path Handling
+5. Task 5: CLI Implementation
+6. Task 6: Integration Testing
 
 ### After Phase 2
 
