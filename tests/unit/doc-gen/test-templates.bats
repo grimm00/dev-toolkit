@@ -160,3 +160,83 @@ setup() {
     rm -rf "$test_dir"
 }
 
+
+# ============================================================================
+# Output Path Tests
+# ============================================================================
+
+@test "dt_get_output_dir: returns correct path for exploration with admin structure" {
+    local test_dir=$(mktemp -d)
+    mkdir -p "$test_dir/admin/explorations"
+    
+    run dt_get_output_dir "$test_dir" "exploration" "my-topic"
+    [ "$status" -eq 0 ]
+    [ "$output" = "$test_dir/admin/explorations/my-topic" ]
+    
+    rm -rf "$test_dir"
+}
+
+@test "dt_get_output_dir: returns correct path for research with admin structure" {
+    local test_dir=$(mktemp -d)
+    mkdir -p "$test_dir/admin/research"
+    
+    run dt_get_output_dir "$test_dir" "research_topic" "my-topic"
+    [ "$status" -eq 0 ]
+    [ "$output" = "$test_dir/admin/research/my-topic" ]
+    
+    rm -rf "$test_dir"
+}
+
+@test "dt_get_output_dir: respects explicit output override" {
+    local test_dir=$(mktemp -d)
+    local custom_output="$test_dir/custom/output"
+    
+    run dt_get_output_dir "$test_dir" "exploration" "my-topic" "$custom_output"
+    [ "$status" -eq 0 ]
+    [ "$output" = "$custom_output" ]
+    
+    rm -rf "$test_dir"
+}
+
+@test "dt_get_output_filename: returns exploration.md for exploration type" {
+    run dt_get_output_filename "exploration"
+    [ "$status" -eq 0 ]
+    [ "$output" = "exploration.md" ]
+}
+
+@test "dt_get_output_filename: returns research-topics.md for research_topics type" {
+    run dt_get_output_filename "research_topics"
+    [ "$status" -eq 0 ]
+    [ "$output" = "research-topics.md" ]
+}
+
+@test "dt_get_output_filename: returns adr-NNN.md for adr type" {
+    export ADR_NUMBER="001"
+    run dt_get_output_filename "adr"
+    [ "$status" -eq 0 ]
+    [ "$output" = "adr-001.md" ]
+    unset ADR_NUMBER
+}
+
+@test "dt_create_output_dir: creates directory if missing" {
+    local test_dir=$(mktemp -d)
+    local output_dir="$test_dir/new/directory"
+    
+    run dt_create_output_dir "$output_dir"
+    [ "$status" -eq 0 ]
+    [ -d "$output_dir" ]
+    
+    rm -rf "$test_dir"
+}
+
+@test "dt_create_output_dir: succeeds if directory already exists" {
+    local test_dir=$(mktemp -d)
+    local output_dir="$test_dir/existing"
+    mkdir -p "$output_dir"
+    
+    run dt_create_output_dir "$output_dir"
+    [ "$status" -eq 0 ]
+    [ -d "$output_dir" ]
+    
+    rm -rf "$test_dir"
+}

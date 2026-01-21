@@ -841,12 +841,12 @@ dt_set_planning_vars() {
 
 #### 4.1 RED - Write failing tests for output path handling
 
-- [ ] Write test: `dt_get_output_dir` returns correct path for exploration
-- [ ] Write test: `dt_get_output_dir` returns correct path for research
-- [ ] Write test: `dt_get_output_dir` respects `--output` override
-- [ ] Write test: `dt_get_output_filename` returns correct name for each type
-- [ ] Write test: `dt_create_output_dir` creates directory if missing
-- [ ] Verify tests fail
+- [x] Write test: `dt_get_output_dir` returns correct path for exploration
+- [x] Write test: `dt_get_output_dir` returns correct path for research
+- [x] Write test: `dt_get_output_dir` respects `--output` override
+- [x] Write test: `dt_get_output_filename` returns correct name for each type
+- [x] Write test: `dt_create_output_dir` creates directory if missing
+- [x] Verify tests fail
 
 **Test code:**
 
@@ -911,9 +911,9 @@ dt_set_planning_vars() {
 
 #### 4.2 GREEN - Implement output path functions
 
-- [ ] Implement `dt_get_output_dir()` using project structure detection
-- [ ] Implement `dt_get_output_filename()` per document type
-- [ ] Implement `dt_create_output_dir()` for directory creation
+- [x] Implement `dt_get_output_dir()` using project structure detection
+- [x] Implement `dt_get_output_filename()` per document type
+- [x] Implement `dt_create_output_dir()` for directory creation
 - [x] Run tests, verify they pass
 
 **Implementation:**
@@ -1054,7 +1054,7 @@ dt_create_output_dir() {
 - [ ] Write test: `dt-doc-gen exploration topic` generates files
 - [ ] Write test: `dt-doc-gen --mode setup` generates scaffolding
 - [ ] Write test: `dt-doc-gen --output path` respects output override
-- [ ] Verify tests fail
+- [x] Verify tests fail
 
 **Test code:**
 

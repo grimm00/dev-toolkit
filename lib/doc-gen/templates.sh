@@ -190,3 +190,123 @@ dt_list_document_types() {
         done | sort
     fi
 }
+
+# ============================================================================
+# OUTPUT PATH HANDLING
+# ============================================================================
+
+# Document type to output directory mapping
+declare -gA DT_TYPE_OUTPUT_DIR
+DT_TYPE_OUTPUT_DIR=(
+    ["exploration"]="explorations"
+    ["research_topics"]="explorations"
+    ["exploration_hub"]="explorations"
+    ["research_topic"]="research"
+    ["research_summary"]="research"
+    ["requirements"]="research"
+    ["research_hub"]="research"
+    ["adr"]="decisions"
+    ["decisions_summary"]="decisions"
+    ["decisions_hub"]="decisions"
+    ["feature_plan"]="planning/features"
+    ["phase"]="planning/features"
+    ["status_and_next_steps"]="planning/features"
+    ["planning_hub"]="planning/features"
+    ["fix_batch"]="planning/fix"
+    ["handoff"]="planning"
+    ["reflection"]="planning/notes"
+)
+
+# Document type to output filename mapping
+declare -gA DT_TYPE_OUTPUT_FILE
+DT_TYPE_OUTPUT_FILE=(
+    ["exploration"]="exploration.md"
+    ["research_topics"]="research-topics.md"
+    ["exploration_hub"]="README.md"
+    ["research_topic"]="research-\${TOPIC_NAME}.md"
+    ["research_summary"]="research-summary.md"
+    ["requirements"]="requirements.md"
+    ["research_hub"]="README.md"
+    ["adr"]="adr-\${ADR_NUMBER}.md"
+    ["decisions_summary"]="decisions-summary.md"
+    ["decisions_hub"]="README.md"
+    ["feature_plan"]="feature-plan.md"
+    ["phase"]="phase-\${PHASE_NUMBER}.md"
+    ["status_and_next_steps"]="status-and-next-steps.md"
+    ["planning_hub"]="README.md"
+    ["fix_batch"]="fix-batch-\${BATCH_NUMBER}.md"
+    ["handoff"]="handoff-\${DATE}.md"
+    ["reflection"]="reflection-\${DATE}.md"
+)
+
+# Initialize output path arrays
+_dt_init_output_arrays() {
+    # Arrays already declared above with declare -gA
+    # This function exists for consistency with template arrays
+    :
+}
+
+# Initialize when script is sourced
+_dt_init_output_arrays
+
+dt_get_output_dir() {
+    local project_dir="$1"
+    local doc_type="$2"
+    local topic_name="$3"
+    local explicit_output="${4:-}"
+    
+    # Explicit output override takes priority
+    if [ -n "$explicit_output" ]; then
+        echo "$explicit_output"
+        return 0
+    fi
+    
+    # Get docs root based on project structure
+    local docs_root
+    docs_root=$(dt_get_docs_root "$project_dir") || {
+        dt_print_status "ERROR" "Could not detect project structure"
+        return 1
+    }
+    
+    # Get output subdirectory for this doc type
+    local output_subdir="${DT_TYPE_OUTPUT_DIR[$doc_type]:-}"
+    if [ -z "$output_subdir" ]; then
+        dt_print_status "ERROR" "Unknown document type: $doc_type"
+        return 1
+    fi
+    
+    echo "$docs_root/$output_subdir/$topic_name"
+}
+
+dt_get_output_filename() {
+    local doc_type="$1"
+    
+    # Ensure arrays are initialized
+    _dt_init_output_arrays
+    
+    local filename="${DT_TYPE_OUTPUT_FILE[$doc_type]:-}"
+    if [ -z "$filename" ]; then
+        filename="$doc_type.md"
+    fi
+    
+    # Expand placeholders in filename using environment variables
+    # Use eval to expand ${VAR} patterns safely
+    local expanded_filename
+    expanded_filename=$(eval "echo \"$filename\"")
+    
+    echo "$expanded_filename"
+}
+
+dt_create_output_dir() {
+    local output_dir="$1"
+    
+    if [ ! -d "$output_dir" ]; then
+        dt_print_debug "Creating directory: $output_dir"
+        mkdir -p "$output_dir" || {
+            dt_print_status "ERROR" "Failed to create directory: $output_dir"
+            return 1
+        }
+    fi
+    
+    return 0
+}
