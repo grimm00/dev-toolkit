@@ -1034,9 +1034,9 @@ dt_create_output_dir() {
 - [ ] Verify tests still pass
 
 **Checklist:**
-- [ ] All output path tests pass
-- [ ] Project structure detection works for admin/ and docs/maintainers/
-- [ ] Filename placeholders expanded correctly
+- [x] All output path tests pass
+- [x] Project structure detection works for admin/ and docs/maintainers/
+- [x] Filename placeholders expanded correctly
 
 ---
 
