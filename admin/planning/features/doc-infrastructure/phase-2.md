@@ -1528,11 +1528,11 @@ main "$@"
 
 **Steps:**
 
-- [ ] Write integration test: Generate exploration with real templates
-- [ ] Write integration test: Generate research with real templates
-- [ ] Write integration test: Output matches expected format
-- [ ] Run full test suite
-- [ ] Verify no regressions in existing tests
+- [x] Write integration test: Generate exploration with real templates
+- [x] Write integration test: Generate research with real templates
+- [x] Write integration test: Output matches expected format
+- [x] Run full test suite
+- [x] Verify no regressions in existing tests
 
 **Test commands:**
 
@@ -1549,11 +1549,11 @@ main "$@"
 ```
 
 **Checklist:**
-- [ ] All integration tests pass
-- [ ] Generated documents match expected format
-- [ ] AI markers preserved in output
-- [ ] Variables expanded correctly
-- [ ] Full test suite passes (no regressions)
+- [x] All integration tests pass
+- [x] Generated documents match expected format
+- [x] AI markers preserved in output
+- [x] Variables expanded correctly
+- [x] Full test suite passes (no regressions)
 
 ---
 
