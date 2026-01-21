@@ -99,4 +99,86 @@ dt_show_version() {
 # DETECTION FUNCTIONS
 # ============================================================================
 
-# (Detection functions will go here)
+dt_detect_dev_infra() {
+    # 1. Environment variable (highest priority)
+    if [ -n "${DEV_INFRA_PATH:-}" ] && [ -d "$DEV_INFRA_PATH" ]; then
+        echo "$DEV_INFRA_PATH"
+        return 0
+    fi
+    
+    # 2. Sibling directory (common development setup)
+    local script_dir
+    if [ -n "${BASH_SOURCE[0]:-}" ]; then
+        script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    else
+        script_dir="$(pwd)"
+    fi
+    
+    # Look for dev-infra as sibling to dev-toolkit
+    local toolkit_root="${script_dir%/lib/core}"
+    local sibling_path="${toolkit_root%/*}/dev-infra"
+    if [ -d "$sibling_path" ]; then
+        echo "$sibling_path"
+        return 0
+    fi
+    
+    # 3. Common default locations
+    local default_paths=(
+        "$HOME/Projects/dev-infra"
+        "$HOME/.dev-infra"
+    )
+    
+    for path in "${default_paths[@]}"; do
+        if [ -d "$path" ]; then
+            echo "$path"
+            return 0
+        fi
+    done
+    
+    # Not found
+    return 1
+}
+
+dt_detect_project_structure() {
+    local current_dir="${1:-.}"
+    
+    # Priority: admin/ first for backward compatibility
+    if [ -d "$current_dir/admin/explorations" ] || \
+       [ -d "$current_dir/admin/research" ] || \
+       [ -d "$current_dir/admin/decisions" ] || \
+       [ -d "$current_dir/admin/planning" ]; then
+        echo "admin"
+        return 0
+    fi
+    
+    # Then check docs/maintainers/ (newer structure)
+    if [ -d "$current_dir/docs/maintainers/explorations" ] || \
+       [ -d "$current_dir/docs/maintainers/research" ] || \
+       [ -d "$current_dir/docs/maintainers/decisions" ] || \
+       [ -d "$current_dir/docs/maintainers/planning" ]; then
+        echo "docs/maintainers"
+        return 0
+    fi
+    
+    echo "unknown"
+    return 0
+}
+
+dt_get_docs_root() {
+    local project_dir="${1:-.}"
+    local structure
+    structure=$(dt_detect_project_structure "$project_dir")
+    
+    case "$structure" in
+        "admin")
+            echo "$project_dir/admin"
+            ;;
+        "docs/maintainers")
+            echo "$project_dir/docs/maintainers"
+            ;;
+        *)
+            echo ""
+            return 1
+            ;;
+    esac
+}
