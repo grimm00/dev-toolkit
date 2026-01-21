@@ -74,6 +74,12 @@ None currently identified.
 
 ---
 
+## ✅ Completed Milestones
+
+- **Phase 1:** Shared Infrastructure ✅ (2026-01-21) - Created `lib/core/output-utils.sh` with XDG helpers, output functions, and detection functions. All 26 tests passing.
+
+---
+
 ## 📝 Notes
 
 - Phase documents are in **scaffolding** state (~60-80 lines)
