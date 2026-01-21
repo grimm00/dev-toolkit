@@ -94,15 +94,15 @@ setup() {
 
 #### 2.1 RED - Write failing tests for XDG helpers
 
-- [ ] Create test section for XDG functions
-- [ ] Write test: `dt_get_xdg_config_home` returns `$XDG_CONFIG_HOME` if set
-- [ ] Write test: `dt_get_xdg_config_home` returns `$HOME/.config` if not set
-- [ ] Write test: `dt_get_xdg_data_home` returns `$XDG_DATA_HOME` if set
-- [ ] Write test: `dt_get_xdg_data_home` returns `$HOME/.local/share` if not set
-- [ ] Write test: `dt_get_config_dir` returns correct dev-toolkit config path
-- [ ] Write test: `dt_get_data_dir` returns correct dev-toolkit data path
-- [ ] Write test: `dt_get_config_file` returns correct config file path
-- [ ] Verify tests fail (no implementation yet)
+- [x] Create test section for XDG functions
+- [x] Write test: `dt_get_xdg_config_home` returns `$XDG_CONFIG_HOME` if set
+- [x] Write test: `dt_get_xdg_config_home` returns `$HOME/.config` if not set
+- [x] Write test: `dt_get_xdg_data_home` returns `$XDG_DATA_HOME` if set
+- [x] Write test: `dt_get_xdg_data_home` returns `$HOME/.local/share` if not set
+- [x] Write test: `dt_get_config_dir` returns correct dev-toolkit config path
+- [x] Write test: `dt_get_data_dir` returns correct dev-toolkit data path
+- [x] Write test: `dt_get_config_file` returns correct config file path
+- [x] Verify tests fail (no implementation yet)
 
 **Test code:**
 
@@ -163,12 +163,12 @@ setup() {
 
 #### 2.2 GREEN - Implement XDG helper functions
 
-- [ ] Implement `dt_get_xdg_config_home()`
-- [ ] Implement `dt_get_xdg_data_home()`
-- [ ] Implement `dt_get_config_dir()`
-- [ ] Implement `dt_get_data_dir()`
-- [ ] Implement `dt_get_config_file()`
-- [ ] Run tests, verify they pass
+- [x] Implement `dt_get_xdg_config_home()`
+- [x] Implement `dt_get_xdg_data_home()`
+- [x] Implement `dt_get_config_dir()`
+- [x] Implement `dt_get_data_dir()`
+- [x] Implement `dt_get_config_file()`
+- [x] Run tests, verify they pass
 
 **Implementation:**
 
@@ -205,9 +205,9 @@ dt_get_config_file() {
 - [ ] Verify tests still pass
 
 **Checklist:**
-- [ ] All XDG tests pass
-- [ ] Functions handle both set and unset env vars
-- [ ] Paths follow XDG specification
+- [x] All XDG tests pass
+- [x] Functions handle both set and unset env vars
+- [x] Paths follow XDG specification
 
 ---
 
@@ -704,7 +704,7 @@ dt_get_docs_root() {
 | Task | Status | Notes |
 |------|--------|-------|
 | Task 1: Test Setup and Library Scaffolding | ✅ Complete | |
-| Task 2: XDG Helper Functions | 🔴 Not Started | |
+| Task 2: XDG Helper Functions | ✅ Complete | RED + GREEN phases done |
 | Task 3: Output Functions | 🔴 Not Started | |
 | Task 4: Detection Functions | 🔴 Not Started | |
 | Task 5: Integration Testing | 🔴 Not Started | |
