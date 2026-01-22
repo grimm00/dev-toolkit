@@ -17,57 +17,65 @@ This document captures requirements discovered during research on migrating the 
 
 ## ✅ Functional Requirements
 
-<!-- PLACEHOLDER: Will be filled as research discovers requirements -->
+### FR-1: Variable Support for Exploration Templates
 
-### FR-1: [Requirement Name]
+**Description:** dt-doc-gen must support `TOPIC_NAME`, `TOPIC_TITLE`, `DATE`, `STATUS` variables for exploration templates
 
-**Description:** [Requirement description]
+**Source:** [research-template-gap-analysis.md](research-template-gap-analysis.md)
 
-**Source:** [research document]
+**Priority:** High
 
-**Priority:** [High | Medium | Low]
-
-**Status:** 🔴 Pending
+**Status:** ✅ Already Supported (Phase 2)
 
 ---
 
-### FR-2: [Requirement Name]
+### FR-2: AI Section Population
 
-**Description:** [Requirement description]
+**Description:** Command wrapper (Cursor) must populate AI/EXPAND sections with themes and questions extracted from user input
 
-**Source:** [research document]
+**Source:** [research-template-gap-analysis.md](research-template-gap-analysis.md)
 
-**Priority:** [High | Medium | Low]
+**Priority:** High
 
-**Status:** 🔴 Pending
+**Status:** 🔴 Pending (Migration work)
+
+---
+
+### FR-3: Mode-Specific Status Handling
+
+**Description:** dt-doc-gen must handle Setup Mode status (`🔴 Scaffolding`) and Conduct Mode status (`✅ Expanded`) via STATUS variable
+
+**Source:** [research-template-gap-analysis.md](research-template-gap-analysis.md)
+
+**Priority:** High
+
+**Status:** ✅ Already Supported (STATUS variable)
 
 ---
 
 ## 🎯 Non-Functional Requirements
 
-<!-- PLACEHOLDER: Will be filled as research discovers requirements -->
+### NFR-1: Validation Rule Compliance
 
-### NFR-1: [Requirement Name]
+**Description:** Template output must pass dev-infra validation rules (exploration.yaml)
 
-**Description:** [Requirement description]
+**Source:** [research-template-gap-analysis.md](research-template-gap-analysis.md)
 
-**Source:** [research document]
+**Priority:** High
 
-**Priority:** [High | Medium | Low]
-
-**Status:** 🔴 Pending
+**Status:** 🔴 Pending (Verify during migration)
 
 ---
 
-### NFR-2: [Requirement Name]
+### NFR-2: Marker Convention Alignment
 
-**Description:** [Requirement description]
+**Description:** Marker convention should align with dev-infra (`<!-- AI: -->`, `<!-- EXPAND: -->`) instead of `<!-- PLACEHOLDER: -->`
 
-**Source:** [research document]
+**Source:** [research-template-gap-analysis.md](research-template-gap-analysis.md)
 
-**Priority:** [High | Medium | Low]
+**Priority:** Medium
 
-**Status:** 🔴 Pending
+**Status:** 🔴 Pending (Convention change)
 
 ---
 
@@ -105,7 +113,7 @@ This document captures requirements discovered during research on migrating the 
 
 **Source:** [Exploration Theme 3]
 
-**Validation needed:** Confirm this is the intended architecture
+**Validation:** ✅ VALIDATED - Templates use AI markers, not array variables
 
 ---
 
@@ -115,7 +123,7 @@ This document captures requirements discovered during research on migrating the 
 
 **Source:** [Exploration]
 
-**Validation needed:** Gap analysis research
+**Validation:** ✅ VALIDATED - All 3 templates exist and are compatible
 
 ---
 
