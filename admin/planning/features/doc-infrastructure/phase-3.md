@@ -34,16 +34,16 @@ Implement the `dt-doc-validate` command for validating documentation against com
 
 **Steps:**
 
-- [ ] Create `bin/dt-doc-validate` with header comment and empty structure
-- [ ] Create `lib/doc-validate/type-detection.sh` with empty structure
-- [ ] Create `lib/doc-validate/rules.sh` with empty structure
-- [ ] Create `lib/doc-validate/validation.sh` with empty structure
-- [ ] Create `lib/doc-validate/output.sh` with empty structure
-- [ ] Create `tests/unit/doc-validate/test-type-detection.bats` with test setup
-- [ ] Create `tests/unit/doc-validate/test-rules.bats` with test setup
-- [ ] Create `tests/unit/doc-validate/test-validation.bats` with test setup
-- [ ] Create `tests/unit/doc-validate/test-output.bats` with test setup
-- [ ] Create `tests/integration/test-dt-doc-validate.bats` with test setup
+- [x] Create `bin/dt-doc-validate` with header comment and empty structure
+- [x] Create `lib/doc-validate/type-detection.sh` with empty structure
+- [x] Create `lib/doc-validate/rules.sh` with empty structure
+- [x] Create `lib/doc-validate/validation.sh` with empty structure
+- [x] Create `lib/doc-validate/output.sh` with empty structure
+- [x] Create `tests/unit/doc-validate/test-type-detection.bats` with test setup
+- [x] Create `tests/unit/doc-validate/test-rules.bats` with test setup
+- [x] Create `tests/unit/doc-validate/test-validation.bats` with test setup
+- [x] Create `tests/unit/doc-validate/test-output.bats` with test setup
+- [x] Create `tests/integration/test-dt-doc-validate.bats` with test setup
 
 **CLI scaffolding:**
 
@@ -214,14 +214,14 @@ setup() {
 ```
 
 **Checklist:**
-- [ ] `bin/dt-doc-validate` created with structure
-- [ ] `lib/doc-validate/type-detection.sh` created
-- [ ] `lib/doc-validate/rules.sh` created
-- [ ] `lib/doc-validate/validation.sh` created
-- [ ] `lib/doc-validate/output.sh` created
-- [ ] Unit test files created (4 files)
-- [ ] Integration test file created
-- [ ] All scaffolding committed
+- [x] `bin/dt-doc-validate` created with structure
+- [x] `lib/doc-validate/type-detection.sh` created
+- [x] `lib/doc-validate/rules.sh` created
+- [x] `lib/doc-validate/validation.sh` created
+- [x] `lib/doc-validate/output.sh` created
+- [x] Unit test files created (4 files)
+- [x] Integration test file created
+- [x] All scaffolding committed
 
 ---
 
