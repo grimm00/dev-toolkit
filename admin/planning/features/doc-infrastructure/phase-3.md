@@ -1289,14 +1289,14 @@ EOF
 ```
 
 **Checklist:**
-- [ ] Tests for help and version
-- [ ] Tests for argument validation
-- [ ] Tests for file validation
-- [ ] Tests for directory validation
-- [ ] Tests for `--type` override
-- [ ] Tests for `--json` output
-- [ ] Tests for exit codes
-- [ ] All integration tests passing
+- [x] Tests for help and version
+- [x] Tests for argument validation
+- [x] Tests for file validation
+- [x] Tests for directory validation
+- [x] Tests for `--type` override
+- [x] Tests for `--json` output
+- [x] Tests for exit codes
+- [x] All integration tests passing - 21/21 tests pass
 - [ ] Final commit and PR ready
 
 ---
