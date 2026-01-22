@@ -693,11 +693,11 @@ EOF
 ```
 
 **Checklist:**
-- [ ] Tests for section validation (pass/fail)
-- [ ] Tests for file validation
-- [ ] Tests for directory validation
-- [ ] Tests for error collection
-- [ ] All tests failing (RED state)
+- [x] Tests for section validation (pass/fail)
+- [x] Tests for file validation
+- [x] Tests for directory validation
+- [x] Tests for error collection
+- [x] All tests failing (RED state) → All tests passing (GREEN state)
 
 #### GREEN Phase - Implement Functions
 
@@ -808,13 +808,13 @@ dt_validate_directory() {
 ```
 
 **Checklist:**
-- [ ] `dt_reset_validation_results()` clears state
-- [ ] `dt_validate_required_sections()` checks patterns
-- [ ] `dt_validate_file()` validates single file
-- [ ] `dt_validate_directory()` validates all markdown files
-- [ ] Error/warning collection working
-- [ ] All tests passing (GREEN state)
-- [ ] Changes committed
+- [x] `dt_reset_validation_results()` clears state
+- [x] `dt_validate_required_sections()` checks patterns
+- [x] `dt_validate_file()` validates single file
+- [x] `dt_validate_directory()` validates all markdown files
+- [x] Error/warning collection working
+- [x] All tests passing (GREEN state) - 14/14 tests pass
+- [x] Changes committed
 
 ---
 
