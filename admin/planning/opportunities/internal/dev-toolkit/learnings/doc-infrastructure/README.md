@@ -3,7 +3,7 @@
 **Purpose:** Phase learnings from doc-infrastructure implementation  
 **Target:** Inform dev-infra template and other projects  
 **Status:** ✅ Active  
-**Last Updated:** 2026-01-21
+**Last Updated:** 2026-01-22
 
 ---
 
@@ -12,6 +12,7 @@
 ### Phase Learnings
 
 - **[Phase 1](phase-1-learnings.md)** - Shared Infrastructure (output-utils.sh)
+- **[Phase 2](phase-2-learnings.md)** - dt-doc-gen (template discovery, variable expansion, CLI)
 
 ---
 
@@ -23,9 +24,9 @@ This directory contains phase-specific learnings from doc-infrastructure impleme
 
 ## 📊 Summary
 
-**Total Phase Learnings:** 1  
+**Total Phase Learnings:** 2  
 **Status:** ✅ Active
 
 ---
 
-**Last Updated:** 2026-01-21
+**Last Updated:** 2026-01-22
