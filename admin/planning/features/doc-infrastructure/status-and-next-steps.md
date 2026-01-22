@@ -11,7 +11,7 @@
 |-------|------|--------|----------|-------|
 | Phase 1 | Shared Infrastructure | ✅ Complete | 100% | Merged PR #29 |
 | Phase 2 | dt-doc-gen | ✅ Complete | 100% | All 6 tasks complete, 37 tests passing |
-| Phase 3 | dt-doc-validate | 🔴 Scaffolding | 0% | Needs expansion |
+| Phase 3 | dt-doc-validate | ✅ Expanded | 0% | 7 tasks, ready for implementation |
 
 **Overall:** 🟠 Phase 3 Next (67% complete, Phase 2 complete)
 
@@ -21,17 +21,17 @@
 
 ### Immediate
 
-1. **Expand Phase 3** - `/transition-plan doc-infrastructure --expand --phase 3`
-2. **Begin Phase 3** - Implement dt-doc-validate
+1. **Begin Phase 3** - `/task-phase 3 1` to start Task 1
 
-### Phase 3 Tasks (Scaffolding)
+### Phase 3 Tasks (Expanded)
 
 1. Task 1: Test Setup and CLI Scaffolding
-2. Task 2: Validation Rule Functions
-3. Task 3: Structure Validation
-4. Task 4: Content Validation
-5. Task 5: CLI Implementation
-6. Task 6: Integration Testing
+2. Task 2: Type Detection Functions (ADR-006)
+3. Task 3: Rule Loading Functions (ADR-002)
+4. Task 4: Validation Functions
+5. Task 5: Error Output Functions (ADR-004)
+6. Task 6: CLI Implementation
+7. Task 7: Integration Testing
 
 ### After Phase 3
 
@@ -51,7 +51,6 @@
 
 | Action | Command |
 |--------|---------|
-| Expand Phase 3 | `/transition-plan doc-infrastructure --expand --phase 3` |
 | Start Phase 3 Task | `/task-phase 3 [task-number]` |
 | Create Phase 3 PR | `/pr --phase 3` |
 
@@ -85,9 +84,9 @@ None currently identified.
 
 ## 📝 Notes
 
-- Phase documents are in **scaffolding** state (~60-80 lines)
-- Use `--expand` to add detailed TDD tasks (~200-300 lines)
+- Phase 3 is now **expanded** with detailed TDD tasks
 - Command migration sprints start after core implementation
+- See [Phase 3](phase-3.md) for 7 detailed tasks with RED/GREEN workflow
 
 ---
 
