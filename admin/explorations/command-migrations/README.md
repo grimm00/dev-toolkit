@@ -13,7 +13,7 @@
 
 | Sprint | Command | Status | Complexity | Notes |
 |--------|---------|--------|------------|-------|
-| 1 | [/explore](explore/README.md) | 🔴 Exploration | 🔴 High | Two-mode, 3 files, sets patterns |
+| 1 | [/explore](explore/README.md) | ✅ Expanded | 🔴 High | Two-mode, 3 files, sets patterns |
 | 2 | /research | 🔴 Not Started | 🔴 High | Similar to /explore |
 | 3 | /decision | 🔴 Not Started | 🟡 Medium | ADR format well-defined |
 | 4 | /transition-plan | 🔴 Not Started | 🟡 Medium | Planning documents |
@@ -75,7 +75,7 @@ This directory contains explorations for migrating each Cursor command from inli
 
 | Sprint | Exploration | Research | Decision | Plan | Implementation |
 |--------|-------------|----------|----------|------|----------------|
-| 1: /explore | 🔴 | ⬜ | ⬜ | ⬜ | ⬜ |
+| 1: /explore | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 2: /research | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 3: /decision | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 4: /transition-plan | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
