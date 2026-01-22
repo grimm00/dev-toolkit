@@ -309,13 +309,13 @@ EOF
 ```
 
 **Checklist:**
-- [ ] Tests for explicit type override
-- [ ] Tests for path-based detection (exploration, adr, phase, etc.)
-- [ ] Tests for content-based fallback
-- [ ] Tests for both admin/ and docs/maintainers/ structures
-- [ ] Tests for detection failure
-- [ ] Tests for type listing
-- [ ] All tests failing (RED state)
+- [x] Tests for explicit type override
+- [x] Tests for path-based detection (exploration, adr, phase, etc.)
+- [x] Tests for content-based fallback
+- [x] Tests for both admin/ and docs/maintainers/ structures
+- [x] Tests for detection failure
+- [x] Tests for type listing
+- [x] All tests failing (RED state) → All tests passing (GREEN state)
 
 #### GREEN Phase - Implement Functions
 
@@ -420,13 +420,13 @@ dt_list_document_types() {
 ```
 
 **Checklist:**
-- [ ] `dt_detect_document_type()` implements priority logic
-- [ ] `dt_detect_from_path()` handles all 17 path patterns
-- [ ] `dt_detect_from_content()` handles distinctive content patterns
-- [ ] `dt_list_document_types()` returns all types
-- [ ] Both `admin/` and `docs/maintainers/` paths supported
-- [ ] All tests passing (GREEN state)
-- [ ] Changes committed
+- [x] `dt_detect_document_type()` implements priority logic
+- [x] `dt_detect_from_path()` handles all 17 path patterns
+- [x] `dt_detect_from_content()` handles distinctive content patterns
+- [x] `dt_list_document_types()` returns all types
+- [x] Both `admin/` and `docs/maintainers/` paths supported
+- [x] All tests passing (GREEN state) - 19/19 tests pass
+- [x] Changes committed
 
 ---
 
