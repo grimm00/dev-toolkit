@@ -17,8 +17,8 @@
 
 | Phase | Name | Status | Estimate |
 |-------|------|--------|----------|
-| [Phase 1](phase-1.md) | Shared Infrastructure | ✅ Expanded | 2-3 days |
-| [Phase 2](phase-2.md) | dt-doc-gen | 🔴 Scaffolding | 3-4 days |
+| [Phase 1](phase-1.md) | Shared Infrastructure | ✅ Complete | 2-3 days |
+| [Phase 2](phase-2.md) | dt-doc-gen | ✅ Expanded | 3-4 days |
 | [Phase 3](phase-3.md) | dt-doc-validate | 🔴 Scaffolding | 3-4 days |
 
 ### Related Documents
@@ -64,9 +64,9 @@ Cursor Commands → dt-doc-validate → Rules (dev-infra)
 
 ## 🚀 Next Steps
 
-1. **Review scaffolding** - Verify phase breakdown
-2. **Expand phases** - `/transition-plan doc-infrastructure --expand --phase N`
-3. **Implement** - Begin Phase 1
+1. **Begin Phase 2** - Start implementation with Task 1
+2. **Follow TDD** - RED → GREEN → REFACTOR for each task
+3. **Create PR** - After Phase 2 complete
 
 ---
 
