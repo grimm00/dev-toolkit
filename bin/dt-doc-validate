@@ -18,10 +18,10 @@ TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
 
 # Source shared libraries
 source "$TOOLKIT_ROOT/lib/core/output-utils.sh"
-# source "$TOOLKIT_ROOT/lib/doc-validate/type-detection.sh"  # After implementation
-# source "$TOOLKIT_ROOT/lib/doc-validate/rules.sh"           # After implementation
-# source "$TOOLKIT_ROOT/lib/doc-validate/validation.sh"      # After implementation
-# source "$TOOLKIT_ROOT/lib/doc-validate/output.sh"          # After implementation
+source "$TOOLKIT_ROOT/lib/doc-validate/type-detection.sh"
+source "$TOOLKIT_ROOT/lib/doc-validate/rules.sh"
+source "$TOOLKIT_ROOT/lib/doc-validate/validation.sh"
+source "$TOOLKIT_ROOT/lib/doc-validate/output.sh"
 
 # ============================================================================
 # FUNCTIONS
@@ -72,18 +72,97 @@ show_version() {
 # ============================================================================
 
 main() {
-    # Handle help and version flags
-    if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
+    local target=""
+    local explicit_type=""
+    local json_output=false
+    local rules_path=""
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            --version|-v)
+                show_version
+                exit 0
+                ;;
+            --debug)
+                export DT_DEBUG=true
+                shift
+                ;;
+            --type)
+                if [ -z "${2:-}" ]; then
+                    dt_print_status "ERROR" "Option --type requires a value"
+                    show_help
+                    exit 2
+                fi
+                explicit_type="$2"
+                shift 2
+                ;;
+            --json)
+                json_output=true
+                shift
+                ;;
+            --rules-path)
+                if [ -z "${2:-}" ]; then
+                    dt_print_status "ERROR" "Option --rules-path requires a value"
+                    show_help
+                    exit 2
+                fi
+                rules_path="$2"
+                shift 2
+                ;;
+            -*)
+                dt_print_status "ERROR" "Unknown option: $1"
+                show_help
+                exit 2
+                ;;
+            *)
+                if [ -z "$target" ]; then
+                    target="$1"
+                else
+                    dt_print_status "ERROR" "Unexpected argument: $1"
+                    show_help
+                    exit 2
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Validate target
+    if [ -z "$target" ]; then
+        dt_print_status "ERROR" "No file or directory specified"
         show_help
-        exit 0
-    fi
-    if [[ "${1:-}" == "--version" ]] || [[ "${1:-}" == "-v" ]]; then
-        show_version
-        exit 0
+        exit 2
     fi
     
-    echo "dt-doc-validate: Not yet implemented"
-    exit 1
+    if [ ! -e "$target" ]; then
+        dt_print_status "ERROR" "File or directory not found: $target"
+        exit 2
+    fi
+    
+    # Initialize validation state
+    dt_reset_validation_results
+    
+    # Validate target (file or directory)
+    if [ -d "$target" ]; then
+        dt_validate_directory "$target" "$explicit_type" "$rules_path"
+    else
+        dt_validate_file "$target" "$explicit_type" "$rules_path"
+    fi
+    
+    # Output results
+    if [ "$json_output" = true ]; then
+        dt_format_results_json
+    else
+        dt_output_text
+    fi
+    
+    # Exit with appropriate code
+    exit "$(dt_get_exit_code)"
 }
 
 main "$@"
