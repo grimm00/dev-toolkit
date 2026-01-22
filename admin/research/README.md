@@ -2,7 +2,7 @@
 
 **Purpose:** Research documents and analysis for dev-toolkit features  
 **Status:** ✅ Active  
-**Last Updated:** 2026-01-16
+**Last Updated:** 2026-01-22
 
 ---
 
@@ -10,7 +10,8 @@
 
 ### Active Research
 
-- **[doc-infrastructure](doc-infrastructure/README.md)** - `dt-doc-gen` and `dt-doc-validate` implementation (🔴 Research)
+- **[doc-infrastructure](doc-infrastructure/README.md)** - `dt-doc-gen` and `dt-doc-validate` implementation (✅ Complete)
+- **[explore-command-migration](explore-command-migration/README.md)** - Migrating `/explore` to dt-doc-gen (🔴 Research)
 
 ---
 
@@ -37,4 +38,4 @@ This directory contains research documents supporting exploration and decision-m
 
 ---
 
-**Last Updated:** 2026-01-16
+**Last Updated:** 2026-01-22

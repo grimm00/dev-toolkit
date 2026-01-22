@@ -75,7 +75,7 @@ This directory contains explorations for migrating each Cursor command from inli
 
 | Sprint | Exploration | Research | Decision | Plan | Implementation |
 |--------|-------------|----------|----------|------|----------------|
-| 1: /explore | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 1: /explore | ✅ | 🔴 | ⬜ | ⬜ | ⬜ |
 | 2: /research | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 3: /decision | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 4: /transition-plan | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
