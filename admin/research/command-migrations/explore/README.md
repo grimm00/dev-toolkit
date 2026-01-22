@@ -11,7 +11,7 @@
 
 - **[Research Summary](research-summary.md)** - Summary of all research findings
 - **[Requirements](requirements.md)** - Requirements discovered during research
-- **[Exploration](../../explorations/command-migrations/explore/exploration.md)** - Source exploration
+- **[Exploration](../../../explorations/command-migrations/explore/exploration.md)** - Source exploration
 
 ### Research Documents (Priority Order)
 
@@ -90,10 +90,10 @@ Dev-infra templates are highly compatible with /explore needs:
 
 ## 🔗 Related Documents
 
-- [Exploration](../../explorations/command-migrations/explore/exploration.md)
-- [Command Migrations Hub](../../explorations/command-migrations/README.md)
-- [Iteration Plan](../doc-infrastructure/iteration-plan.md)
-- [dt-doc-gen Phase 2](../../planning/features/doc-infrastructure/phase-2.md)
+- [Exploration](../../../explorations/command-migrations/explore/exploration.md)
+- [Command Migrations Hub](../../../explorations/command-migrations/README.md)
+- [Iteration Plan](../../doc-infrastructure/iteration-plan.md)
+- [dt-doc-gen Phase 2](../../../planning/features/doc-infrastructure/phase-2.md)
 
 ---
 

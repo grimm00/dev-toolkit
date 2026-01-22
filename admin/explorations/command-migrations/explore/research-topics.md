@@ -249,6 +249,7 @@ After research, decide:
 - [Exploration](exploration.md) - Full exploration document
 - [Command Migrations Hub](../README.md)
 - [Iteration Plan](../../../research/doc-infrastructure/iteration-plan.md)
+- [Research](../../../research/command-migrations/explore/README.md)
 
 ---
 

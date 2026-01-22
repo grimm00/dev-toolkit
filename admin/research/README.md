@@ -11,7 +11,7 @@
 ### Active Research
 
 - **[doc-infrastructure](doc-infrastructure/README.md)** - `dt-doc-gen` and `dt-doc-validate` implementation (✅ Complete)
-- **[explore-command-migration](explore-command-migration/README.md)** - Migrating `/explore` to dt-doc-gen (🔴 Research)
+- **[command-migrations](command-migrations/README.md)** - Migrating Cursor commands to dt-doc-gen (🔴 Research)
 
 ---
 

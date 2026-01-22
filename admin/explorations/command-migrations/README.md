@@ -22,6 +22,7 @@
 
 ### Related Documents
 
+- **[Research Hub](../../research/command-migrations/README.md)** - Research for command migrations
 - **[Iteration Plan](../../research/doc-infrastructure/iteration-plan.md)** - Overall migration strategy
 - **[dt-doc-gen](../../planning/features/doc-infrastructure/phase-2.md)** - Phase 2 implementation
 - **[dt-doc-validate](../../planning/features/doc-infrastructure/phase-3.md)** - Phase 3 implementation

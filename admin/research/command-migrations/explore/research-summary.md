@@ -106,7 +106,7 @@ See [requirements.md](requirements.md) for complete requirements document.
 
 - [Research Hub](README.md)
 - [Requirements](requirements.md)
-- [Exploration](../../explorations/command-migrations/explore/exploration.md)
+- [Exploration](../../../explorations/command-migrations/explore/exploration.md)
 
 ---
 

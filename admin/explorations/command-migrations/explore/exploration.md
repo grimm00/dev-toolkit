@@ -402,6 +402,7 @@ The /explore command integrates with worktree workflow per ADR-002.
 
 - [Command Migrations Hub](../README.md)
 - [Iteration Plan](../../../research/doc-infrastructure/iteration-plan.md)
+- [Research](../../../research/command-migrations/explore/README.md)
 - [dt-doc-gen Phase 2](../../../planning/features/doc-infrastructure/phase-2.md)
 - [dt-doc-validate Phase 3](../../../planning/features/doc-infrastructure/phase-3.md)
 

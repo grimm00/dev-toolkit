@@ -131,7 +131,7 @@ This document captures requirements discovered during research on migrating the 
 
 - [Research Summary](research-summary.md)
 - [Research Documents](README.md)
-- [Exploration](../../explorations/command-migrations/explore/exploration.md)
+- [Exploration](../../../explorations/command-migrations/explore/exploration.md)
 
 ---
 
