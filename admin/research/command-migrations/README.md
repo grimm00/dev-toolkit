@@ -13,12 +13,8 @@
 
 | Sprint | Command | Status | Research |
 |--------|---------|--------|----------|
-| 1 | [/explore](explore/README.md) | 🔴 Research (1/6) | Gap analysis complete |
-| 2 | /research | 🔴 Not Started | - |
-| 3 | /decision | 🔴 Not Started | - |
-| 4 | /transition-plan | 🔴 Not Started | - |
-| 5 | /task-phase | 🔴 Not Started | - |
-| 6 | /fix-batch | 🔴 Not Started | - |
+| 1 | [/explore](explore/README.md) | ✅ Complete | **Migration cancelled** - validate-only approach |
+| 2-6 | All others | ⬜ Cancelled | Same decision applies |
 
 ### Related Documents
 
@@ -43,12 +39,30 @@ This directory contains research for migrating Cursor commands from inline templ
 
 | Command | Exploration | Research | Decision | Implementation |
 |---------|-------------|----------|----------|----------------|
-| /explore | ✅ | 🔴 (1/6) | ⬜ | ⬜ |
-| /research | ⬜ | ⬜ | ⬜ | ⬜ |
-| /decision | ⬜ | ⬜ | ⬜ | ⬜ |
-| /transition-plan | ⬜ | ⬜ | ⬜ | ⬜ |
-| /task-phase | ⬜ | ⬜ | ⬜ | ⬜ |
-| /fix-batch | ⬜ | ⬜ | ⬜ | ⬜ |
+| /explore | ✅ | ✅ Complete | ✅ **Skip migration** | N/A |
+| /research | ⬜ | ⬜ Cancelled | ✅ Same decision | N/A |
+| /decision | ⬜ | ⬜ Cancelled | ✅ Same decision | N/A |
+| /transition-plan | ⬜ | ⬜ Cancelled | ✅ Same decision | N/A |
+| /task-phase | ⬜ | ⬜ Cancelled | ✅ Same decision | N/A |
+| /fix-batch | ⬜ | ⬜ Cancelled | ✅ Same decision | N/A |
+
+## 🔑 Key Decision: Skip Migration
+
+**Research concluded that migrating Cursor commands to dt-doc-gen is NOT recommended.**
+
+### Why?
+- Cursor commands are AI instruction sets, not CLI template systems
+- dt-doc-gen solves CLI problems, not AI command problems
+- No pain points exist with current approach
+- Main benefit (validation) achievable via dt-doc-validate on output
+
+### Recommended Approach
+Use **validate-only**: Run `dt-doc-validate` on generated documents.
+
+### Impact
+- Saves 30-50+ hours of migration work
+- All 6 commands: use current approach + validate output
+- dt-doc-gen remains for CLI/project template use cases
 
 ---
 

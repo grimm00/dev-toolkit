@@ -14,7 +14,7 @@ This research investigates how to migrate the `/explore` Cursor command from inl
 **Key Strategic Question:** Is this migration worth the effort, or would inline restructuring be simpler?
 
 **Research Topics:** 6 documents  
-**Status:** 🔴 Research (1/6 complete)
+**Status:** ✅ Complete (2/6 conducted, 4 cancelled - migration not recommended)
 
 ---
 
@@ -23,11 +23,11 @@ This research investigates how to migrate the `/explore` Cursor command from inl
 | # | Research Topic | Priority | Status | Key Finding |
 |---|----------------|----------|--------|-------------|
 | 1 | Template Gap Analysis | 🔴 BLOCKING | ✅ Complete | **Gaps minimal** - templates highly compatible |
-| 2 | Migration Value | 🔴 STRATEGIC | 🔴 Not Started | - |
-| 3 | Two-Mode Strategy | 🔴 High | 🔴 Not Started | - |
-| 4 | Theme Extraction | 🟠 Medium | 🔴 Not Started | - |
-| 5 | Validation Strictness | 🟠 Medium | 🔴 Not Started | - |
-| 6 | Cross-Project Coordination | 🟠 Medium | 🔴 Not Started | - |
+| 2 | Migration Value | 🔴 STRATEGIC | ✅ Complete | **Migration NOT recommended** - validate-only |
+| 3 | Two-Mode Strategy | 🔴 High | ⬜ Cancelled | Not needed - migration cancelled |
+| 4 | Theme Extraction | 🟠 Medium | ⬜ Cancelled | Not needed - migration cancelled |
+| 5 | Validation Strictness | 🟠 Medium | ⬜ Cancelled | Not needed - migration cancelled |
+| 6 | Cross-Project Coordination | 🟠 Medium | ⬜ Cancelled | Not needed - migration cancelled |
 
 ---
 
@@ -57,12 +57,29 @@ Templates are sufficient as-is for basic migration. Only minor convention alignm
 
 ---
 
+### Finding 3: Migration NOT Recommended
+
+/explore is an **AI command**, not a CLI tool. dt-doc-gen solves a different problem.
+
+**Key insights:**
+- No pain points exist with current approach
+- Main benefit (validation) achievable without migration
+- Migration adds complexity for marginal gain
+- Same applies to all 6 Cursor commands
+
+**Recommended approach:** Validate-only - use dt-doc-validate on generated output.
+
+**Source:** [research-migration-value.md](research-migration-value.md)
+
+---
+
 ## 💡 Key Insights
 
 - [x] **Insight 1:** AI work stays in Cursor - templates use AI markers, not array variables
 - [x] **Insight 2:** envsubst doesn't support conditionals/arrays - correct architecture already in place
 - [x] **Insight 3:** Dev-infra markers (`<!-- AI: -->`, `<!-- EXPAND: -->`) are better than inline `<!-- PLACEHOLDER: -->`
-- [ ] Insight 4: [Pending remaining research]
+- [x] **Insight 4:** Cursor commands and CLI tools solve different problems - migration is architectural mismatch
+- [x] **Insight 5:** Validate-only approach gets main benefit without migration complexity
 
 ---
 
@@ -78,18 +95,21 @@ See [requirements.md](requirements.md) for complete requirements document.
 
 ## 🎯 Recommendations
 
-<!-- PLACEHOLDER: Will be filled after all research complete -->
+**Decision: Skip Migration, Use Validate-Only Approach**
 
-**Decision options:**
+| Option | Recommendation |
+|--------|----------------|
+| Full migration | ❌ Not recommended |
+| Simplified migration | ❌ Not recommended |
+| Inline restructuring | 🟡 Optional, not required |
+| **Validate-only** | ✅ **Recommended** |
+| No change | ✅ Acceptable |
 
-1. **Full migration:** Proceed with iteration plan
-2. **Simplified migration:** Reduce scope, simpler integration
-3. **Inline restructuring:** Improve existing without migration
-4. **No change:** Move on to other priorities
-
-**Recommended option:** [TBD]
-
-**Rationale:** [TBD]
+**Rationale:**
+- Current approach works with no issues
+- dt-doc-gen solves CLI problems, not AI command problems
+- Validation benefit achievable via dt-doc-validate on output
+- Saves 30-50+ hours across all commands
 
 ---
 

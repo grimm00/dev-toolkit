@@ -18,11 +18,11 @@
 | # | Research Document | Priority | Status |
 |---|-------------------|----------|--------|
 | 1 | [Template Inspection & Gap Analysis](research-template-gap-analysis.md) | 🔴 BLOCKING | ✅ Complete |
-| 2 | [Migration Value Assessment](research-migration-value.md) | 🔴 STRATEGIC | 🔴 Not Started |
-| 3 | [Two-Mode Template Strategy](research-two-mode-strategy.md) | 🔴 High | 🔴 Not Started |
-| 4 | [Theme Extraction Location](research-theme-extraction.md) | 🟠 Medium | 🔴 Not Started |
-| 5 | [Validation Strictness](research-validation-strictness.md) | 🟠 Medium | 🔴 Not Started |
-| 6 | [Cross-Project Coordination](research-cross-project.md) | 🟠 Medium | 🔴 Not Started |
+| 2 | [Migration Value Assessment](research-migration-value.md) | 🔴 STRATEGIC | ✅ Complete |
+| 3 | [Two-Mode Template Strategy](research-two-mode-strategy.md) | 🔴 High | ⬜ Cancelled |
+| 4 | [Theme Extraction Location](research-theme-extraction.md) | 🟠 Medium | ⬜ Cancelled |
+| 5 | [Validation Strictness](research-validation-strictness.md) | 🟠 Medium | ⬜ Cancelled |
+| 6 | [Cross-Project Coordination](research-cross-project.md) | 🟠 Medium | ⬜ Cancelled |
 
 **Note:** Low-priority topics (Fallback Strategy, Bulk Updates) deferred to implementation phase.
 
@@ -44,11 +44,11 @@ This research investigates how to migrate the `/explore` Cursor command from inl
 | Research Topic | Priority | Status | Findings |
 |----------------|----------|--------|----------|
 | Template Inspection & Gap Analysis | 🔴 BLOCKING | ✅ Complete | **Gaps minimal** - templates highly compatible |
-| Migration Value Assessment | 🔴 STRATEGIC | 🔴 Not Started | - |
-| Two-Mode Template Strategy | 🔴 High | 🔴 Not Started | - |
-| Theme Extraction Location | 🟠 Medium | 🔴 Not Started | - |
-| Validation Strictness | 🟠 Medium | 🔴 Not Started | - |
-| Cross-Project Coordination | 🟠 Medium | 🔴 Not Started | - |
+| Migration Value Assessment | 🔴 STRATEGIC | ✅ Complete | **Migration NOT recommended** - validate-only approach |
+| Two-Mode Template Strategy | 🔴 High | ⬜ Cancelled | Not needed - migration cancelled |
+| Theme Extraction Location | 🟠 Medium | ⬜ Cancelled | Not needed - migration cancelled |
+| Validation Strictness | 🟠 Medium | ⬜ Cancelled | Not needed - migration cancelled |
+| Cross-Project Coordination | 🟠 Medium | ⬜ Cancelled | Not needed - migration cancelled |
 
 ---
 
@@ -73,18 +73,34 @@ This research investigates how to migrate the `/explore` Cursor command from inl
 
 ---
 
-## 🔑 Key Finding (from Gap Analysis)
+## 🔑 Key Finding: Migration NOT Recommended
 
-**Migration complexity: 🟢 LOW**
+**Decision: Skip migration, use validate-only approach**
 
-Dev-infra templates are highly compatible with /explore needs:
-- All 3 required files exist (README.md, exploration.md, research-topics.md)
-- All needed variables available (TOPIC_NAME, TOPIC_TITLE, DATE, STATUS)
-- AI/EXPAND markers support both Setup and Conduct modes
-- Validation rules already comprehensive
-- No dev-infra PRs required for basic migration
+### Why Not Migrate?
 
-**Next decision:** Is the migration worth pursuing given the low complexity?
+1. **/explore is an AI command, not a CLI tool** - dt-doc-gen solves a different problem
+2. **No pain points exist** - current approach works well
+3. **Main benefit achievable without migration** - use dt-doc-validate on output
+4. **Migration adds complexity** - CLI calls within AI context, coordination overhead
+
+### Recommended Approach
+
+Use **validate-only**: Run `dt-doc-validate` on generated documents without changing generation.
+
+| Aspect | Migration | Validate-Only |
+|--------|-----------|---------------|
+| Effort | 5-9 hours | 0-1 hours |
+| Complexity | Higher | None |
+| Validation benefit | ✅ | ✅ |
+| Works today | Requires changes | ✅ |
+
+### Impact on Other Commands
+
+Same decision applies to all 6 Cursor commands:
+- Skip migration
+- Use dt-doc-validate on output
+- **Saves 30-50+ hours** of migration work
 
 ---
 
