@@ -10,9 +10,10 @@
 
 ### Active Explorations
 
+- **[dt-workflow](dt-workflow/README.md)** - Unified workflow orchestration (dt-doc-gen + AI + validate) (🔴 Scaffolding)
 - **[doc-infrastructure](doc-infrastructure/README.md)** - `dt-doc-gen` and `dt-doc-validate` commands from dev-infra specs (✅ Complete)
 - **[dt-review-deduplication](dt-review-deduplication/README.md)** - Deduplicate Sourcery comments across multiple review runs (🔴 Exploration)
-- **[command-migrations](command-migrations/README.md)** - Migrate Cursor commands to use dt-doc-gen/dt-doc-validate (🔴 Exploration)
+- **[command-migrations](command-migrations/README.md)** - ~~Migrate Cursor commands~~ (⚠️ May be superseded by dt-workflow)
 
 ---
 
