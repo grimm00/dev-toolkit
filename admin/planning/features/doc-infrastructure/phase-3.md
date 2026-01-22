@@ -2,7 +2,8 @@
 
 **Phase:** 3 - dt-doc-validate  
 **Duration:** 3-4 days  
-**Status:** ✅ Expanded  
+**Status:** ✅ Complete  
+**Completed:** 2026-01-22  
 **Prerequisites:** Phase 1 complete, dev-infra validation rules accessible
 
 ---
@@ -34,16 +35,16 @@ Implement the `dt-doc-validate` command for validating documentation against com
 
 **Steps:**
 
-- [ ] Create `bin/dt-doc-validate` with header comment and empty structure
-- [ ] Create `lib/doc-validate/type-detection.sh` with empty structure
-- [ ] Create `lib/doc-validate/rules.sh` with empty structure
-- [ ] Create `lib/doc-validate/validation.sh` with empty structure
-- [ ] Create `lib/doc-validate/output.sh` with empty structure
-- [ ] Create `tests/unit/doc-validate/test-type-detection.bats` with test setup
-- [ ] Create `tests/unit/doc-validate/test-rules.bats` with test setup
-- [ ] Create `tests/unit/doc-validate/test-validation.bats` with test setup
-- [ ] Create `tests/unit/doc-validate/test-output.bats` with test setup
-- [ ] Create `tests/integration/test-dt-doc-validate.bats` with test setup
+- [x] Create `bin/dt-doc-validate` with header comment and empty structure
+- [x] Create `lib/doc-validate/type-detection.sh` with empty structure
+- [x] Create `lib/doc-validate/rules.sh` with empty structure
+- [x] Create `lib/doc-validate/validation.sh` with empty structure
+- [x] Create `lib/doc-validate/output.sh` with empty structure
+- [x] Create `tests/unit/doc-validate/test-type-detection.bats` with test setup
+- [x] Create `tests/unit/doc-validate/test-rules.bats` with test setup
+- [x] Create `tests/unit/doc-validate/test-validation.bats` with test setup
+- [x] Create `tests/unit/doc-validate/test-output.bats` with test setup
+- [x] Create `tests/integration/test-dt-doc-validate.bats` with test setup
 
 **CLI scaffolding:**
 
@@ -214,14 +215,14 @@ setup() {
 ```
 
 **Checklist:**
-- [ ] `bin/dt-doc-validate` created with structure
-- [ ] `lib/doc-validate/type-detection.sh` created
-- [ ] `lib/doc-validate/rules.sh` created
-- [ ] `lib/doc-validate/validation.sh` created
-- [ ] `lib/doc-validate/output.sh` created
-- [ ] Unit test files created (4 files)
-- [ ] Integration test file created
-- [ ] All scaffolding committed
+- [x] `bin/dt-doc-validate` created with structure
+- [x] `lib/doc-validate/type-detection.sh` created
+- [x] `lib/doc-validate/rules.sh` created
+- [x] `lib/doc-validate/validation.sh` created
+- [x] `lib/doc-validate/output.sh` created
+- [x] Unit test files created (4 files)
+- [x] Integration test file created
+- [x] All scaffolding committed
 
 ---
 
@@ -309,13 +310,13 @@ EOF
 ```
 
 **Checklist:**
-- [ ] Tests for explicit type override
-- [ ] Tests for path-based detection (exploration, adr, phase, etc.)
-- [ ] Tests for content-based fallback
-- [ ] Tests for both admin/ and docs/maintainers/ structures
-- [ ] Tests for detection failure
-- [ ] Tests for type listing
-- [ ] All tests failing (RED state)
+- [x] Tests for explicit type override
+- [x] Tests for path-based detection (exploration, adr, phase, etc.)
+- [x] Tests for content-based fallback
+- [x] Tests for both admin/ and docs/maintainers/ structures
+- [x] Tests for detection failure
+- [x] Tests for type listing
+- [x] All tests failing (RED state) → All tests passing (GREEN state)
 
 #### GREEN Phase - Implement Functions
 
@@ -420,13 +421,13 @@ dt_list_document_types() {
 ```
 
 **Checklist:**
-- [ ] `dt_detect_document_type()` implements priority logic
-- [ ] `dt_detect_from_path()` handles all 17 path patterns
-- [ ] `dt_detect_from_content()` handles distinctive content patterns
-- [ ] `dt_list_document_types()` returns all types
-- [ ] Both `admin/` and `docs/maintainers/` paths supported
-- [ ] All tests passing (GREEN state)
-- [ ] Changes committed
+- [x] `dt_detect_document_type()` implements priority logic
+- [x] `dt_detect_from_path()` handles all 17 path patterns
+- [x] `dt_detect_from_content()` handles distinctive content patterns
+- [x] `dt_list_document_types()` returns all types
+- [x] Both `admin/` and `docs/maintainers/` paths supported
+- [x] All tests passing (GREEN state) - 19/19 tests pass
+- [x] Changes committed
 
 ---
 
@@ -507,12 +508,12 @@ teardown() {
 ```
 
 **Checklist:**
-- [ ] Tests for loading valid rules
-- [ ] Tests for missing rules error
-- [ ] Tests for rules path resolution
-- [ ] Tests for DT_RULES_PATH override
-- [ ] Tests for rules existence check
-- [ ] All tests failing (RED state)
+- [x] Tests for loading valid rules
+- [x] Tests for missing rules error
+- [x] Tests for rules path resolution
+- [x] Tests for DT_RULES_PATH override
+- [x] Tests for rules existence check
+- [x] All tests failing (RED state) → All tests passing (GREEN state)
 
 #### GREEN Phase - Implement Functions
 
@@ -598,13 +599,13 @@ dt_get_required_sections() {
 ```
 
 **Checklist:**
-- [ ] `dt_get_rules_path()` with default and override support
-- [ ] `dt_validate_rules_exist()` checks for rule file
-- [ ] `dt_load_rules()` sources pre-compiled .bash files
-- [ ] `dt_get_required_sections()` maps type to rules array
-- [ ] Error handling for missing rules
-- [ ] All tests passing (GREEN state)
-- [ ] Changes committed
+- [x] `dt_get_rules_path()` with default and override support
+- [x] `dt_validate_rules_exist()` checks for rule file
+- [x] `dt_load_rules()` sources pre-compiled .bash files
+- [x] `dt_get_required_sections()` maps type to rules array
+- [x] Error handling for missing rules
+- [x] All tests passing (GREEN state) - 11/11 tests pass
+- [x] Changes committed
 
 ---
 
@@ -693,11 +694,11 @@ EOF
 ```
 
 **Checklist:**
-- [ ] Tests for section validation (pass/fail)
-- [ ] Tests for file validation
-- [ ] Tests for directory validation
-- [ ] Tests for error collection
-- [ ] All tests failing (RED state)
+- [x] Tests for section validation (pass/fail)
+- [x] Tests for file validation
+- [x] Tests for directory validation
+- [x] Tests for error collection
+- [x] All tests failing (RED state) → All tests passing (GREEN state)
 
 #### GREEN Phase - Implement Functions
 
@@ -808,13 +809,13 @@ dt_validate_directory() {
 ```
 
 **Checklist:**
-- [ ] `dt_reset_validation_results()` clears state
-- [ ] `dt_validate_required_sections()` checks patterns
-- [ ] `dt_validate_file()` validates single file
-- [ ] `dt_validate_directory()` validates all markdown files
-- [ ] Error/warning collection working
-- [ ] All tests passing (GREEN state)
-- [ ] Changes committed
+- [x] `dt_reset_validation_results()` clears state
+- [x] `dt_validate_required_sections()` checks patterns
+- [x] `dt_validate_file()` validates single file
+- [x] `dt_validate_directory()` validates all markdown files
+- [x] Error/warning collection working
+- [x] All tests passing (GREEN state) - 14/14 tests pass
+- [x] Changes committed
 
 ---
 
@@ -891,12 +892,12 @@ setup() {
 ```
 
 **Checklist:**
-- [ ] Tests for text error formatting
-- [ ] Tests for text warning formatting
-- [ ] Tests for text summary
-- [ ] Tests for JSON output
-- [ ] Tests for exit code logic
-- [ ] All tests failing (RED state)
+- [x] Tests for text error formatting
+- [x] Tests for text warning formatting
+- [x] Tests for text summary
+- [x] Tests for JSON output
+- [x] Tests for exit code logic
+- [x] All tests failing (RED state) → All tests passing (GREEN state)
 
 #### GREEN Phase - Implement Functions
 
@@ -1049,14 +1050,14 @@ dt_get_exit_code() {
 ```
 
 **Checklist:**
-- [ ] `dt_format_error_text()` formats errors
-- [ ] `dt_format_warning_text()` formats warnings
-- [ ] `dt_format_summary_text()` shows counts
-- [ ] `dt_format_results_json()` produces valid JSON
-- [ ] `dt_get_exit_code()` returns 0/1 based on errors
-- [ ] Color support with TTY detection
-- [ ] All tests passing (GREEN state)
-- [ ] Changes committed
+- [x] `dt_format_error_text()` formats errors
+- [x] `dt_format_warning_text()` formats warnings
+- [x] `dt_format_summary_text()` shows counts
+- [x] `dt_format_results_json()` produces valid JSON
+- [x] `dt_get_exit_code()` returns 0/1 based on errors
+- [x] Color support with TTY detection
+- [x] All tests passing (GREEN state) - 16/16 tests pass
+- [x] Changes committed
 
 ---
 
@@ -1138,14 +1139,14 @@ main() {
 ```
 
 **Checklist:**
-- [ ] Argument parsing complete
-- [ ] File and directory validation working
-- [ ] `--type` override working
-- [ ] `--json` output working
-- [ ] `--rules-path` override working
-- [ ] Exit codes correct (0/1/2)
-- [ ] Debug mode working
-- [ ] CLI committed
+- [x] Argument parsing complete
+- [x] File and directory validation working
+- [x] `--type` override working
+- [x] `--json` output working
+- [x] `--rules-path` override working
+- [x] Exit codes correct (0/1/2)
+- [x] Debug mode working
+- [x] CLI committed
 
 ---
 
@@ -1289,14 +1290,14 @@ EOF
 ```
 
 **Checklist:**
-- [ ] Tests for help and version
-- [ ] Tests for argument validation
-- [ ] Tests for file validation
-- [ ] Tests for directory validation
-- [ ] Tests for `--type` override
-- [ ] Tests for `--json` output
-- [ ] Tests for exit codes
-- [ ] All integration tests passing
+- [x] Tests for help and version
+- [x] Tests for argument validation
+- [x] Tests for file validation
+- [x] Tests for directory validation
+- [x] Tests for `--type` override
+- [x] Tests for `--json` output
+- [x] Tests for exit codes
+- [x] All integration tests passing - 21/21 tests pass
 - [ ] Final commit and PR ready
 
 ---
