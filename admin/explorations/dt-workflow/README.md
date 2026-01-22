@@ -1,69 +1,99 @@
 # dt-workflow - Exploration Hub
 
 **Purpose:** Explore unified workflow orchestration for dev-toolkit  
-**Status:** 🔴 Scaffolding  
+**Status:** ✅ Expanded  
 **Created:** 2026-01-22  
-**Last Updated:** 2026-01-22
+**Expanded:** 2026-01-22
 
 ---
 
 ## 📋 Quick Links
 
-- **[Exploration Document](exploration.md)** - Main exploration analysis
-- **[Research Topics](research-topics.md)** - Questions requiring investigation
+- **[Exploration Document](exploration.md)** - Full exploration with theme analysis
+- **[Research Topics](research-topics.md)** - Prioritized research questions
 
 ### Related Context
 
-- **[dev-infra: Cursor CLI Model Selection](/Users/cdwilson/Projects/dev-infra/admin/research/template-doc-infrastructure/research-cursor-cli-model-selection.md)** - Research on programmatic AI invocation
+- **[dev-infra: Cursor CLI Model Selection](/Users/cdwilson/Projects/dev-infra/admin/research/template-doc-infrastructure/research-cursor-cli-model-selection.md)** - Research on programmatic AI invocation (3-phase vision)
 - **[doc-infrastructure Feature](../../planning/features/doc-infrastructure/)** - Current dt-doc-gen/dt-doc-validate work
 - **[Command Migrations](../command-migrations/)** - Previous exploration (may be superseded)
 
 ---
 
-## 🎯 Context
+## 🎯 Overview
 
-We've built:
-- **dt-doc-gen** (Phase 2) - Template-based document generation
-- **dt-doc-validate** (Phase 3) - Rule-based document validation
+We've built document infrastructure tools (dt-doc-gen, dt-doc-validate) as standalone components. This exploration examines whether to build a unified `dt-workflow` command that orchestrates the complete pipeline:
 
-The question: Should these be **standalone tools** or **internal components** of a unified `dt-workflow` command?
+```
+Generate Structure → AI Fills Content → Validate Output → Commit
+```
 
 ### The Vision (from dev-infra research)
 
-```
-Phase 1 (Now):     /explore → dt-doc-gen → structure → AI fills interactively
-Phase 2 (Near):    /explore → dt-doc-gen → structure → AI fills (model from config)
-Phase 3 (Future):  dt-workflow → structure → invoke-ai → fill → validate
-```
+| Phase | Current State | AI Invocation | Model Selection |
+|-------|---------------|---------------|-----------------|
+| Phase 1 (Now) | Interactive | Cursor AI fills interactively | Manual |
+| Phase 2 (Near) | Interactive + config | Cursor AI, config suggests model | Semi-automatic |
+| Phase 3 (Future) | Programmatic | dt-workflow invokes AI directly | Automatic |
 
 ### Key Questions
 
-1. **What is dt-workflow?** - Unified orchestration or just another tool?
-2. **Standalone vs internal?** - Do dt-doc-gen and dt-doc-validate exist separately?
-3. **AI invocation?** - How does the tool invoke AI (now vs future)?
-4. **Cursor commands?** - What happens to /explore, /research, etc.?
-5. **Naming?** - Is this still "doc-infrastructure" or something bigger?
+1. **Unified or composable?** - Single command or separate tools?
+2. **Phase 1 interface?** - How does dt-workflow work before programmatic AI?
+3. **Component decisions?** - Which tools stay standalone?
+4. **Cursor commands?** - Wrappers, orchestrators, or deprecated?
 
 ---
 
-## 📊 Exploration Status
+## 📊 Exploration Summary
 
-| Theme | Status |
-|-------|--------|
-| Architecture Vision | 🔴 Scaffolding |
-| Tool Separation | 🔴 Scaffolding |
-| AI Invocation Model | 🔴 Scaffolding |
-| Cursor Command Future | 🔴 Scaffolding |
-| Naming & Organization | 🔴 Scaffolding |
+### Themes Analyzed
+
+| Theme | Key Finding |
+|-------|-------------|
+| Architecture Vision | Hybrid approach (unified using composable internals) recommended |
+| Component Separation | dt-doc-validate stays standalone, dt-doc-gen becomes internal |
+| AI Invocation Model | Design for Phase 3, implement Phase 1 compatibility |
+| Cursor Command Role | Commands as orchestrators (Phase 1), optional (Phase 3) |
+| Naming & Organization | Consider doc-infrastructure complete, dt-workflow as new feature |
+| Model Selection | Config-based, integrated with dt-workflow |
+| Cross-Project | dt-workflow in dev-toolkit, templates in dev-infra |
+
+### Initial Recommendations
+
+1. **dt-doc-validate** should remain standalone (CI value)
+2. **dt-doc-gen** should become internal library (no standalone use case)
+3. **dt-workflow** should be designed for Phase 3 with Phase 1 `--interactive` mode
+4. **Cursor commands** become orchestrators calling dt-workflow
 
 ---
 
 ## 🚀 Next Steps
 
-1. Review and expand exploration scaffolding
-2. Identify key research questions
-3. Make architectural decisions
-4. Determine impact on current work (dt-doc-gen, dt-doc-validate, worktree)
+1. **Research blocking questions** (Topics 1-2: Architecture + Phase 1 Interface)
+   ```bash
+   /research dt-workflow --from-explore dt-workflow
+   ```
+
+2. **Make architecture decision** based on research
+   ```bash
+   /decision dt-workflow --from-research
+   ```
+
+3. **Transition to planning** once architecture is decided
+   ```bash
+   /transition-plan --from-adr
+   ```
+
+---
+
+## 📁 Files in This Exploration
+
+| File | Purpose | Status |
+|------|---------|--------|
+| `README.md` | Hub with quick links | ✅ Expanded |
+| `exploration.md` | Full theme analysis | ✅ Expanded |
+| `research-topics.md` | Prioritized research questions | ✅ Expanded |
 
 ---
 

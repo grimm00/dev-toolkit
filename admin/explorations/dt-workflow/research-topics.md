@@ -1,65 +1,39 @@
 # Research Topics - dt-workflow Exploration
 
-**Status:** 🔴 Scaffolding  
+**Status:** ✅ Expanded  
 **Created:** 2026-01-22  
-**Last Updated:** 2026-01-22
+**Expanded:** 2026-01-22
 
 ---
 
-## 📋 Prioritized Research Questions
+## 📋 Research Topics
 
 ### Priority 1: Architecture Decision (BLOCKING)
 
-| # | Topic | Question | Why Important |
-|---|-------|----------|---------------|
-| 1 | **Unified vs Composable** | Should dt-workflow be a single command or composable tools? | Determines entire architecture direction |
-| 2 | **Phase 1 Interface** | How does dt-workflow work before programmatic AI is available? | Affects what we can build now |
+These topics must be resolved before any implementation work.
 
 ---
-
-### Priority 2: Component Decisions (HIGH)
-
-| # | Topic | Question | Why Important |
-|---|-------|----------|---------------|
-| 3 | **Validate Standalone** | Should dt-doc-validate remain a standalone tool? | CI/hooks value vs consolidation |
-| 4 | **Generate Internal** | Should dt-doc-gen become internal to dt-workflow? | Determines if current work is reused or refactored |
-
----
-
-### Priority 3: Integration Decisions (MEDIUM)
-
-| # | Topic | Question | Why Important |
-|---|-------|----------|---------------|
-| 5 | **Cursor Command Role** | What role do Cursor commands play with dt-workflow? | Affects command migration work |
-| 6 | **Model Selection** | How does model selection integrate? | Affects config design |
-| 7 | **Project Location** | Where does dt-workflow live (dev-toolkit vs dev-infra)? | Affects project organization |
-
----
-
-### Priority 4: Organizational (LOW - After Architecture)
-
-| # | Topic | Question | Why Important |
-|---|-------|----------|---------------|
-| 8 | **Naming** | Is this "doc-infrastructure" or a new scope? | Affects worktree, feature organization |
-| 9 | **Migration Path** | How do we transition from current tools to dt-workflow? | Affects release planning |
-
----
-
-## 🔍 Research Topic Details
 
 ### Topic 1: Unified vs Composable Architecture
 
-**Question:** Should dt-workflow be a single command that does everything, or should tools remain composable?
+**Question:** Should dt-workflow be a single command that orchestrates the entire workflow, or should tools remain composable?
+
+**Context:** This is the fundamental architecture decision that affects everything else. A unified approach (like Aider or Copilot Workspace) provides a single entry point but is opinionated. A composable approach (Unix philosophy) maintains flexibility but requires external orchestration. The right choice depends on user needs, maintenance considerations, and the Phase 1-3 evolution path.
+
+**Priority:** BLOCKING
+
+**Rationale:** Every other decision depends on this. Component decisions, command roles, and project organization all follow from the architecture choice.
 
 **Options:**
 - **A: Unified** - `dt-workflow explore topic` does gen→fill→validate→commit
 - **B: Composable** - `dt-doc-gen | ai-fill | dt-doc-validate | git commit`
-- **C: Hybrid** - Unified command, but components available standalone
+- **C: Hybrid** - Unified command using composable internal components
 
-**Research needed:**
-- [ ] What do similar tools do? (Aider, Copilot Workspace, Cursor)
-- [ ] What are the maintenance implications of each?
-- [ ] What do users prefer (single vs composable)?
+**Suggested Approach:**
+- Survey similar tools (Aider, Copilot Workspace, Claude Code)
+- Analyze user workflows with current tools
+- Evaluate maintenance implications of each option
+- Consider Phase 1 vs Phase 3 requirements
 
 ---
 
@@ -67,15 +41,28 @@
 
 **Question:** How does dt-workflow work in Phase 1 when AI invocation is interactive only?
 
-**Options:**
-- **A: Interactive mode** - `dt-workflow explore topic --interactive` opens Cursor with structure
-- **B: Two-step** - `dt-workflow gen topic` then user manually runs AI, then `dt-workflow validate`
-- **C: Cursor integration** - dt-workflow only invoked from Cursor commands
+**Context:** Cursor CLI cannot programmatically invoke AI agents (as of research date). This means Phase 1 dt-workflow can only generate structure and validate output - the AI fill step requires interactive Cursor usage. The interface must provide value despite this limitation.
 
-**Research needed:**
-- [ ] What's the user experience for each option?
-- [ ] How does this transition to Phase 3?
-- [ ] Can we test Phase 1 interface without AI?
+**Priority:** BLOCKING
+
+**Rationale:** Determines what we can build now. If Phase 1 interface has no value, we should wait for Phase 3 capabilities.
+
+**Options:**
+- **A: Interactive mode** - `dt-workflow explore topic --interactive` opens Cursor
+- **B: Two-step mode** - `dt-workflow gen` then manual AI, then `dt-workflow validate`
+- **C: Cursor-only mode** - dt-workflow only invoked from Cursor commands
+
+**Suggested Approach:**
+- Design interface mockups for each option
+- Evaluate user experience for "partial" workflow
+- Test Phase 1 → Phase 3 transition path
+- Identify Phase 1-specific value propositions
+
+---
+
+### Priority 2: Component Decisions (HIGH)
+
+These topics determine what happens to existing tools.
 
 ---
 
@@ -83,20 +70,28 @@
 
 **Question:** Should dt-doc-validate remain a standalone tool?
 
+**Context:** dt-doc-validate provides CLI document validation. It has clear CI/automation value - GitHub Actions and pre-commit hooks need to run validation without user interaction. The question is whether this justifies maintaining it as a standalone tool or if we should export validation as a library.
+
+**Priority:** HIGH
+
+**Rationale:** CI integration is a real use case. Decision affects whether dt-doc-validate remains in `bin/` or becomes internal.
+
 **Arguments for standalone:**
-- CI pipeline integration (GitHub Actions, pre-commit)
-- Manual validation without generation
+- CI pipelines run without user interaction
+- Pre-commit hooks need CLI interface
+- Manual validation without generation is useful
 - Clear separation of concerns
 
 **Arguments against:**
-- Only valuable as part of pipeline
+- Library export could serve CI equally well
 - Extra tool to maintain
 - Users rarely validate without generating
 
-**Research needed:**
-- [ ] How often would validation run standalone?
-- [ ] What's the CI integration pattern?
-- [ ] Can we export a function for CI while keeping it internal?
+**Suggested Approach:**
+- Document current CI integration patterns
+- Analyze frequency of standalone validation
+- Compare CLI vs library approaches for automation
+- Evaluate maintenance cost of both
 
 ---
 
@@ -104,22 +99,35 @@
 
 **Question:** Should dt-doc-gen become an internal component of dt-workflow?
 
-**Current state:** dt-doc-gen is standalone CLI tool
+**Context:** dt-doc-gen generates document structure from templates. Analysis suggests it has minimal standalone value - generation is always followed by AI fill. The question is whether to keep it as a standalone tool or internalize it.
+
+**Priority:** HIGH
+
+**Rationale:** Determines if we deprecate dt-doc-gen CLI and refactor to library.
 
 **Arguments for internal:**
 - No standalone use case (always followed by AI fill)
 - Simpler architecture (one tool)
 - No API boundary to maintain
+- Already built as library (lib/doc-gen/)
 
 **Arguments against:**
-- Already built and tested
+- Already built and tested as CLI
 - Could be useful for template testing
 - Composability for advanced users
+- Deprecation may confuse users
 
-**Research needed:**
-- [ ] What's the refactoring effort to internalize?
-- [ ] Are there legitimate standalone use cases?
-- [ ] Can we reuse existing code as library?
+**Suggested Approach:**
+- Survey for legitimate standalone use cases
+- Evaluate refactoring effort to internalize
+- Design library interface
+- Plan CLI deprecation path
+
+---
+
+### Priority 3: Integration Decisions (MEDIUM)
+
+These topics determine how dt-workflow integrates with existing systems.
 
 ---
 
@@ -127,16 +135,23 @@
 
 **Question:** What role do Cursor commands play alongside dt-workflow?
 
+**Context:** Six Cursor commands (/explore, /research, etc.) currently provide workflow functionality with inline templates. If dt-workflow exists, commands could become thin wrappers, orchestrators, or be deprecated entirely.
+
+**Priority:** MEDIUM
+
+**Rationale:** Affects command migration work and user documentation. Can be decided after architecture is clear.
+
 **Options:**
 - **A: Wrappers** - Commands just call dt-workflow
 - **B: Orchestrators** - Commands handle Cursor-specific logic, call dt-workflow for structure
 - **C: Deprecated** - dt-workflow replaces commands entirely
 - **D: Parallel** - Both exist for different use cases
 
-**Research needed:**
-- [ ] What value do commands add over CLI?
-- [ ] How do other AI tools handle this?
-- [ ] What's the user preference?
+**Suggested Approach:**
+- Analyze command vs CLI usage patterns
+- Evaluate what value commands add over CLI
+- Design command↔CLI interaction model
+- Consider Phase 1 vs Phase 3 differences
 
 ---
 
@@ -144,62 +159,74 @@
 
 **Question:** How does model selection integrate with dt-workflow?
 
-**From dev-infra research:**
-```yaml
-task_models:
-  explore: claude-opus-4
-  research: claude-opus-4
-  pr: claude-sonnet-4
-```
+**Context:** dev-infra research established task-type-to-model mapping (explore→opus, pr→sonnet, etc.). In Phase 1, this is informational only. In Phase 3, dt-workflow could automatically select and invoke the right model.
+
+**Priority:** MEDIUM
+
+**Rationale:** Affects config design but doesn't block Phase 1 implementation.
 
 **Options:**
-- **A: Built-in** - dt-workflow reads models.yaml, passes to AI invocation
+- **A: Built-in** - dt-workflow reads models.yaml, invokes AI with model
 - **B: Separate** - dt-model-select tool, dt-workflow uses output
 - **C: Config only** - dt-workflow documents recommended models, user selects
 
-**Research needed:**
-- [ ] What's the Phase 1 vs Phase 3 difference?
-- [ ] How does Aider/LLM CLI handle model selection?
-- [ ] Should config be per-project or global?
+**Suggested Approach:**
+- Design config file format (YAML schema)
+- Evaluate Phase 1 vs Phase 3 requirements
+- Research Aider/LLM CLI model selection patterns
+- Determine per-project vs global config
 
 ---
 
 ### Topic 7: Project Location
 
-**Question:** Where does dt-workflow live?
+**Question:** Where does dt-workflow live (dev-toolkit vs dev-infra)?
+
+**Context:** dt-* tools live in dev-toolkit, templates live in dev-infra. dt-workflow needs templates but follows the dt-* naming pattern.
+
+**Priority:** MEDIUM
+
+**Rationale:** Affects installation and distribution but doesn't block architecture.
 
 **Options:**
 - **A: dev-toolkit** - Alongside dt-doc-gen, dt-doc-validate, dt-review
-- **B: dev-infra** - With templates and rules it consumes
+- **B: dev-infra** - With templates it consumes
 - **C: Shared** - CLI in dev-toolkit, templates in dev-infra (current pattern)
 
-**Research needed:**
-- [ ] What's the current pattern for dt-* tools?
-- [ ] Where do templates/rules live?
-- [ ] What's the installation/distribution model?
+**Suggested Approach:**
+- Review current dt-* tool locations
+- Analyze template consumption patterns
+- Design template source configuration
+- Document cross-project dependencies
+
+---
+
+### Priority 4: Organizational (LOW)
+
+These topics can be decided after architecture is clear.
 
 ---
 
 ### Topic 8: Naming & Scope
 
-**Question:** Is this "doc-infrastructure" or a bigger scope?
+**Question:** Is this "doc-infrastructure" or a new scope?
 
-**Current:** doc-infrastructure = dt-doc-gen + dt-doc-validate
+**Context:** Current worktree is feat/doc-infrastructure, focused on dt-doc-gen and dt-doc-validate. dt-workflow expands scope to workflow orchestration, AI invocation, and git integration.
 
-**If dt-workflow included:**
-- Encompasses AI invocation
-- Encompasses workflow orchestration
-- Encompasses model selection
+**Priority:** LOW
+
+**Rationale:** Organizational decision that doesn't affect implementation. Can be decided when ready to merge.
 
 **Options:**
 - **A: Keep scope** - dt-workflow is part of doc-infrastructure
-- **B: Rename** - "workflow-infrastructure" or "dev-workflow"
+- **B: Rename** - Feature becomes "workflow-infrastructure"
 - **C: New feature** - doc-infrastructure complete, dt-workflow is separate
 
-**Research needed:**
-- [ ] What's the logical grouping?
-- [ ] Does naming affect user understanding?
-- [ ] What's the git branch / PR strategy?
+**Suggested Approach:**
+- Evaluate logical grouping
+- Consider git branch/PR strategy
+- Assess user understanding of naming
+- Decide when ready to merge
 
 ---
 
@@ -207,29 +234,52 @@ task_models:
 
 **Question:** How do we transition from current tools to dt-workflow?
 
-**Current state:**
-- dt-doc-gen: ✅ Complete
-- dt-doc-validate: ✅ Complete
-- Cursor commands: Inline templates
+**Context:** dt-doc-gen and dt-doc-validate exist. Cursor commands exist with inline templates. Users have learned these tools. dt-workflow may change or deprecate some of them.
 
-**Migration options:**
+**Priority:** LOW
+
+**Rationale:** Migration planning happens after architecture decisions. Depends on Topics 1-4.
+
+**Options:**
 - **A: Parallel** - dt-workflow coexists with existing tools
 - **B: Replace** - dt-workflow replaces dt-doc-gen usage
 - **C: Gradual** - Phase 1 uses existing, Phase 3 is unified
 
-**Research needed:**
-- [ ] What's the user migration experience?
-- [ ] Backward compatibility requirements?
-- [ ] Release strategy?
+**Suggested Approach:**
+- Document current tool usage
+- Design deprecation communication
+- Plan backward compatibility
+- Create migration guide
 
 ---
 
-## 🚀 Recommended Research Order
+## 🎯 Research Workflow
 
-1. **Topic 1 + 2:** Architecture + Phase 1 interface (must decide first)
-2. **Topic 3 + 4:** Component decisions (depends on architecture)
-3. **Topic 5 + 6:** Integration decisions (depends on components)
-4. **Topic 7 + 8 + 9:** Organizational (after architecture clear)
+### Recommended Order
+
+1. **Topics 1 + 2:** Architecture + Phase 1 interface (BLOCKING - must decide first)
+2. **Topics 3 + 4:** Component decisions (depends on architecture)
+3. **Topics 5 + 6 + 7:** Integration decisions (depends on components)
+4. **Topics 8 + 9:** Organizational (after architecture clear)
+
+### Research Commands
+
+```bash
+# Start research on blocking topics
+/research dt-workflow --from-explore dt-workflow
+
+# After research, make decisions
+/decision dt-workflow --from-research
+```
+
+### Decision Gates
+
+| Gate | Topics Required | Unlocks |
+|------|-----------------|---------|
+| Architecture | 1, 2 | Topics 3-7 |
+| Components | 3, 4 | Topics 5-7, implementation start |
+| Integration | 5, 6, 7 | Final design |
+| Organization | 8, 9 | Merge strategy |
 
 ---
 
@@ -237,6 +287,7 @@ task_models:
 
 - [Exploration Document](exploration.md)
 - [dev-infra: Cursor CLI Model Selection](/Users/cdwilson/Projects/dev-infra/admin/research/template-doc-infrastructure/research-cursor-cli-model-selection.md)
+- [doc-infrastructure Feature](../../planning/features/doc-infrastructure/)
 
 ---
 
