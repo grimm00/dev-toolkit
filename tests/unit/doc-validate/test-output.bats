@@ -184,8 +184,12 @@ teardown() {
     
     run dt_format_results_json
     [ "$status" -eq 0 ]
-    [[ "$output" =~ '"errors": \[\]' ]]
-    [[ "$output" =~ '"warnings": \[\]' ]]
+    # Check for empty arrays (may be on same line or with whitespace)
+    [[ "$output" =~ '"errors":' ]]
+    [[ "$output" =~ '"warnings":' ]]
+    # Verify arrays are empty (no error/warning objects)
+    local error_objects=$(echo "$output" | grep -o '"code":' | wc -l)
+    [ "$error_objects" -eq 0 ]
 }
 
 # ===========================================================================
