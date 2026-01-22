@@ -13,6 +13,7 @@
 
 - **[Phase 1](phase-1-learnings.md)** - Shared Infrastructure (output-utils.sh)
 - **[Phase 2](phase-2-learnings.md)** - dt-doc-gen (template discovery, variable expansion, CLI)
+- **[Phase 3](phase-3-learnings.md)** - dt-doc-validate (type detection, rule loading, validation, output)
 
 ---
 
@@ -24,8 +25,8 @@ This directory contains phase-specific learnings from doc-infrastructure impleme
 
 ## 📊 Summary
 
-**Total Phase Learnings:** 2  
-**Status:** ✅ Active
+**Total Phase Learnings:** 3  
+**Status:** ✅ Complete (all 3 phases documented)
 
 ---
 
