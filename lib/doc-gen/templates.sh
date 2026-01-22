@@ -290,9 +290,14 @@ dt_get_output_filename() {
     fi
     
     # Expand placeholders in filename using environment variables
-    # Use eval to expand ${VAR} patterns safely
+    # Use envsubst to expand ${VAR} patterns safely (avoids shell injection risk)
     local expanded_filename
-    expanded_filename=$(eval "echo \"$filename\"")
+    if command -v envsubst >/dev/null 2>&1; then
+        expanded_filename=$(printf '%s\n' "$filename" | envsubst)
+    else
+        # Fallback: return raw filename if envsubst not available
+        expanded_filename="$filename"
+    fi
     
     echo "$expanded_filename"
 }

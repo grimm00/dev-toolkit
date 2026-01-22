@@ -29,7 +29,8 @@ dt_get_template_vars() {
     # Ensure templates library is sourced for DT_TYPE_CATEGORY
     if [ -z "${DT_TYPE_CATEGORY[$doc_type]:-}" ]; then
         # Try to source templates.sh if not already sourced
-        if [ -z "$(type -t _dt_init_template_arrays)" ]; then
+        # Use exit status directly to avoid set -e issues with type in subshell
+        if ! type _dt_init_template_arrays >/dev/null 2>&1; then
             local script_dir
             script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
             source "$script_dir/templates.sh" 2>/dev/null || true
