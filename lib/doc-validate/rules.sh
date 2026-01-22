@@ -33,6 +33,15 @@ dt_get_rules_path() {
         fi
     fi
     
+    # 3. Guard: Fail if toolkit_root could not be determined
+    # This prevents returning an invalid path like /lib/validation/rules
+    if [ -z "$toolkit_root" ]; then
+        if command -v dt_print_status >/dev/null 2>&1; then
+            dt_print_status "ERROR" "Cannot determine toolkit root. Set TOOLKIT_ROOT or DT_RULES_PATH."
+        fi
+        return 1
+    fi
+    
     # Default path: toolkit_root/lib/validation/rules
     echo "$toolkit_root/lib/validation/rules"
 }

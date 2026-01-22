@@ -22,24 +22,15 @@
 
 ### Immediate
 
-1. **Create PR for Phase 3** - Use `/pr --phase 3` command
-2. **Review and merge Phase 3 PR**
-3. **Begin command migration** - See [Iteration Plan](../../../research/doc-infrastructure/iteration-plan.md)
+1. **Review and merge Phase 3 PR** - PR #31 created
+2. **Run `/post-pr 31 --phase 3`** - Update documentation after merge
 
-### After Phase 3
-
-1. **Review and merge Phase 3 PR**
-2. **Begin command migration** - See [Iteration Plan](../../../research/doc-infrastructure/iteration-plan.md)
-3. **Sprint 1: /explore command**
-4. **Sprint 2: /research command**
-5. **Continue through Sprint 6**
-
-### After Core Implementation
+### After Phase 3 Merge
 
 1. **Begin command migration** - See [Iteration Plan](../../../research/doc-infrastructure/iteration-plan.md)
-2. **Sprint 1: /explore command**
-3. **Sprint 2: /research command**
-4. **Continue through Sprint 6**
+2. **Sprint 1:** /explore command
+3. **Sprint 2:** /research command
+4. **Sprint 3-6:** Continue through remaining commands
 
 ---
 
