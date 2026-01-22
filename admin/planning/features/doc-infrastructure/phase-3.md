@@ -1138,14 +1138,14 @@ main() {
 ```
 
 **Checklist:**
-- [ ] Argument parsing complete
-- [ ] File and directory validation working
-- [ ] `--type` override working
-- [ ] `--json` output working
-- [ ] `--rules-path` override working
-- [ ] Exit codes correct (0/1/2)
-- [ ] Debug mode working
-- [ ] CLI committed
+- [x] Argument parsing complete
+- [x] File and directory validation working
+- [x] `--type` override working
+- [x] `--json` output working
+- [x] `--rules-path` override working
+- [x] Exit codes correct (0/1/2)
+- [x] Debug mode working
+- [x] CLI committed
 
 ---
 
