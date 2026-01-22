@@ -14,7 +14,7 @@
 | Phase 2 | dt-doc-gen | ✅ Complete | 100% | All 6 tasks complete, 37 tests passing |
 | Phase 3 | dt-doc-validate | ✅ Complete | 100% | All 7 tasks complete, 81 tests passing |
 
-**Overall:** ✅ Phase 3 Complete (100% complete, ready for PR)
+**Overall:** ✅ Phase 3 Complete (100% complete, merged PR #31)
 
 ---
 
@@ -22,15 +22,16 @@
 
 ### Immediate
 
-1. **Review and merge Phase 3 PR** - PR #31 created
-2. **Run `/post-pr 31 --phase 3`** - Update documentation after merge
-
-### After Phase 3 Merge
-
 1. **Begin command migration** - See [Iteration Plan](../../../research/doc-infrastructure/iteration-plan.md)
 2. **Sprint 1:** /explore command
 3. **Sprint 2:** /research command
 4. **Sprint 3-6:** Continue through remaining commands
+
+### Future Enhancements (from Sourcery Review)
+
+1. **JSON escaping** - Comprehensive helper for newlines, tabs (MEDIUM effort)
+2. **Type validation** - Validate --type against known types (LOW effort)
+3. **Pipe separator** - Robust error record serialization (MEDIUM effort)
 
 ---
 
@@ -66,15 +67,16 @@ None currently identified.
 
 - **Phase 1:** Shared Infrastructure ✅ (PR #29, 2026-01-21) - Created `lib/core/output-utils.sh` with XDG helpers, output functions, and detection functions. All 26 tests passing. Merged to develop.
 - **Phase 2:** dt-doc-gen ✅ (PR #30, 2026-01-22) - Implemented `dt-doc-gen` CLI with template discovery, variable expansion, output path handling, and full CLI. All 37 tests passing (18 unit templates, 9 unit render, 10 integration). Merged to develop.
-- **Phase 3:** dt-doc-validate ✅ (2026-01-22) - Implemented `dt-doc-validate` CLI with type detection, rule loading, validation, output formatting, and full CLI. All 81 tests passing (19 unit type-detection, 11 unit rules, 14 unit validation, 16 unit output, 21 integration). Ready for PR.
+- **Phase 3:** dt-doc-validate ✅ (PR #31, 2026-01-22) - Implemented `dt-doc-validate` CLI with type detection, rule loading, validation, output formatting, and full CLI. All 81 tests passing (19 unit type-detection, 11 unit rules, 14 unit validation, 16 unit output, 21 integration). Merged to develop.
 
 ---
 
 ## 📝 Notes
 
-- Phase 3 is now **expanded** with detailed TDD tasks
-- Command migration sprints start after core implementation
-- See [Phase 3](phase-3.md) for 7 detailed tasks with RED/GREEN workflow
+- All 3 phases complete - core infrastructure ready
+- Command migration sprints start next
+- See [Iteration Plan](../../../research/doc-infrastructure/iteration-plan.md) for migration schedule
+- Deferred Sourcery items tracked in `admin/feedback/sourcery/pr31.md`
 
 ---
 
