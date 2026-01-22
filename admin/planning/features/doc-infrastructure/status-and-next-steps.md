@@ -1,7 +1,7 @@
 # Doc Infrastructure - Status and Next Steps
 
 **Feature:** dt-doc-gen and dt-doc-validate  
-**Last Updated:** 2026-01-21
+**Last Updated:** 2026-01-22
 
 ---
 
@@ -21,23 +21,22 @@
 
 ### Immediate
 
-1. **Create PR for Phase 2** - Use `/pr --phase 2` command
-2. **Review and merge** - After PR approval
-3. **Begin Phase 3** - Expand and implement dt-doc-validate
+1. **Expand Phase 3** - `/transition-plan doc-infrastructure --expand --phase 3`
+2. **Begin Phase 3** - Implement dt-doc-validate
 
-### Phase 2 Tasks
+### Phase 3 Tasks (Scaffolding)
 
 1. Task 1: Test Setup and CLI Scaffolding
-2. Task 2: Template Discovery Functions
-3. Task 3: Variable Expansion Functions
-4. Task 4: Output Path Handling
+2. Task 2: Validation Rule Functions
+3. Task 3: Structure Validation
+4. Task 4: Content Validation
 5. Task 5: CLI Implementation
 6. Task 6: Integration Testing
 
-### After Phase 2
+### After Phase 3
 
-1. **Expand Phase 3** - `/transition-plan doc-infrastructure --expand --phase 3`
-2. **Implement Phase 3** - dt-doc-validate implementation
+1. **Create PR for Phase 3** - Use `/pr --phase 3` command
+2. **Begin command migration** - See [Iteration Plan](../../../research/doc-infrastructure/iteration-plan.md)
 
 ### After Core Implementation
 
@@ -52,10 +51,9 @@
 
 | Action | Command |
 |--------|---------|
-| Expand Phase 2 | `/transition-plan doc-infrastructure --expand --phase 2` |
-| Start Phase 2 Task | `/task-phase 2 [task-number]` |
 | Expand Phase 3 | `/transition-plan doc-infrastructure --expand --phase 3` |
-| Expand All Remaining | `/transition-plan doc-infrastructure --expand --all` |
+| Start Phase 3 Task | `/task-phase 3 [task-number]` |
+| Create Phase 3 PR | `/pr --phase 3` |
 
 ---
 
@@ -81,7 +79,7 @@ None currently identified.
 ## ✅ Completed Milestones
 
 - **Phase 1:** Shared Infrastructure ✅ (PR #29, 2026-01-21) - Created `lib/core/output-utils.sh` with XDG helpers, output functions, and detection functions. All 26 tests passing. Merged to develop.
-- **Phase 2:** dt-doc-gen ✅ (2026-01-21) - Implemented `dt-doc-gen` CLI with template discovery, variable expansion, output path handling, and full CLI. All 37 tests passing (18 unit templates, 9 unit render, 10 integration). Ready for PR.
+- **Phase 2:** dt-doc-gen ✅ (PR #30, 2026-01-22) - Implemented `dt-doc-gen` CLI with template discovery, variable expansion, output path handling, and full CLI. All 37 tests passing (18 unit templates, 9 unit render, 10 integration). Merged to develop.
 
 ---
 
@@ -93,4 +91,4 @@ None currently identified.
 
 ---
 
-**Last Updated:** 2026-01-21
+**Last Updated:** 2026-01-22
