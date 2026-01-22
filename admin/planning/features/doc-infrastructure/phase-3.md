@@ -891,12 +891,12 @@ setup() {
 ```
 
 **Checklist:**
-- [ ] Tests for text error formatting
-- [ ] Tests for text warning formatting
-- [ ] Tests for text summary
-- [ ] Tests for JSON output
-- [ ] Tests for exit code logic
-- [ ] All tests failing (RED state)
+- [x] Tests for text error formatting
+- [x] Tests for text warning formatting
+- [x] Tests for text summary
+- [x] Tests for JSON output
+- [x] Tests for exit code logic
+- [x] All tests failing (RED state) → All tests passing (GREEN state)
 
 #### GREEN Phase - Implement Functions
 
@@ -1049,14 +1049,14 @@ dt_get_exit_code() {
 ```
 
 **Checklist:**
-- [ ] `dt_format_error_text()` formats errors
-- [ ] `dt_format_warning_text()` formats warnings
-- [ ] `dt_format_summary_text()` shows counts
-- [ ] `dt_format_results_json()` produces valid JSON
-- [ ] `dt_get_exit_code()` returns 0/1 based on errors
-- [ ] Color support with TTY detection
-- [ ] All tests passing (GREEN state)
-- [ ] Changes committed
+- [x] `dt_format_error_text()` formats errors
+- [x] `dt_format_warning_text()` formats warnings
+- [x] `dt_format_summary_text()` shows counts
+- [x] `dt_format_results_json()` produces valid JSON
+- [x] `dt_get_exit_code()` returns 0/1 based on errors
+- [x] Color support with TTY detection
+- [x] All tests passing (GREEN state) - 16/16 tests pass
+- [x] Changes committed
 
 ---
 
