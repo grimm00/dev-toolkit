@@ -2,7 +2,8 @@
 
 **Status:** ✅ Expanded  
 **Created:** 2026-01-22  
-**Expanded:** 2026-01-22
+**Expanded:** 2026-01-22  
+**Context Gathering Added:** 2026-01-22
 
 ---
 
@@ -455,6 +456,123 @@ templates:
 
 ---
 
+### Theme 8: Context Gathering
+
+This theme addresses what context each workflow needs and how it's provided to AI - a critical piece of the orchestration puzzle identified but not fully developed in dev-infra research.
+
+**Background from dev-infra research:**
+
+The research established the concept of scripts gathering context to reduce AI token usage:
+
+```
+Scripts (0 tokens)              AI (targeted tokens)
+├── Context gathering           ├── Analysis
+├── Structure generation        ├── Insights  
+├── Model selection             ├── Connections
+└── ...                         └── Content fill
+```
+
+**Token efficiency:** ~80-90% savings on input tokens by pre-gathering context into manifests instead of AI discovery.
+
+**However:** The research didn't define WHAT context each workflow needs.
+
+**Two categories of context:**
+
+**1. Universal Context (Always Needed)**
+
+| Context Type | Files/Data | Why Universal |
+|--------------|------------|---------------|
+| Cursor rules | `.cursor/rules/*.mdc` | Coding standards, workflow patterns |
+| Project identity | `admin/README.md`, `admin/planning/roadmap.md` | Project direction, conventions |
+| Current state | Git branch, recent changes | Situational awareness |
+| Workflow patterns | Hub-and-spoke, status indicators | Consistency |
+
+**2. Workflow-Specific Context**
+
+| Workflow | Specific Context Needed |
+|----------|------------------------|
+| `/explore` | roadmap.md, explorations hub, related explorations |
+| `/research` | Source exploration, existing research in topic area |
+| `/decision` | Research findings, ADR templates, existing ADRs |
+| `/pr` | Branch diff, commit history, PR template |
+| `/fix-plan` | Sourcery review file, affected source files |
+| `/task-phase` | Feature plan, phase docs, implementation status |
+
+**The Trust Problem (User Insight)**
+
+A key concern: users don't trust that Cursor rules are always being followed, especially in new chats. The current system relies on Cursor's implicit rule loading, which:
+- May not happen reliably in new chats
+- Is invisible to the user (did it load?)
+- Varies based on context window limits
+- Provides no confirmation it was applied
+
+**Solution:** dt-workflow should **explicitly gather and inject** universal context (including rules) so that:
+- **Transparency** - User sees what's being loaded
+- **Reliability** - Context is explicitly provided every time
+- **Auditability** - Context gathering is deterministic, not magical
+
+**Three context injection approaches:**
+
+**Option A: Header Injection**
+```bash
+dt-workflow explore topic --interactive
+# Outputs:
+# 1. Universal context block (rules, identity)
+# 2. Workflow-specific context (roadmap, explorations)
+# 3. Generated structure
+# All combined into single output for AI consumption
+```
+- Pros: Everything in one place, explicit
+- Cons: Large initial context, may hit token limits
+
+**Option B: Manifest + File References**
+```bash
+dt-workflow explore topic --interactive
+# Outputs:
+# 1. Context manifest (list of files with summaries)
+# 2. Generated structure with @file references
+# AI reads files as needed
+```
+- Pros: Smaller initial context, on-demand
+- Cons: AI may not read all needed files
+
+**Option C: Tiered Context**
+```bash
+dt-workflow explore topic --interactive
+# Outputs:
+# Tier 1 (always inline): Rules, project identity
+# Tier 2 (as references): Workflow-specific files
+# Tier 3 (on request): Deep context
+```
+- Pros: Balance of explicit + efficient
+- Cons: More complex implementation
+
+**Phase implications:**
+
+| Phase | Context Handling |
+|-------|------------------|
+| Phase 1 (Now) | Script outputs context block; Cursor AI reads it |
+| Phase 2 (Near) | Same, but context optimized per workflow |
+| Phase 3 (Future) | Script passes context directly to AI API |
+
+**Connections:**
+- Theme 1 (architecture) - Unified workflow simplifies context management
+- Theme 3 (AI invocation) - Phase 3 enables direct context passing
+- Theme 4 (Cursor commands) - Commands could inject additional IDE context
+
+**Implications:**
+- Each workflow type needs a defined context profile
+- Universal context should be versioned with toolkit
+- Workflow-specific context requires project analysis
+
+**Concerns:**
+- Context size vs token limits (especially for large projects)
+- Keeping context profiles up to date
+- Balance between explicit rules and overwhelming AI
+- Cross-project context (e.g., dev-infra templates used in dev-toolkit)
+
+---
+
 ## ❓ Key Questions
 
 ### Question 1: Should dt-workflow be unified or composable?
@@ -523,6 +641,24 @@ templates:
 
 ---
 
+### Question 5: How should context be gathered and injected?
+
+**Context:** Different workflows need different context (rules, project files, related documents). Universal context (Cursor rules) should always be included explicitly for reliability and user trust. The current system relies on implicit rule loading which is invisible and unreliable.
+
+**Sub-questions:**
+- What context is truly universal vs workflow-specific?
+- How do we balance explicit context with token limits?
+- Should context be injected inline or as file references?
+- How do we handle cross-project context (e.g., dev-infra templates)?
+
+**Research Approach:**
+- Inventory context needs per workflow type
+- Analyze token impact of different approaches
+- Design context profile format
+- Test with real workflows
+
+---
+
 ## 💡 Initial Thoughts
 
 Based on the theme analysis, several patterns emerge that inform preliminary recommendations.
@@ -572,18 +708,77 @@ The natural role for Cursor commands in this architecture:
 
 ---
 
+## 🧪 Spike vs Research Determination
+
+**Insight:** With AI-accelerated development, the traditional POC→MVP separation may not always be necessary. However, spikes still provide value when decision risk is high. This determination should be part of every exploration.
+
+**Framework:**
+- **Spike (hours):** When technical uncertainty OR architectural commitment is high
+- **Research only:** When the path is known but details need investigation
+- **Straight to MVP:** When risk is low AND approach is well-understood
+
+### dt-workflow Topic Assessment
+
+| Topic | Risk Level | Determination | Rationale |
+|-------|------------|---------------|-----------|
+| 1. Unified vs Composable | 🔴 HIGH | **Spike first** | Architectural - hard to pivot once committed |
+| 2. Phase 1 Interface | 🟠 MEDIUM-HIGH | **Spike first** | User-facing, need to feel the UX |
+| 3. Validate Standalone | 🟢 LOW | Research only | Clear CI value, low risk |
+| 4. Gen Internal | 🟢 LOW | Research only | Analysis already clear |
+| 5. Cursor Command Role | 🟡 MEDIUM | Research only | Depends on architecture (spike results) |
+| 6. Model Selection | 🟢 LOW | Research only | Enhancement, not blocking |
+| 7. Project Location | 🟢 LOW | Research only | Clear precedent (dt-* in dev-toolkit) |
+| 8. Naming & Scope | 🟢 LOW | Research only | Organizational, easy to change |
+| 9. Migration Path | 🟢 LOW | Research only | Depends on other decisions |
+| 10. Context Gathering | 🟡 MEDIUM | **Consider spike** | Format details could benefit from feeling |
+
+### Recommended Spike Scope
+
+**Spike Topics 1+2 together (2-3 hours):**
+
+Build a minimal `dt-workflow explore topic --interactive` that:
+1. Generates structure (reuse dt-doc-gen logic)
+2. Gathers and outputs context (rules + project identity)
+3. Outputs combined result for AI consumption
+
+**Validate:**
+- Does the unified interface feel right?
+- Does explicit context injection work in practice?
+- Does Phase 1 `--interactive` provide enough value?
+
+**If spike succeeds:** Spike becomes MVP skeleton, proceed to full implementation  
+**If spike fails:** Pivot architecture before investing more time
+
+### Workflow Pattern Note
+
+**This spike determination should be a standard part of exploration workflow.**
+
+After identifying research topics, ask:
+1. Which decisions have high pivot cost?
+2. Which need to be "felt" rather than analyzed?
+3. Can a few hours of prototyping answer what days of research might not?
+
+Consider adding to `/explore` command output or as a section in exploration.md template.
+
+**For junior developers:** Spikes are especially valuable as time-boxed "can it work?" sessions. The strict time limit (e.g., 2 hours) removes pressure to build something perfect, makes failure safe ("I couldn't figure it out" is a valid answer), and prevents rabbit holes. It's structured permission to experiment.
+
+---
+
 ## 🚀 Next Steps
 
-1. **Review research topics** in `research-topics.md` for prioritized investigation
-2. **Decide on blocking questions** (Topics 1-2) before proceeding
-3. Use `/research dt-workflow --from-explore dt-workflow` to investigate
-4. After research, use `/decision dt-workflow --from-research` to make architecture decision
+1. **Spike Topics 1+2** - Build minimal dt-workflow to validate architecture (2-3 hours)
+2. **Review research topics** in `research-topics.md` for post-spike investigation
+3. **Decide based on spike results** - Does unified + Phase 1 interactive feel right?
+4. Use `/research dt-workflow --from-explore dt-workflow` for remaining topics
+5. After research, use `/decision dt-workflow --from-research` to make formal decisions
 
 ---
 
 ## 🔗 Related
 
+- [dev-infra: Research Summary](/Users/cdwilson/Projects/dev-infra/admin/research/template-doc-infrastructure/research-summary.md) - Context gathering concept, token efficiency
 - [dev-infra: Cursor CLI Model Selection](/Users/cdwilson/Projects/dev-infra/admin/research/template-doc-infrastructure/research-cursor-cli-model-selection.md)
+- [dev-infra: Architectural Placement](/Users/cdwilson/Projects/dev-infra/admin/research/template-doc-infrastructure/research-architectural-placement.md) - lib/doc-context.sh concept
 - [doc-infrastructure Feature](../../planning/features/doc-infrastructure/)
 - [Command Migrations Exploration](../command-migrations/)
 

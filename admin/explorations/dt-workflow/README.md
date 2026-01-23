@@ -58,6 +58,7 @@ Generate Structure → AI Fills Content → Validate Output → Commit
 | Naming & Organization | Consider doc-infrastructure complete, dt-workflow as new feature |
 | Model Selection | Config-based, integrated with dt-workflow |
 | Cross-Project | dt-workflow in dev-toolkit, templates in dev-infra |
+| Context Gathering | Universal (rules, identity) + workflow-specific; explicit injection for trust |
 
 ### Initial Recommendations
 
