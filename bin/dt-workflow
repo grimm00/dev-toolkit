@@ -1,0 +1,599 @@
+#!/usr/bin/env bash
+
+# ============================================================================
+# DT-WORKFLOW - Unified Workflow Orchestration (SPIKE)
+# Usage: dt-workflow <workflow> <topic> [OPTIONS]
+# 
+# SPIKE PURPOSE: Validate unified architecture + Phase 1 interactive UX
+# This is time-boxed exploration code, not production quality.
+# ============================================================================
+
+set -euo pipefail
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+
+VERSION="0.1.0-spike"
+SCRIPT_NAME=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
+
+# Source shared libraries
+source "$TOOLKIT_ROOT/lib/core/output-utils.sh"
+
+# Initialize colors
+dt_setup_colors
+
+# ============================================================================
+# CONTEXT GATHERING
+# ============================================================================
+
+gather_cursor_rules() {
+    local project_dir="${1:-.}"
+    local rules_dir="$project_dir/.cursor/rules"
+    
+    if [ ! -d "$rules_dir" ]; then
+        dt_print_debug "No .cursor/rules directory found"
+        return 0
+    fi
+    
+    echo "## Cursor Rules (Universal Context)"
+    echo ""
+    echo "These rules define project standards and must always be followed."
+    echo ""
+    
+    # Find all .mdc files and output their contents
+    local rule_files
+    rule_files=$(find "$rules_dir" -name "*.mdc" -type f 2>/dev/null | sort)
+    
+    if [ -z "$rule_files" ]; then
+        echo "*No rule files found*"
+        return 0
+    fi
+    
+    for rule_file in $rule_files; do
+        local filename
+        filename=$(basename "$rule_file")
+        echo "### $filename"
+        echo ""
+        echo '```markdown'
+        cat "$rule_file"
+        echo '```'
+        echo ""
+    done
+}
+
+gather_project_identity() {
+    local project_dir="${1:-.}"
+    
+    echo "## Project Identity (Universal Context)"
+    echo ""
+    
+    # Check for roadmap
+    local roadmap_paths=(
+        "$project_dir/admin/planning/roadmap.md"
+        "$project_dir/docs/roadmap.md"
+        "$project_dir/ROADMAP.md"
+    )
+    
+    for roadmap in "${roadmap_paths[@]}"; do
+        if [ -f "$roadmap" ]; then
+            echo "### Project Roadmap"
+            echo ""
+            echo "From: \`$roadmap\`"
+            echo ""
+            echo '```markdown'
+            # Output first 100 lines to keep context manageable
+            head -100 "$roadmap"
+            echo '```'
+            echo ""
+            break
+        fi
+    done
+    
+    # Check for admin README
+    local admin_readme="$project_dir/admin/README.md"
+    if [ -f "$admin_readme" ]; then
+        echo "### Admin Structure"
+        echo ""
+        echo "From: \`$admin_readme\`"
+        echo ""
+        echo '```markdown'
+        head -80 "$admin_readme"
+        echo '```'
+        echo ""
+    fi
+}
+
+gather_workflow_context() {
+    local workflow="$1"
+    local topic="$2"
+    local project_dir="${3:-.}"
+    
+    echo "## Workflow-Specific Context"
+    echo ""
+    
+    case "$workflow" in
+        explore)
+            # For exploration: show existing explorations
+            local explorations_dir="$project_dir/admin/explorations"
+            if [ -d "$explorations_dir" ]; then
+                echo "### Existing Explorations"
+                echo ""
+                echo "From: \`$explorations_dir\`"
+                echo ""
+                
+                # List exploration directories
+                local explorations
+                explorations=$(find "$explorations_dir" -maxdepth 1 -type d ! -name explorations 2>/dev/null | sort)
+                
+                if [ -n "$explorations" ]; then
+                    echo "| Exploration | Status |"
+                    echo "|-------------|--------|"
+                    for exp_dir in $explorations; do
+                        local exp_name
+                        exp_name=$(basename "$exp_dir")
+                        local readme="$exp_dir/README.md"
+                        local status="Unknown"
+                        if [ -f "$readme" ]; then
+                            # Extract status from README
+                            status=$(grep -o "Status:\*\* [^|]*" "$readme" 2>/dev/null | head -1 | sed 's/Status:\*\* //' || echo "Unknown")
+                        fi
+                        echo "| $exp_name | $status |"
+                    done
+                    echo ""
+                fi
+            fi
+            ;;
+        research)
+            echo "### Research Context"
+            echo ""
+            echo "*Research-specific context would be gathered here*"
+            echo ""
+            ;;
+        decision)
+            echo "### Decision Context"
+            echo ""
+            echo "*Decision-specific context (existing ADRs, research) would be gathered here*"
+            echo ""
+            ;;
+        *)
+            echo "*No workflow-specific context defined for: $workflow*"
+            echo ""
+            ;;
+    esac
+}
+
+gather_git_context() {
+    local project_dir="${1:-.}"
+    
+    echo "## Git Context"
+    echo ""
+    
+    # Current branch
+    local branch
+    branch=$(git -C "$project_dir" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+    echo "- **Current Branch:** \`$branch\`"
+    
+    # Recent commits (last 5)
+    echo "- **Recent Commits:**"
+    echo ""
+    git -C "$project_dir" log --oneline -5 2>/dev/null | while read -r line; do
+        echo "  - $line"
+    done
+    echo ""
+}
+
+# ============================================================================
+# STRUCTURE GENERATION
+# ============================================================================
+
+generate_exploration_structure() {
+    local topic="$1"
+    local date
+    date=$(date +%Y-%m-%d)
+    
+    echo "## Generated Structure"
+    echo ""
+    echo "### Files to Create"
+    echo ""
+    echo "The following files should be created in \`admin/explorations/$topic/\`:"
+    echo ""
+    
+    # README.md (Hub)
+    echo "#### README.md (Hub)"
+    echo ""
+    echo '```markdown'
+    cat << EOF
+# $topic - Exploration Hub
+
+**Purpose:** [Brief description of what we're exploring]  
+**Status:** 🔴 Exploration  
+**Created:** $date  
+**Last Updated:** $date
+
+---
+
+## 📋 Quick Links
+
+- **[Exploration Document](exploration.md)** - Full exploration with theme analysis
+- **[Research Topics](research-topics.md)** - Prioritized research questions
+
+---
+
+## 🎯 Overview
+
+[What problem are we solving? Why now?]
+
+---
+
+## 📊 Exploration Summary
+
+### Themes Analyzed
+
+| Theme | Key Finding |
+|-------|-------------|
+| [Theme 1] | [Finding] |
+| [Theme 2] | [Finding] |
+
+### Initial Recommendations
+
+1. [Recommendation 1]
+2. [Recommendation 2]
+
+---
+
+## 🚀 Next Steps
+
+1. [Next action]
+2. [Next action]
+
+---
+
+**Last Updated:** $date
+EOF
+    echo '```'
+    echo ""
+    
+    # exploration.md
+    echo "#### exploration.md (Main Analysis)"
+    echo ""
+    echo '```markdown'
+    cat << EOF
+# Exploration: $topic
+
+**Status:** 🔴 Exploration  
+**Created:** $date  
+**Last Updated:** $date
+
+---
+
+## 🎯 What We're Exploring
+
+[Detailed description of the problem/opportunity]
+
+---
+
+## 🔍 Themes
+
+### Theme 1: [Name]
+
+[Analysis of this theme]
+
+**Connections:**
+- [How this relates to other themes]
+
+**Implications:**
+- [What this means for the solution]
+
+**Concerns:**
+- [Potential issues]
+
+---
+
+### Theme 2: [Name]
+
+[Analysis]
+
+---
+
+## ❓ Key Questions
+
+### Question 1: [Question]
+
+**Context:** [Why this matters]
+
+**Sub-questions:**
+- [Sub-question 1]
+- [Sub-question 2]
+
+---
+
+## 💡 Initial Thoughts
+
+[Preliminary analysis and recommendations]
+
+---
+
+## 🚀 Next Steps
+
+1. [Next action]
+2. [Next action]
+
+---
+
+## 🔗 Related
+
+- [Related document 1]
+- [Related document 2]
+
+---
+
+**Last Updated:** $date
+EOF
+    echo '```'
+    echo ""
+    
+    # research-topics.md
+    echo "#### research-topics.md (Research Questions)"
+    echo ""
+    echo '```markdown'
+    cat << EOF
+# Research Topics - $topic Exploration
+
+**Status:** 🔴 Exploration  
+**Created:** $date  
+**Last Updated:** $date
+
+---
+
+## 📋 Research Topics
+
+### Priority 1: [BLOCKING]
+
+#### Topic 1: [Name]
+
+**Question:** [Research question]
+
+**Context:** [Why this matters]
+
+**Priority:** BLOCKING / HIGH / MEDIUM / LOW  
+**Approach:** 🧪 SPIKE FIRST / Research only
+
+**Suggested Approach:**
+- [How to investigate]
+
+---
+
+### Priority 2: [HIGH]
+
+#### Topic 2: [Name]
+
+[Details]
+
+---
+
+## 🎯 Research Workflow
+
+### Recommended Order
+
+1. [First topics]
+2. [Second topics]
+
+---
+
+**Last Updated:** $date
+EOF
+    echo '```'
+    echo ""
+}
+
+# ============================================================================
+# MAIN OUTPUT
+# ============================================================================
+
+output_for_ai() {
+    local workflow="$1"
+    local topic="$2"
+    local project_dir="${3:-.}"
+    
+    echo "# dt-workflow Output: $workflow $topic"
+    echo ""
+    echo "**Mode:** --interactive (Phase 1)"
+    echo "**Generated:** $(date +%Y-%m-%d\ %H:%M)"
+    echo ""
+    echo "---"
+    echo ""
+    echo "# CONTEXT"
+    echo ""
+    echo "The following context has been gathered for this workflow."
+    echo "This replaces implicit rule loading with explicit context injection."
+    echo ""
+    
+    # Universal context
+    gather_cursor_rules "$project_dir"
+    gather_project_identity "$project_dir"
+    gather_git_context "$project_dir"
+    
+    # Workflow-specific context
+    gather_workflow_context "$workflow" "$topic" "$project_dir"
+    
+    echo "---"
+    echo ""
+    echo "# TASK"
+    echo ""
+    
+    case "$workflow" in
+        explore)
+            echo "Create an exploration for **$topic** using the structure below."
+            echo ""
+            echo "Fill in the placeholders with thoughtful analysis based on the context provided."
+            echo ""
+            generate_exploration_structure "$topic"
+            ;;
+        *)
+            echo "Workflow '$workflow' structure generation not yet implemented."
+            ;;
+    esac
+    
+    echo "---"
+    echo ""
+    echo "# INSTRUCTIONS"
+    echo ""
+    echo "1. Review the CONTEXT section above (rules, project identity, existing work)"
+    echo "2. Create the files in the TASK section with appropriate content"
+    echo "3. After creation, run \`dt-doc-validate\` to check compliance"
+    echo ""
+}
+
+# ============================================================================
+# HELP AND VERSION
+# ============================================================================
+
+show_help() {
+    cat << EOF
+Usage: $SCRIPT_NAME <workflow> <topic> [OPTIONS]
+
+Unified workflow orchestration for dev-toolkit. (SPIKE VERSION)
+
+Workflows:
+    explore           Start an exploration
+    research          Conduct research (not yet implemented)
+    decision          Make a decision (not yet implemented)
+
+Arguments:
+    workflow          Workflow type (explore, research, decision)
+    topic             Topic or feature name
+
+Options:
+    --interactive     Output context + structure for interactive AI fill (Phase 1)
+    --output FILE     Save output to file instead of stdout
+    --project PATH    Project directory (default: current directory)
+    --help            Show this help message
+    --version         Show version information
+    --debug           Enable debug output
+
+Examples:
+    $SCRIPT_NAME explore my-feature --interactive
+    $SCRIPT_NAME explore auth-system --interactive --output context.md
+
+Phase 1 Limitations:
+    This spike implements Phase 1 (interactive mode only).
+    - AI invocation is manual (you run this, then use the output with Cursor)
+    - Model selection is manual (recommended: claude-opus-4 for explorations)
+    - Full automation (Phase 3) requires programmatic AI invocation
+
+EOF
+}
+
+show_version() {
+    echo "$SCRIPT_NAME version $VERSION (spike)"
+}
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+main() {
+    local workflow=""
+    local topic=""
+    local interactive=false
+    local output_file=""
+    local project_dir="."
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            --version|-v)
+                show_version
+                exit 0
+                ;;
+            --debug)
+                export DT_DEBUG=true
+                shift
+                ;;
+            --interactive|-i)
+                interactive=true
+                shift
+                ;;
+            --output|-o)
+                output_file="$2"
+                shift 2
+                ;;
+            --project|-p)
+                project_dir="$2"
+                shift 2
+                ;;
+            -*)
+                dt_print_status "ERROR" "Unknown option: $1"
+                echo ""
+                show_help
+                exit 1
+                ;;
+            *)
+                if [ -z "$workflow" ]; then
+                    workflow="$1"
+                elif [ -z "$topic" ]; then
+                    topic="$1"
+                else
+                    dt_print_status "ERROR" "Unexpected argument: $1"
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Validate required arguments
+    if [ -z "$workflow" ]; then
+        dt_print_status "ERROR" "Workflow type is required"
+        echo ""
+        show_help
+        exit 1
+    fi
+    
+    if [ -z "$topic" ]; then
+        dt_print_status "ERROR" "Topic is required"
+        echo ""
+        show_help
+        exit 1
+    fi
+    
+    # Validate workflow type
+    case "$workflow" in
+        explore|research|decision)
+            # Valid workflows
+            ;;
+        *)
+            dt_print_status "ERROR" "Unknown workflow: $workflow"
+            dt_print_status "INFO" "Available workflows: explore, research, decision"
+            exit 1
+            ;;
+    esac
+    
+    # Phase 1: Interactive mode required
+    if [ "$interactive" != true ]; then
+        dt_print_status "WARNING" "Phase 1 requires --interactive mode"
+        dt_print_status "INFO" "Usage: $SCRIPT_NAME $workflow $topic --interactive"
+        dt_print_status "INFO" ""
+        dt_print_status "INFO" "Phase 1 (current): Script outputs context + structure for manual AI fill"
+        dt_print_status "INFO" "Phase 3 (future):  Script will invoke AI directly"
+        exit 1
+    fi
+    
+    # Generate output
+    if [ -n "$output_file" ]; then
+        output_for_ai "$workflow" "$topic" "$project_dir" > "$output_file"
+        dt_print_status "SUCCESS" "Output saved to: $output_file"
+        dt_print_status "INFO" "Next: Open $output_file in Cursor and let AI fill the structure"
+    else
+        output_for_ai "$workflow" "$topic" "$project_dir"
+    fi
+}
+
+main "$@"
