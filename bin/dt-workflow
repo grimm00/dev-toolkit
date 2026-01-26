@@ -404,7 +404,7 @@ validate_inputs() {
     if [ "$validation_level" = "L1" ] || [ "$validation_level" = "all" ]; then
         # Check project directory exists
         if [ ! -d "$project_dir" ]; then
-            dt_print_status "ERROR" "Project directory does not exist: $project_dir"
+            dt_print_status "ERROR" "Error: Project directory does not exist: $project_dir"
             echo ""
             echo "💡 Suggestion: Check the path or use --project to specify correct directory"
             if [ "$exit_on_fail" = "true" ]; then
@@ -420,7 +420,7 @@ validate_inputs() {
                 # L1: Check if exploration exists (for --from-explore)
                 local exp_dir="$project_dir/admin/explorations/$topic"
                 if [ ! -d "$exp_dir" ]; then
-                    dt_print_status "ERROR" "Exploration directory not found: $exp_dir"
+                    dt_print_status "ERROR" "Error: Exploration directory not found: $exp_dir"
                     echo ""
                     echo "💡 Suggestion: Run '/explore $topic' first to create the exploration"
                     if [ "$exit_on_fail" = "true" ]; then
@@ -434,7 +434,7 @@ validate_inputs() {
                 # L1: Check if research exists (for --from-research)
                 local research_dir="$project_dir/admin/research/$topic"
                 if [ ! -d "$research_dir" ]; then
-                    dt_print_status "ERROR" "Research directory not found: $research_dir"
+                    dt_print_status "ERROR" "Error: Research directory not found: $research_dir"
                     echo ""
                     echo "💡 Suggestion: Run '/research $topic --from-explore $topic' first"
                     if [ "$exit_on_fail" = "true" ]; then
@@ -731,9 +731,9 @@ main() {
     
     # Validate required arguments (L1 Validation - Research Finding: REQ-IO-1)
     if [ -z "$workflow" ]; then
-        dt_print_status "ERROR" "Workflow type is required"
+        dt_print_status "ERROR" "Error: Workflow type is required"
         echo ""
-        echo "💡 Usage: $SCRIPT_NAME <workflow> <topic> --interactive"
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME <workflow> <topic> --interactive"
         echo ""
         echo "Available workflows:"
         echo "  explore   - Start an exploration"
@@ -745,9 +745,9 @@ main() {
     fi
     
     if [ -z "$topic" ]; then
-        dt_print_status "ERROR" "Topic is required"
+        dt_print_status "ERROR" "Error: Topic is required"
         echo ""
-        echo "💡 Usage: $SCRIPT_NAME $workflow <topic> --interactive"
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME $workflow <topic> --interactive"
         echo ""
         echo "Example: $SCRIPT_NAME $workflow my-feature --interactive"
         exit 1
@@ -759,9 +759,9 @@ main() {
             # Valid workflows
             ;;
         *)
-            dt_print_status "ERROR" "Unknown workflow: $workflow"
+            dt_print_status "ERROR" "Error: Unknown workflow: $workflow"
             echo ""
-            echo "💡 Available workflows: explore, research, decision"
+            echo "💡 Suggestion: Available workflows: explore, research, decision"
             echo ""
             echo "Example: $SCRIPT_NAME explore $topic --interactive"
             exit 1
@@ -799,9 +799,9 @@ main() {
     
     # Phase 1: Interactive mode required
     if [ "$interactive" != true ]; then
-        dt_print_status "ERROR" "Phase 1 requires --interactive mode"
+        dt_print_status "ERROR" "Error: Phase 1 requires --interactive mode"
         echo ""
-        echo "💡 Usage: $SCRIPT_NAME $workflow $topic --interactive"
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME $workflow $topic --interactive"
         echo ""
         echo "Phase 1 (current): Script outputs context + structure for manual AI fill"
         echo "Phase 3 (future):  Script will invoke AI directly"
