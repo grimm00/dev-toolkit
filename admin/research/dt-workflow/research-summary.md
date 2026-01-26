@@ -13,8 +13,8 @@ Research for unified workflow orchestration (dt-workflow) feature.
 
 **Source Exploration:** [admin/explorations/dt-workflow/](../../explorations/dt-workflow/)
 
-**Research Topics:** 4 active topics (2 spike-validated, skipped)  
-**Research Documents:** 4 documents  
+**Research Topics:** 6 active topics (2 spike-validated, skipped)  
+**Research Documents:** 6 documents  
 **Status:** 🔴 Research in progress
 
 ---
@@ -72,7 +72,35 @@ From exploration analysis:
 
 ---
 
-### Finding 4: Model Selection (Topic 6)
+### Finding 4: Workflow Input/Output Specs (Topic 2) - NEW
+
+**Status:** 🔴 Research needed
+
+Each workflow needs specific inputs and produces outputs for the next stage:
+- What does /explore need? What does it output for /research?
+- How should dt-workflow validate inputs before proceeding?
+- How should outputs be formatted for optimal handoff?
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+---
+
+### Finding 5: Decision Propagation Patterns (Topic 3) - NEW
+
+**Status:** 🔴 Research needed
+
+Decisions made here should inform future workflows:
+- Spike determination pattern
+- Explicit context injection pattern
+- Phase-based evolution pattern
+
+Where should these patterns be documented? How do we ensure future workflows follow them?
+
+**Source:** [research-decision-propagation.md](research-decision-propagation.md)
+
+---
+
+### Finding 6: Model Selection (Topic 6)
 
 **Status:** 🟡 Analysis complete, pending validation
 
@@ -116,12 +144,14 @@ From exploration analysis:
 
 ## 📊 Research Status
 
-| Research Topic | Priority | Status | Primary Focus |
-|----------------|----------|--------|---------------|
-| Context Gathering | 🔴 HIGH | 🔴 Not Started | **YES** |
-| Component Decisions | 🟠 HIGH | 🟡 Analysis Ready | Quick decision |
-| Cursor Command Role | 🟡 MEDIUM | 🟡 Analysis Ready | Validate |
-| Model Selection | 🟡 MEDIUM | 🟡 Analysis Ready | Defer |
+| # | Research Topic | Priority | Status | Primary Focus |
+|---|----------------|----------|--------|---------------|
+| 1 | Context Gathering | 🔴 HIGH | 🔴 Not Started | **YES** - scalability |
+| 2 | Workflow I/O Specs | 🔴 HIGH | 🔴 Not Started | **YES** - handoffs |
+| 3 | Decision Propagation | 🔴 HIGH | 🔴 Not Started | **YES** - patterns |
+| 4 | Component Decisions | 🟠 HIGH | 🟡 Analysis Ready | Quick decision |
+| 5 | Cursor Command Role | 🟡 MEDIUM | 🟡 Analysis Ready | Validate |
+| 6 | Model Selection | 🟡 MEDIUM | 🟡 Analysis Ready | Defer |
 
 ---
 

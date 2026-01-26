@@ -14,12 +14,14 @@
 
 ### Research Documents
 
-| Topic | Priority | Status | Document |
-|-------|----------|--------|----------|
-| Context Gathering Scalability | 🔴 HIGH | 🔴 Not Started | [research-context-gathering.md](research-context-gathering.md) |
-| Component Decisions | 🟠 HIGH | 🔴 Not Started | [research-component-decisions.md](research-component-decisions.md) |
-| Cursor Command Role | 🟡 MEDIUM | 🔴 Not Started | [research-cursor-command-role.md](research-cursor-command-role.md) |
-| Model Selection | 🟡 MEDIUM | 🔴 Not Started | [research-model-selection.md](research-model-selection.md) |
+| # | Topic | Priority | Status | Document |
+|---|-------|----------|--------|----------|
+| 1 | Context Gathering Scalability | 🔴 HIGH | 🔴 Not Started | [research-context-gathering.md](research-context-gathering.md) |
+| 2 | Workflow Input/Output Specs | 🔴 HIGH | 🔴 Not Started | [research-workflow-io-specs.md](research-workflow-io-specs.md) |
+| 3 | Decision Propagation Patterns | 🔴 HIGH | 🔴 Not Started | [research-decision-propagation.md](research-decision-propagation.md) |
+| 4 | Component Decisions | 🟠 HIGH | 🔴 Not Started | [research-component-decisions.md](research-component-decisions.md) |
+| 5 | Cursor Command Role | 🟡 MEDIUM | 🔴 Not Started | [research-cursor-command-role.md](research-cursor-command-role.md) |
+| 6 | Model Selection | 🟡 MEDIUM | 🔴 Not Started | [research-model-selection.md](research-model-selection.md) |
 
 ### Spike-Validated (No Research Needed)
 
