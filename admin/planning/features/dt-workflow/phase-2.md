@@ -111,12 +111,12 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
    - [x] Verify test fails
 
 2. **GREEN - Enhance research templates:**
-   - [ ] Update `research/research.md.tmpl` with structural examples
-   - [ ] Add findings table structure
-   - [ ] Add methodology section structure
-   - [ ] Add key insights numbered list
-   - [ ] Add `<!-- REQUIRED: -->` markers
-   - [ ] Verify test passes
+   - [x] Update `research/research-topic.md.tmpl` with structural examples (dev-infra PR #64)
+   - [x] Add findings section structure (Title, Source, Relevance format)
+   - [x] Add methodology section structure (already existed)
+   - [x] Add key insights numbered list
+   - [x] Add `<!-- REQUIRED: -->` markers
+   - [x] Verify test passes (all 6 tests passing)
 
    **Template enhancement:**
    ```markdown
@@ -143,9 +143,9 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
 
 **Checklist:**
 - [x] Test written and failing (RED phase complete)
-- [ ] Research templates enhanced (GREEN phase - blocked on dev-infra)
-- [ ] Two-phase placeholders maintained
-- [ ] Test passing
+- [x] Research templates enhanced (GREEN phase complete - dev-infra PR #64)
+- [x] Two-phase placeholders maintained
+- [x] Test passing (all 6 tests passing)
 
 ---
 
