@@ -1,7 +1,7 @@
 # Manual Testing Guide - dt-workflow
 
 **Feature:** dt-workflow - Unified Workflow Orchestration  
-**Phases Covered:** 1  
+**Phases Covered:** 1, 2  
 **Last Updated:** 2026-01-26  
 **Status:** ✅ Active
 
@@ -13,8 +13,10 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 **Purpose:**
 - Verify CLI help and version output is user-friendly
-- Test explore workflow produces valid, usable output
+- Test all workflows (explore, research, decision) produce valid, usable output
+- Validate workflow chaining (--from-explore, --from-research) works correctly
 - Validate context injection works in different repository contexts
+- Verify handoff file generation guidance is included
 - Ensure error messages are helpful and actionable
 
 **Prerequisites:**
@@ -362,16 +364,36 @@ rm -rf /tmp/test-minimal-repo
 - [ ] Scenario 1.11: Cursor rules are included in context
 - [ ] Scenario 1.12: Token estimate is displayed
 
-**All scenarios passing:** [ ] Yes / [ ] No
+**All Phase 1 scenarios passing:** [ ] Yes / [ ] No
+
+### Phase 2: Workflow Expansion + Template Enhancement
+- [ ] Scenario 2.1: Research workflow basic usage
+- [ ] Scenario 2.2: Research with --from-explore (auto-detect)
+- [ ] Scenario 2.3: Research with --from-explore (explicit path)
+- [ ] Scenario 2.4: Research handoff file guidance
+- [ ] Scenario 2.5: Decision workflow basic usage
+- [ ] Scenario 2.6: Decision with --from-research (auto-detect)
+- [ ] Scenario 2.7: Decision with --from-research (explicit path)
+- [ ] Scenario 2.8: Decision handoff file guidance
+- [ ] Scenario 2.9: Full workflow chain integration
+- [ ] Scenario 2.10: Template rendering validation
+- [ ] Scenario 2.11: Error handling - missing exploration
+- [ ] Scenario 2.12: Error handling - missing research
+
+**All Phase 2 scenarios passing:** [ ] Yes / [ ] No
 
 ---
 
 ## 📝 Notes for Testers
 
 1. **Different repositories:** Test in repos with and without `.cursor/rules/` to verify graceful handling
-2. **Output length:** The explore workflow generates substantial output (~10K tokens). This is expected.
-3. **--interactive flag:** Required in Phase 1. Future phases will add `--generate` for direct file creation.
-4. **Report Issues:** If any scenario fails, document exact steps, expected vs actual results, and error messages.
+2. **Output length:** All workflows generate substantial output (~10-20K tokens). This is expected for AI context.
+3. **--interactive flag:** Required in Phases 1-2. Future phases will add `--generate` for direct file creation.
+4. **Workflow chaining:** Test both auto-detect (simpler) and explicit paths (more flexible) for --from-* flags
+5. **Context inclusion:** Verify that previous workflow output is included when using --from-* flags
+6. **Handoff files:** Phase 2 provides guidance on creating handoff files, but doesn't auto-generate them yet
+7. **Template rendering:** No heredoc artifacts should appear in output (switched to render.sh in Phase 2)
+8. **Report Issues:** If any scenario fails, document exact steps, expected vs actual results, and error messages.
 
 ---
 
@@ -379,7 +401,10 @@ rm -rf /tmp/test-minimal-repo
 
 - [Feature Plan](feature-plan.md)
 - [Phase 1 Document](phase-1.md)
+- [Phase 2 Document](phase-2.md)
 - [Status and Next Steps](status-and-next-steps.md)
+- [Workflow Patterns](../../docs/patterns/workflow-patterns.md) - Pattern 4: Handoff File Contract
+- [Template Variables](../../lib/doc-gen/TEMPLATE-VARIABLES.md)
 
 ---
 
