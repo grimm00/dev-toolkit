@@ -40,3 +40,32 @@ teardown() {
     [ -d "$TEST_PROJECT" ]
     [ -d "$TEST_PROJECT/.cursor/rules" ]
 }
+
+# ============================================================================
+# Task 2: Help and Version Tests (TDD)
+# ============================================================================
+
+@test "dt-workflow shows help with --help" {
+    run "$DT_WORKFLOW" --help
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Usage:" ]]
+    [[ "$output" =~ "dt-workflow" ]]
+}
+
+@test "dt-workflow shows help with -h" {
+    run "$DT_WORKFLOW" -h
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Usage:" ]]
+}
+
+@test "dt-workflow shows version with --version" {
+    run "$DT_WORKFLOW" --version
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "dt-workflow version" ]]
+}
+
+@test "dt-workflow shows version with -v" {
+    run "$DT_WORKFLOW" -v
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "version" ]]
+}
