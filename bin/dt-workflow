@@ -453,6 +453,54 @@ generate_research_structure() {
         echo "💡 Suggestion: Ensure dev-infra templates are properly installed"
         return 1
     fi
+    
+    # Handoff file guidance per Pattern 4 (FR-10)
+    # Reference: docs/patterns/workflow-patterns.md (Pattern 4: Handoff File Contract)
+    echo "#### research-summary.md (Handoff File)"
+    echo ""
+    echo "**Purpose:** Standardized handoff file for research→decision transition per Pattern 4"
+    echo ""
+    echo "**Reference:** [Pattern 4: Handoff File Contract](../../docs/patterns/workflow-patterns.md#pattern-4-handoff-file-contract)"
+    echo ""
+    echo "After completing research, create \`research-summary.md\` with the following required sections:"
+    echo ""
+    echo '```markdown'
+    cat << 'HANDOFF_EOF'
+## 🔍 Key Findings
+
+<!-- AI: Summarize key findings from research with sources -->
+
+### Finding 1: [Title]
+[Summary with source references]
+
+---
+
+## 💡 Recommendations
+
+<!-- AI: Provide actionable recommendations based on findings -->
+
+1. [Recommendation 1]
+2. [Recommendation 2]
+
+---
+
+## 📊 Requirements Discovered
+
+<!-- AI: List any new requirements discovered during research (FR-*, NFR-*) -->
+
+- [ ] FR-XX: [Requirement description]
+- [ ] NFR-XX: [Non-functional requirement]
+
+---
+
+## 🚀 Next Steps
+
+1. Review research findings and recommendations above
+2. Run `/decision topic --from-research` to make decisions
+3. Or run: `dt-workflow decision topic --from-research --interactive`
+HANDOFF_EOF
+    echo '```'
+    echo ""
 }
 
 # ============================================================================
@@ -705,8 +753,9 @@ output_for_ai() {
                 echo "After completing research:"
                 echo ""
                 echo "1. Review research findings in \`admin/research/$topic/\`"
-                echo "2. Run: \`/decision $topic --from-research\` to make decisions"
-                echo "3. Or run: \`dt-workflow decision $topic --from-research --interactive\`"
+                echo "2. Create \`research-summary.md\` with key findings and recommendations (handoff file per Pattern 4)"
+                echo "3. Run: \`/decision $topic --from-research\` to make decisions"
+                echo "4. Or run: \`dt-workflow decision $topic --from-research --interactive\`"
                 ;;
             decision)
                 echo "After making decisions:"

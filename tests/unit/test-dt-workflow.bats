@@ -422,6 +422,68 @@ teardown() {
 }
 
 # ============================================================================
+# Task 9: Research Handoff File Generation Tests (RED)
+# ============================================================================
+
+@test "dt-workflow research generates handoff file guidance" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Create exploration directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    
+    run "$DT_WORKFLOW" research test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Handoff guidance should be in output
+    grep -q "research-summary.md" "$TEST_OUTPUT" || {
+        echo "FAIL: research-summary.md handoff file not mentioned"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "## 🚀 Next Steps" "$TEST_OUTPUT" || {
+        echo "FAIL: Next Steps section not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "/decision" "$TEST_OUTPUT" || grep -q "decision" "$TEST_OUTPUT" || {
+        echo "FAIL: Decision workflow not mentioned in Next Steps"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow research handoff includes required sections" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Create exploration directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    
+    run "$DT_WORKFLOW" research test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Required sections per Pattern 4
+    grep -q "Key Findings" "$TEST_OUTPUT" || grep -q "🔍 Key Findings" "$TEST_OUTPUT" || {
+        echo "FAIL: Key Findings section not mentioned in handoff guidance"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "Recommendations" "$TEST_OUTPUT" || grep -q "💡 Recommendations" "$TEST_OUTPUT" || {
+        echo "FAIL: Recommendations section not mentioned in handoff guidance"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 
