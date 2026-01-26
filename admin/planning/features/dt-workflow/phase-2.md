@@ -502,10 +502,10 @@ These tasks integrate enhanced templates into dt-workflow.
    - [x] Add summary counts for large document sets (shows first 5, then "... and N more")
 
 **Checklist:**
-- [ ] Test written and failing
-- [ ] Context gathering implemented
-- [ ] Exploration context included when available
-- [ ] Test passing
+- [x] Test written and passing (RED phase complete)
+- [x] Context gathering implemented (GREEN phase complete)
+- [x] Exploration context included when available (exploration.md + research-topics.md)
+- [x] Test passing (all 3 tests passing)
 
 ---
 
