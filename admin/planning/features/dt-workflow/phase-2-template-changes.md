@@ -1,0 +1,165 @@
+# Phase 2 Template Enhancement Requirements
+
+**Purpose:** Document template changes needed in dev-infra for Phase 2, Task 1  
+**Status:** 🟡 Pending (dev-infra changes required)  
+**Created:** 2026-01-26  
+**Related:** ADR-006, FR-24, FR-26, NFR-7
+
+---
+
+## Overview
+
+This document specifies the template enhancements needed in dev-infra to support Phase 2 of dt-workflow. These changes align templates with ADR-006 (structural examples) and ensure output matches spike heredoc quality (NFR-7).
+
+**Note:** Templates are maintained in dev-infra (`scripts/doc-gen/templates/`). This document serves as a specification for dev-infra changes.
+
+---
+
+## Task 1: Exploration Template Enhancement
+
+**File:** `exploration/exploration.md.tmpl`
+
+### Current State
+
+The current template uses minimal placeholders like:
+```markdown
+## 🔍 Themes
+
+<!-- AI: Extract initial themes from input -->
+<!-- EXPAND: Expand themes with detailed analysis... -->
+```
+
+### Required Changes
+
+Add structural examples per ADR-006 and FR-24:
+
+#### 1. Add Themes Analyzed Section
+
+**Location:** After "## 🔍 Themes" section
+
+**Add:**
+```markdown
+## 📊 Exploration Summary
+
+### Themes Analyzed
+<!-- REQUIRED: At least 2 themes -->
+
+| Theme | Key Finding |
+|-------|-------------|
+<!-- AI: Fill theme rows based on analysis. Each row: | Theme Name | One-sentence finding | -->
+```
+
+**Rationale:** Provides structural example for AI to follow, improving consistency (FR-24). Matches spike heredoc structure (NFR-7).
+
+#### 2. Add Initial Recommendations Section
+
+**Location:** After Themes Analyzed section
+
+**Add:**
+```markdown
+### Initial Recommendations
+
+1. <!-- AI: First recommendation based on themes -->
+2. <!-- AI: Second recommendation -->
+3. <!-- AI: Third recommendation (if applicable) -->
+```
+
+**Rationale:** Provides numbered list structure example. Matches spike heredoc output.
+
+#### 3. Add REQUIRED Markers
+
+**Location:** Before sections that need minimum content
+
+**Add markers:**
+- `<!-- REQUIRED: At least 2 themes -->` before Themes Analyzed table
+- `<!-- REQUIRED: At least 2 recommendations -->` before Initial Recommendations
+
+**Rationale:** Enables validation and guides AI on expectations (FR-26).
+
+### Expected Output Structure
+
+After enhancement, template should produce output like:
+
+```markdown
+## 📊 Exploration Summary
+
+### Themes Analyzed
+<!-- REQUIRED: At least 2 themes -->
+
+| Theme | Key Finding |
+|-------|-------------|
+<!-- AI: Fill theme rows based on analysis. Each row: | Theme Name | One-sentence finding | -->
+
+### Initial Recommendations
+
+1. <!-- AI: First recommendation based on themes -->
+2. <!-- AI: Second recommendation -->
+```
+
+---
+
+## Validation
+
+**Test File:** `dev-toolkit/tests/unit/test-template-enhancement.bats`
+
+Tests validate:
+- ✅ Themes table structure exists (`| Theme | Key Finding |`)
+- ✅ Table separator exists (`|-------|-------------|`)
+- ✅ AI placeholder exists (`<!-- AI: Fill theme rows`)
+- ✅ Initial Recommendations section exists
+- ✅ Numbered list structure exists (`1. <!-- AI:`)
+- ✅ REQUIRED markers exist (`<!-- REQUIRED:`)
+- ✅ Themes Analyzed section exists
+
+**Status:** Tests currently FAIL until templates are enhanced.
+
+---
+
+## Alignment with Spike Heredocs
+
+**Reference:** Spike heredoc output from `bin/dt-workflow` (Phase 1)
+
+The enhanced templates must produce output structurally equivalent to spike heredocs per NFR-7:
+
+**Spike Output Includes:**
+- Themes Analyzed table
+- Initial Recommendations numbered list
+- Structured sections with examples
+
+**Template Output Must Match:**
+- Same section names
+- Same table/list structures
+- Same placeholder patterns
+
+---
+
+## Implementation Notes
+
+1. **Preserve Existing Structure:** Keep current sections, add new structural examples
+2. **Maintain Two-Phase Placeholders:** Keep `<!-- AI: -->` and `<!-- EXPAND: -->` distinction
+3. **Variable Substitution:** Ensure `${VARIABLE}` placeholders remain functional
+4. **Backward Compatibility:** Enhanced templates should work with existing `render.sh`
+
+---
+
+## Next Steps
+
+1. ✅ **dev-toolkit:** Tests created (RED phase complete)
+2. 🟡 **dev-infra:** Enhance `exploration/exploration.md.tmpl` per this spec
+3. 🟡 **dev-infra:** Run dev-toolkit tests to validate changes
+4. 🟡 **dev-toolkit:** Verify tests pass (GREEN phase)
+5. 🟡 **dev-infra:** Create PR with template changes
+6. 🟡 **dev-toolkit:** Update dt-workflow to use enhanced templates
+
+---
+
+## Related Documents
+
+- [ADR-006: Template Enhancement](../../decisions/dt-workflow/adr-006-template-enhancement.md)
+- [Research: Template Structure](../../research/dt-workflow/research-template-structure.md)
+- [Phase 2 Plan](phase-2.md)
+- [Requirements](../../research/dt-workflow/requirements.md)
+
+---
+
+**Last Updated:** 2026-01-26
