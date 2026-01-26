@@ -7,11 +7,13 @@
 # ============================================================================
 
 # Variable lists per template type
-DT_EXPLORATION_VARS='${DATE} ${STATUS} ${TOPIC_NAME} ${TOPIC_TITLE}'
-DT_RESEARCH_VARS='${DATE} ${STATUS} ${TOPIC_NAME} ${QUESTION} ${QUESTION_NAME}'
-DT_DECISION_VARS='${DATE} ${STATUS} ${ADR_NUMBER} ${DECISION_TITLE}'
-DT_PLANNING_VARS='${DATE} ${STATUS} ${FEATURE_NAME} ${PHASE_NUMBER} ${PHASE_NAME}'
-DT_OTHER_VARS='${DATE} ${STATUS} ${TOPIC_NAME}'
+# Each list includes variables used in templates for that category
+# PURPOSE is universal - brief description of the document's purpose
+DT_EXPLORATION_VARS='${DATE} ${STATUS} ${TOPIC_NAME} ${TOPIC_TITLE} ${PURPOSE}'
+DT_RESEARCH_VARS='${DATE} ${STATUS} ${TOPIC_NAME} ${TOPIC_TITLE} ${QUESTION} ${QUESTION_NAME} ${PURPOSE} ${TOPIC_COUNT} ${DOC_COUNT}'
+DT_DECISION_VARS='${DATE} ${STATUS} ${TOPIC_NAME} ${TOPIC_TITLE} ${ADR_NUMBER} ${DECISION_TITLE} ${PURPOSE} ${DECISION_COUNT} ${BATCH_NUMBER}'
+DT_PLANNING_VARS='${DATE} ${STATUS} ${FEATURE_NAME} ${PHASE_NUMBER} ${PHASE_NAME} ${PURPOSE}'
+DT_OTHER_VARS='${DATE} ${STATUS} ${TOPIC_NAME} ${PURPOSE}'
 
 dt_check_envsubst() {
     if ! command -v envsubst >/dev/null 2>&1; then
@@ -88,47 +90,70 @@ dt_render_template() {
 dt_set_common_vars() {
     export DATE=$(date +%Y-%m-%d)
     export STATUS="🔴 Not Started"
+    export PURPOSE="${PURPOSE:-[Purpose TBD]}"
 }
 
 dt_set_exploration_vars() {
     local topic_name="$1"
+    local purpose="${2:-Exploration of $topic_name}"
     
     dt_set_common_vars
     
     export TOPIC_NAME="$topic_name"
     # Convert kebab-case to Title Case
     export TOPIC_TITLE=$(echo "$topic_name" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
+    export PURPOSE="$purpose"
 }
 
 dt_set_research_vars() {
     local topic_name="$1"
     local question="${2:-}"
+    local purpose="${3:-Research for $topic_name}"
+    local topic_count="${4:-0}"
+    local doc_count="${5:-0}"
     
     dt_set_common_vars
     
     export TOPIC_NAME="$topic_name"
+    # Convert kebab-case to Title Case
+    export TOPIC_TITLE=$(echo "$topic_name" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
     export QUESTION="${question:-Research Question TBD}"
     export QUESTION_NAME=$(echo "$topic_name" | sed 's/-/ /g')
+    export PURPOSE="$purpose"
+    export TOPIC_COUNT="$topic_count"
+    export DOC_COUNT="$doc_count"
 }
 
 dt_set_decision_vars() {
-    local adr_number="$1"
-    local decision_title="$2"
+    local topic_name="$1"
+    local adr_number="$2"
+    local decision_title="$3"
+    local purpose="${4:-Decisions for $topic_name}"
+    local decision_count="${5:-0}"
+    local batch_number="${6:-1}"
     
     dt_set_common_vars
     
+    export TOPIC_NAME="$topic_name"
+    # Convert kebab-case to Title Case
+    export TOPIC_TITLE=$(echo "$topic_name" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
     export ADR_NUMBER="$adr_number"
     export DECISION_TITLE="$decision_title"
+    export PURPOSE="$purpose"
+    export DECISION_COUNT="$decision_count"
+    export BATCH_NUMBER="$batch_number"
 }
 
 dt_set_planning_vars() {
     local feature_name="$1"
     local phase_number="${2:-1}"
     local phase_name="${3:-Foundation}"
+    local purpose="${4:-Planning for $feature_name}"
     
     dt_set_common_vars
     
     export FEATURE_NAME="$feature_name"
     export PHASE_NUMBER="$phase_number"
     export PHASE_NAME="$phase_name"
+    export PURPOSE="$purpose"
 }
