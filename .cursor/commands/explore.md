@@ -469,6 +469,8 @@ This pattern aligns with the worktree feature workflow:
 
 Setup Mode creates lightweight scaffolding documents for human review before investing in detailed exploration.
 
+**Context Source:** Run `dt-workflow explore <topic> --interactive` first to get injected context (Cursor rules, project identity) and structure template. Use this output to inform scaffolding creation.
+
 **Creates:**
 
 ```
@@ -886,9 +888,10 @@ Create worktree for this exploration? [Y/n]
 
 **Setup Mode Checklist:**
 
+- [ ] dt-workflow context gathered (`dt-workflow explore <topic> --interactive`)
 - [ ] Exploration directory created
 - [ ] Exploration hub created (~20 lines)
-- [ ] Exploration scaffolding created (~40-50 lines)
+- [ ] Exploration scaffolding created (~40-50 lines) using dt-workflow output
 - [ ] Research topics scaffolding created (~20-30 lines)
 - [ ] Status set to `🔴 Scaffolding (needs expansion)`
 - [ ] Explorations hub updated

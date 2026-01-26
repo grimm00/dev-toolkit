@@ -123,24 +123,24 @@ dt-workflow explore <topic> --interactive
 **Steps:**
 
 1. **Read Setup Mode section:**
-   - [ ] Identify current step sequence
-   - [ ] Find where dt-workflow invocation fits
+   - [x] Identify current step sequence
+   - [x] Find where dt-workflow invocation fits
 
 2. **Add dt-workflow as first step:**
-   - [ ] Add "Step 0: Gather Context" or integrate into Step 1
-   - [ ] Document: `dt-workflow explore <topic> --interactive`
-   - [ ] Note: Output provides injected context + structure
+   - [x] Add "Step 0: Gather Context" or integrate into Step 1
+   - [x] Document: `dt-workflow explore <topic> --interactive`
+   - [x] Note: Output provides injected context + structure
 
 3. **Update subsequent steps:**
-   - [ ] Reference dt-workflow output in structure creation
-   - [ ] Update any manual context gathering to use dt-workflow
-   - [ ] Ensure handoff file guidance is consistent
+   - [x] Reference dt-workflow output in structure creation
+   - [x] Update any manual context gathering to use dt-workflow
+   - [x] Ensure handoff file guidance is consistent
 
 **Checklist:**
-- [ ] Setup Mode updated
-- [ ] dt-workflow invocation as first step
-- [ ] Steps reference dt-workflow output
-- [ ] Handoff file creation consistent
+- [x] Setup Mode updated
+- [x] dt-workflow invocation as first step
+- [x] Steps reference dt-workflow output
+- [x] Handoff file creation consistent
 
 ---
 
@@ -624,7 +624,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task | Status | Notes |
 |------|--------|-------|
 | Task 1: explore.md integration section | ✅ Complete | dt-workflow Integration section added |
-| Task 2: explore.md Setup Mode | 🔴 Not Started | |
+| Task 2: explore.md Setup Mode | ✅ Complete | Checklist and output section updated |
 | Task 3: explore.md Conduct Mode | 🔴 Not Started | |
 | Task 4: research.md integration section | 🔴 Not Started | |
 | Task 5: research.md Setup Mode | 🔴 Not Started | |
