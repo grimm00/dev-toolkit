@@ -28,6 +28,34 @@ source "$TOOLKIT_ROOT/lib/doc-gen/templates.sh"
 dt_setup_colors
 
 # ============================================================================
+# MODEL RECOMMENDATIONS
+# ============================================================================
+
+get_recommended_model() {
+    # Get recommended model for workflow type (FR-6)
+    # Parameters:
+    #   $1 - Workflow type (explore, research, decision)
+    # Returns: Model recommendation with brief rationale
+    
+    local workflow="$1"
+    
+    case "$workflow" in
+        explore)
+            echo "claude-3-5-sonnet (fast iteration, good for brainstorming)"
+            ;;
+        research)
+            echo "claude-3-5-sonnet (balanced analysis)"
+            ;;
+        decision)
+            echo "claude-3-opus (complex reasoning for ADRs)"
+            ;;
+        *)
+            echo "claude-3-5-sonnet (general purpose)"
+            ;;
+    esac
+}
+
+# ============================================================================
 # CONTEXT GATHERING
 # ============================================================================
 
@@ -926,6 +954,7 @@ output_for_ai() {
         echo ""
         echo "**Mode:** --interactive (Phase 1)"
         echo "**Generated:** $(date +%Y-%m-%d\ %H:%M)"
+        echo "**Recommended Model:** $(get_recommended_model "$workflow")"
         echo ""
         echo "---"
         echo ""
