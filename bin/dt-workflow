@@ -648,6 +648,19 @@ generate_decision_structure() {
         rm -f "$temp_output"
         echo '```'
         echo ""
+        echo "---"
+        echo ""
+        echo "## 📋 Handoff: decisions-summary.md"
+        echo ""
+        echo "<!-- AI: After making decisions, update decisions-summary.md with: -->"
+        echo ""
+        echo "### Required Sections"
+        echo ""
+        echo "- \`## Decisions\` table with ADR numbers and status"
+        echo "- \`## Impact Summary\` - Key consequences"
+        echo ""
+        echo "**Reference:** See [Pattern 4: Handoff File Contract](../../docs/patterns/workflow-patterns.md#pattern-4-handoff-file-contract) for details."
+        echo ""
     else
         dt_print_status "ERROR" "ADR template not found: $adr_template"
         dt_print_debug "Template file missing: $adr_template"
@@ -921,8 +934,10 @@ output_for_ai() {
             decision)
                 echo "After making decisions:"
                 echo ""
-                echo "1. Review ADRs in \`admin/decisions/$topic/\`"
-                echo "2. Run: \`/transition-plan --from-adr\` to create feature plan"
+                echo "1. Complete ADR with all sections (Context, Decision, Consequences, Alternatives Considered)"
+                echo "2. Update \`decisions-summary.md\` with new ADR (handoff file per Pattern 4)"
+                echo "3. Run: \`/transition-plan --from-adr $topic\` to create implementation plan"
+                echo "4. Or run: \`dt-workflow transition-plan --from-adr $topic --interactive\`"
                 ;;
         esac
         echo ""

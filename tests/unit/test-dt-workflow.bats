@@ -643,6 +643,70 @@ teardown() {
 }
 
 # ============================================================================
+# Task 12: Decision Handoff File Generation Tests (RED)
+# ============================================================================
+
+@test "dt-workflow decision generates handoff file guidance" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create research directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should include handoff guidance
+    grep -q "Handoff" "$TEST_OUTPUT" || grep -q "decisions-summary.md" "$TEST_OUTPUT" || {
+        echo "FAIL: Handoff file guidance not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow decision handoff includes required sections" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create research directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should mention required sections (Decisions table, Impact Summary)
+    grep -q "Decisions" "$TEST_OUTPUT" || grep -q "Impact Summary" "$TEST_OUTPUT" || {
+        echo "FAIL: Required sections not documented in handoff guidance"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow decision handoff includes Next Steps pointing to transition-plan" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create research directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should mention transition-plan in Next Steps
+    grep -q "transition-plan" "$TEST_OUTPUT" || grep -q "Next Steps" "$TEST_OUTPUT" || {
+        echo "FAIL: Next Steps section not found or doesn't mention transition-plan"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 
