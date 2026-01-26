@@ -354,19 +354,25 @@ dt-workflow [arguments]
 
 ### Test Data Setup
 
-Many Phase 2 scenarios require test data structures. Use the actual workflows to generate them:
+Many Phase 2 scenarios require test data structures. Use the actual workflows to generate them.
+
+**Note:** `--interactive` mode outputs to stdout only - it does NOT create directories. You must create directories first, then redirect output. A `--generate` mode that creates directories automatically is planned for a future phase.
 
 **For Exploration Context Testing (use the real explore workflow):**
 ```bash
-# Create exploration using dt-workflow explore (the workflow being tested!)
+# Step 1: Create directory (required - workflow doesn't create it)
 mkdir -p admin/explorations/test-topic
+
+# Step 2: Generate exploration and redirect to file
 ./bin/dt-workflow explore test-topic --interactive > admin/explorations/test-topic/exploration.md
 ```
 
 **For Research Context Testing (simulate completed research):**
 ```bash
-# Create research directory and a simple research-summary.md
+# Step 1: Create directory (required)
 mkdir -p admin/research/test-topic
+
+# Step 2: Create a simple research-summary.md (handoff file)
 echo "# Research Summary: test-topic" > admin/research/test-topic/research-summary.md
 echo "" >> admin/research/test-topic/research-summary.md
 echo "## Key Findings" >> admin/research/test-topic/research-summary.md
