@@ -156,6 +156,165 @@ teardown() {
     }
 }
 
+# ============================================================================
+# Task 2: Research Template Enhancement Tests (RED)
+# ============================================================================
+
+@test "research template includes research goals checklist structure" {
+    skip_if_no_templates
+    
+    # Set template variables
+    dt_set_research_vars "test-research" "Test research question"
+    
+    # Render template
+    local template="$TEMPLATE_DIR/research/research-topic.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Research template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "research_topic"
+    
+    # Research Goals checklist structure should exist
+    grep -q "## 🔍 Research Goals" "$TEST_OUTPUT" || {
+        echo "FAIL: Research Goals section not found"
+        return 1
+    }
+    
+    # Should have checklist items (check for bracket pattern)
+    grep -q "\[ \]" "$TEST_OUTPUT" || grep -q "\[x\]" "$TEST_OUTPUT" || {
+        echo "FAIL: Research Goals checklist structure not found"
+        echo "Expected pattern: - [ ] Goal: <!-- AI: ... -->"
+        return 1
+    }
+    
+    # Should have AI placeholder in goals section
+    grep -q "<!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: AI placeholder not found in Research Goals"
+        return 1
+    }
+}
+
+@test "research template includes findings structure" {
+    skip_if_no_templates
+    
+    dt_set_research_vars "test-research" "Test research question"
+    
+    local template="$TEMPLATE_DIR/research/research-topic.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Research template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "research_topic"
+    
+    # Findings section should exist
+    grep -q "## 📊 Findings" "$TEST_OUTPUT" || {
+        echo "FAIL: Findings section not found"
+        return 1
+    }
+    
+    # Should have EXPAND placeholder for detailed findings
+    grep -q "<!-- EXPAND:" "$TEST_OUTPUT" || {
+        echo "FAIL: EXPAND placeholder not found in Findings section"
+        return 1
+    }
+}
+
+@test "research template includes key insights numbered list structure" {
+    skip_if_no_templates
+    
+    dt_set_research_vars "test-research" "Test research question"
+    
+    local template="$TEMPLATE_DIR/research/research-topic.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Research template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "research_topic"
+    
+    # Key Insights section should exist
+    grep -q "Key Insights:" "$TEST_OUTPUT" || {
+        echo "FAIL: Key Insights section not found"
+        return 1
+    }
+    
+    # Should have numbered list structure with AI placeholders
+    # Check for pattern like "1. <!-- AI:" or "  1. <!-- AI:"
+    grep -q "1\. <!-- AI:" "$TEST_OUTPUT" || grep -q "2\. <!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: Numbered insights list with AI placeholders not found"
+        echo "Expected pattern: 1. <!-- AI: ... -->"
+        return 1
+    }
+}
+
+@test "research template includes two-phase placeholders" {
+    skip_if_no_templates
+    
+    dt_set_research_vars "test-research" "Test research question"
+    
+    local template="$TEMPLATE_DIR/research/research-topic.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Research template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "research_topic"
+    
+    # Should have both AI and EXPAND placeholders (two-phase pattern)
+    grep -q "<!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: AI placeholder not found (required for two-phase pattern)"
+        return 1
+    }
+    
+    grep -q "<!-- EXPAND:" "$TEST_OUTPUT" || {
+        echo "FAIL: EXPAND placeholder not found (required for two-phase pattern)"
+        return 1
+    }
+}
+
+@test "research template includes REQUIRED markers" {
+    skip_if_no_templates
+    
+    dt_set_research_vars "test-research" "Test research question"
+    
+    local template="$TEMPLATE_DIR/research/research-topic.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Research template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "research_topic"
+    
+    # REQUIRED markers should exist per FR-26
+    grep -q "<!-- REQUIRED:" "$TEST_OUTPUT" || {
+        echo "FAIL: REQUIRED markers not found (FR-26)"
+        echo "Template should include markers like: <!-- REQUIRED: At least 3 goals -->"
+        return 1
+    }
+}
+
+@test "research template includes methodology section structure" {
+    skip_if_no_templates
+    
+    dt_set_research_vars "test-research" "Test research question"
+    
+    local template="$TEMPLATE_DIR/research/research-topic.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Research template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "research_topic"
+    
+    # Methodology section should exist
+    grep -q "## 📚 Research Methodology" "$TEST_OUTPUT" || {
+        echo "FAIL: Research Methodology section not found"
+        return 1
+    }
+    
+    # Should have EXPAND placeholder for methodology details
+    grep -q "<!-- EXPAND:" "$TEST_OUTPUT" || {
+        echo "FAIL: EXPAND placeholder not found in Methodology section"
+        return 1
+    }
+}
+
 # Helper function to skip tests if templates not available
 skip_if_no_templates() {
     if [ -z "$TEMPLATE_DIR" ]; then

@@ -1,6 +1,6 @@
 # Phase 2 Template Enhancement Requirements
 
-**Purpose:** Document template changes needed in dev-infra for Phase 2, Task 1  
+**Purpose:** Document template changes needed in dev-infra for Phase 2, Tasks 1-3  
 **Status:** 🟡 Pending (dev-infra changes required)  
 **Created:** 2026-01-26  
 **Related:** ADR-006, FR-24, FR-26, NFR-7
@@ -95,6 +95,140 @@ After enhancement, template should produce output like:
 1. <!-- AI: First recommendation based on themes -->
 2. <!-- AI: Second recommendation -->
 ```
+
+---
+
+## Task 2: Research Template Enhancement
+
+**File:** `research/research-topic.md.tmpl`
+
+### Current State
+
+The current template has placeholders but lacks structural examples:
+```markdown
+## 🔍 Research Goals
+
+<!-- AI: List goals -->
+
+## 📊 Findings
+
+<!-- EXPAND: Document findings with sources and relevance -->
+
+**Key Insights:**
+<!-- AI: List key insights -->
+```
+
+### Required Changes
+
+Add structural examples per ADR-006 and FR-24:
+
+#### 1. Enhance Research Goals Section
+
+**Location:** Replace existing "## 🔍 Research Goals" section
+
+**Replace with:**
+```markdown
+## 🔍 Research Goals
+<!-- REQUIRED: At least 3 goals -->
+
+- [x] Goal 1: <!-- AI: First goal statement -->
+- [ ] Goal 2: <!-- AI: Second goal statement -->
+- [ ] Goal 3: <!-- AI: Third goal statement -->
+```
+
+**Rationale:** Provides checklist structure example for AI to follow (FR-24). Enables tracking goal completion.
+
+#### 2. Enhance Findings Section
+
+**Location:** Enhance existing "## 📊 Findings" section
+
+**Add structure:**
+```markdown
+## 📊 Findings
+
+### Finding 1: [Title]
+<!-- EXPAND: Add detailed explanation with sources -->
+
+**Source:** [Link or reference]
+**Relevance:** <!-- AI: How this relates to the research question -->
+
+### Finding 2: [Title]
+<!-- EXPAND: Add detailed explanation with sources -->
+
+**Source:** [Link or reference]
+**Relevance:** <!-- AI: How this relates to the research question -->
+```
+
+**Rationale:** Provides structured format for findings with source tracking. Maintains two-phase pattern (EXPAND for details, AI for relevance).
+
+#### 3. Enhance Key Insights Section
+
+**Location:** Enhance existing "**Key Insights:**" section
+
+**Replace with:**
+```markdown
+**Key Insights:**
+<!-- REQUIRED: At least 3 insights -->
+
+1. <!-- AI: First key insight -->
+2. <!-- AI: Second key insight -->
+3. <!-- AI: Third key insight -->
+```
+
+**Rationale:** Provides numbered list structure example. Matches spike heredoc output patterns.
+
+#### 4. Add REQUIRED Markers
+
+**Location:** Before sections that need minimum content
+
+**Add markers:**
+- `<!-- REQUIRED: At least 3 goals -->` before Research Goals checklist
+- `<!-- REQUIRED: At least 3 insights -->` before Key Insights list
+
+**Rationale:** Enables validation and guides AI on expectations (FR-26).
+
+### Expected Output Structure
+
+After enhancement, template should produce output like:
+
+```markdown
+## 🔍 Research Goals
+<!-- REQUIRED: At least 3 goals -->
+
+- [x] Goal 1: <!-- AI: First goal statement -->
+- [ ] Goal 2: <!-- AI: Second goal statement -->
+- [ ] Goal 3: <!-- AI: Third goal statement -->
+
+## 📊 Findings
+
+### Finding 1: [Title]
+<!-- EXPAND: Add detailed explanation with sources -->
+
+**Source:** [Link or reference]
+**Relevance:** <!-- AI: How this relates to the research question -->
+
+**Key Insights:**
+<!-- REQUIRED: At least 3 insights -->
+
+1. <!-- AI: First key insight -->
+2. <!-- AI: Second key insight -->
+3. <!-- AI: Third key insight -->
+```
+
+### Validation
+
+**Test File:** `dev-toolkit/tests/unit/test-template-enhancement.bats`
+
+Tests validate:
+- ✅ Research Goals checklist structure exists (`- [ ]` or `- [x]`)
+- ✅ Research Goals section exists (`## 🔍 Research Goals`)
+- ✅ Findings section exists (`## 📊 Findings`)
+- ✅ Key Insights numbered list exists (`1. <!-- AI:`)
+- ✅ Two-phase placeholders exist (`<!-- AI:` and `<!-- EXPAND:`)
+- ✅ REQUIRED markers exist (`<!-- REQUIRED:`)
+- ✅ Methodology section exists (`## 📚 Research Methodology`)
+
+**Status:** Tests currently FAIL until templates are enhanced.
 
 ---
 

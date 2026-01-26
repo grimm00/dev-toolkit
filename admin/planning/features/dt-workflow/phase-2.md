@@ -105,10 +105,10 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
 **TDD Flow:**
 
 1. **RED - Write test for research template structure:**
-   - [ ] Test validates research template has structural examples
-   - [ ] Test expects findings table, recommendations list
-   - [ ] Test validates two-phase placeholders (`<!-- AI: -->`, `<!-- EXPAND: -->`)
-   - [ ] Verify test fails
+   - [x] Test validates research template has structural examples
+   - [x] Test expects findings table, recommendations list
+   - [x] Test validates two-phase placeholders (`<!-- AI: -->`, `<!-- EXPAND: -->`)
+   - [x] Verify test fails
 
 2. **GREEN - Enhance research templates:**
    - [ ] Update `research/research.md.tmpl` with structural examples
@@ -142,8 +142,8 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
    - [ ] Verify template variable usage documented
 
 **Checklist:**
-- [ ] Test written and failing
-- [ ] Research templates enhanced
+- [x] Test written and failing (RED phase complete)
+- [ ] Research templates enhanced (GREEN phase - blocked on dev-infra)
 - [ ] Two-phase placeholders maintained
 - [ ] Test passing
 
