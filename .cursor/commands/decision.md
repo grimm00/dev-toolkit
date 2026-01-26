@@ -32,6 +32,57 @@ This command supports multiple project organization patterns:
 
 ---
 
+## dt-workflow Integration
+
+**Per ADR-004:** This command acts as an orchestrator, calling dt-workflow for core logic.
+
+### Command Invocation
+
+Before making decisions, run dt-workflow to gather context:
+
+```bash
+# Auto-detect research (looks for admin/research/<topic>/)
+dt-workflow decision <topic> --from-research --interactive
+
+# Or with explicit path
+dt-workflow decision <topic> --from-research /path/to/research --interactive
+
+# Example with output redirection
+mkdir -p admin/decisions/my-topic
+dt-workflow decision my-topic --from-research --interactive > admin/decisions/my-topic/adr-001.md
+```
+
+### What dt-workflow Provides
+
+1. **Chained Context:**
+   - Research summary (from research-summary.md)
+   - Research findings and recommendations
+   - Requirements extracted from research
+
+2. **Injected Context:**
+   - Cursor rules (.cursor/rules/*.mdc)
+   - Project identity (roadmap, admin structure)
+
+3. **Structure Template:**
+   - ADR template with structural examples
+   - Required markers for completeness
+   - Decision documentation guidance
+
+### Integration Workflow
+
+```
+User runs: /decision my-topic --from-research
+
+Cursor Command (orchestrator):
+  1. dt-workflow decision my-topic --from-research --interactive
+     → Outputs: Context + ADR template
+  2. Create decisions directory structure
+  3. Apply template to create ADR documents
+  4. AI expands with actual decision analysis
+```
+
+---
+
 ## Workflow Overview
 
 **When to use:**

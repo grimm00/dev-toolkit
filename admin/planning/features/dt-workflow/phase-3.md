@@ -295,20 +295,20 @@ dt-workflow research <topic> --from-explore /path/to/exploration --interactive
 **Steps:**
 
 1. **Read current decision.md structure:**
-   - [ ] Review `.cursor/commands/decision.md`
-   - [ ] Identify where dt-workflow integration fits
-   - [ ] Note existing ADR creation workflow
+   - [x] Review `.cursor/commands/decision.md`
+   - [x] Identify where dt-workflow integration fits
+   - [x] Note existing ADR creation workflow
 
 2. **Add dt-workflow Integration section:**
-   - [ ] Add section "## dt-workflow Integration" after Configuration
-   - [ ] Document orchestrator pattern
-   - [ ] Show command: `dt-workflow decision <topic> --from-research --interactive`
-   - [ ] Document workflow chaining via `--from-research` flag
+   - [x] Add section "## dt-workflow Integration" after Configuration
+   - [x] Document orchestrator pattern
+   - [x] Show command: `dt-workflow decision <topic> --from-research --interactive`
+   - [x] Document workflow chaining via `--from-research` flag
 
 3. **Document context chaining:**
-   - [ ] Explain `--from-research` auto-detection
-   - [ ] Show explicit path option
-   - [ ] Note: research-summary.md provides handoff context
+   - [x] Explain `--from-research` auto-detection
+   - [x] Show explicit path option
+   - [x] Note: research-summary.md provides handoff context
 
 **Integration Section Template:**
 
@@ -629,7 +629,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 4: research.md integration section | ✅ Complete | dt-workflow section with chaining docs |
 | Task 5: research.md Setup Mode | ✅ Complete | Step 0 with checklist and error handling |
 | Task 6: research.md Conduct Mode | ✅ Complete | Context usage and handoff documented |
-| Task 7: decision.md integration section | 🔴 Not Started | |
+| Task 7: decision.md integration section | ✅ Complete | dt-workflow section with chaining docs |
 | Task 8: decision.md process steps | 🔴 Not Started | |
 | Task 9: Integration test scenarios | 🔴 Not Started | |
 | Task 10: Error handling documentation | 🔴 Not Started | |
