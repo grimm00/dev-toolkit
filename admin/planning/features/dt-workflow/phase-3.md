@@ -555,24 +555,24 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 **Steps:**
 
 1. **Update explore.md:**
-   - [ ] Link to ADR-004
-   - [ ] Link to dt-workflow help
-   - [ ] Cross-reference research.md
+   - [x] Link to ADR-004
+   - [x] Link to dt-workflow help
+   - [x] Cross-reference research.md
 
 2. **Update research.md:**
-   - [ ] Link to ADR-004
-   - [ ] Link to dt-workflow help
-   - [ ] Cross-reference explore.md and decision.md
+   - [x] Link to ADR-004
+   - [x] Link to dt-workflow help
+   - [x] Cross-reference explore.md and decision.md
 
 3. **Update decision.md:**
-   - [ ] Link to ADR-004
-   - [ ] Link to dt-workflow help
-   - [ ] Cross-reference research.md
+   - [x] Link to ADR-004
+   - [x] Link to dt-workflow help
+   - [x] Cross-reference research.md
 
 **Checklist:**
-- [ ] ADR-004 linked from all commands
-- [ ] dt-workflow documented in all commands
-- [ ] Cross-references complete
+- [x] ADR-004 linked from all commands
+- [x] dt-workflow documented in all commands
+- [x] Cross-references complete
 
 ---
 
@@ -633,7 +633,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 8: decision.md process steps | ✅ Complete | Step 0 + ADR context usage docs |
 | Task 9: Integration test scenarios | ✅ Complete | 5 scenarios (3.1-3.5) added |
 | Task 10: Error handling documentation | ✅ Complete | All commands have Error Handling docs |
-| Task 11: Cross-references | 🔴 Not Started | |
+| Task 11: Cross-references | ✅ Complete | All commands have Related sections |
 | Task 12: Related documents | 🔴 Not Started | |
 
 ---

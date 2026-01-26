@@ -68,6 +68,11 @@ dt-workflow decision my-topic --from-research --interactive > admin/decisions/my
    - Required markers for completeness
    - Decision documentation guidance
 
+### Related
+
+- [ADR-004: Cursor Command Role](../admin/decisions/dt-workflow/adr-004-cursor-command-role.md)
+- [dt-workflow help](../../bin/dt-workflow) - Run `dt-workflow --help` for full options
+
 ### Integration Workflow
 
 ```
@@ -722,6 +727,7 @@ This directory contains Architecture Decision Records (ADRs) documenting key dec
 
 **Related Commands:**
 
+- `/explore` - Start exploration and identify research topics
 - `/research` - Conduct research before making decisions
 - `/transition-plan` - Transition to feature planning after decisions
 

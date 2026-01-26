@@ -70,6 +70,11 @@ dt-workflow research my-topic --from-explore --interactive > admin/research/my-t
    - Required markers for completeness
    - Handoff guidance for decision workflow
 
+### Related
+
+- [ADR-004: Cursor Command Role](../admin/decisions/dt-workflow/adr-004-cursor-command-role.md)
+- [dt-workflow help](../../bin/dt-workflow) - Run `dt-workflow --help` for full options
+
 ### Integration Workflow
 
 ```
