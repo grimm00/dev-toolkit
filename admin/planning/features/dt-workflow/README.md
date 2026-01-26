@@ -26,6 +26,7 @@
 
 ### Related Documents
 
+- **[Evolution Path](../../../../docs/dt-workflow-evolution.md)** - Phase 2/3 vision (config-assisted, automated)
 - **[Decisions](../../decisions/dt-workflow/)** - Architecture Decision Records
 - **[Research](../../research/dt-workflow/)** - Research findings
 - **[Exploration](../../explorations/dt-workflow/)** - Initial exploration
@@ -43,7 +44,7 @@
 2. **Explicit Context** - Visible context injection (rules, project identity)
 3. **L1/L2/L3 Validation** - Tiered input validation with actionable errors
 4. **Workflow Chaining** - Standardized handoff files between workflows
-5. **Phase-Based Evolution** - Phase 1 (interactive) → Phase 3 (automated)
+5. **Phase-Based Evolution** - Phase 1 (interactive) → Phase 2 (config-assisted) → Phase 3 (automated) - See [Evolution Path](../../../../docs/dt-workflow-evolution.md)
 
 ### Architecture Decisions
 
