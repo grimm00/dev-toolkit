@@ -19,8 +19,8 @@
 | Pattern Library | ✅ Complete | 5 patterns documented |
 | Transition Plan | ✅ Complete | 4 phases scaffolded |
 | Phase 1 | ✅ Complete | PR #32 merged (2026-01-26) |
-| Phase 2 | ✅ Complete | Ready for PR |
-| Phase 3 | 🔴 Scaffolding | Blocked by Phase 2 |
+| Phase 2 | ✅ Complete | PR #33 merged (2026-01-26) |
+| Phase 3 | 🔴 Scaffolding | Ready to start |
 | Phase 4 | 🔴 Scaffolding | Blocked by Phase 3 |
 
 ### Phase Progress
@@ -28,7 +28,7 @@
 | Phase | Status | Progress | Notes |
 |-------|--------|----------|-------|
 | Phase 1: Foundation | ✅ Complete | 100% | All 9 tasks complete (2026-01-26) |
-| Phase 2: Workflow Expansion | ✅ Complete | 100% | All 15 tasks complete (2026-01-26) |
+| Phase 2: Workflow Expansion | ✅ Complete | 100% | All 15 tasks complete, PR #33 merged (2026-01-26) |
 | Phase 3: Cursor Integration | 🔴 Scaffolding | 0% | Ready to start |
 | Phase 4: Enhancement | 🔴 Scaffolding | 0% | Blocked by Phase 3 |
 
@@ -38,7 +38,7 @@
 
 ### 2026-01-26
 
-- ✅ **Phase 2: Workflow Expansion + Template Enhancement Complete** (2026-01-26)
+- ✅ **Phase 2: Workflow Expansion + Template Enhancement Complete** (PR #33, 2026-01-26)
   - Research and decision workflows implemented via render.sh
   - Enhanced dev-infra templates (exploration, research, decision) - PR #64
   - Template variable contract documented (TEMPLATE-VARIABLES.md)
