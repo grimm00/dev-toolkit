@@ -1,7 +1,7 @@
 # dt-workflow - Status and Next Steps
 
 **Feature:** dt-workflow - Unified Workflow Orchestration  
-**Status:** 🟠 In Progress (Phase 1 Complete, Ready for PR)  
+**Status:** 🟠 In Progress (Phase 1 Merged, Ready for Phase 2)  
 **Last Updated:** 2026-01-26
 
 ---
@@ -36,6 +36,16 @@
 
 ## 🎯 Recent Accomplishments
 
+### 2026-01-26
+
+- ✅ **Phase 1: Foundation Complete** (PR #32, 2026-01-26)
+  - Production-ready `dt-workflow` v0.2.0 with explore workflow
+  - Full test coverage: 25 tests passing (13 unit + 12 integration)
+  - Context injection with START/MIDDLE/END ordering (ADR-002)
+  - Portability validated across repository contexts
+  - Manual testing guide created (12 scenarios)
+  - All tasks completed following TDD methodology
+
 ### 2026-01-22
 
 - ✅ Completed exploration and spike validation
@@ -58,12 +68,13 @@
 
 1. [x] Expanded Phase 1 with 9 detailed TDD tasks
 2. [x] Completed Phase 1 implementation (all 9 tasks)
-3. [ ] Create PR for Phase 1 (use `/pr --phase 1`)
+3. [x] Created and merged PR #32 for Phase 1
 
 ### Next Session
 
-1. [ ] Review and merge Phase 1 PR
-2. [ ] Begin Phase 2: Workflow Expansion
+1. [ ] Begin Phase 2: Workflow Expansion (research and decision workflows)
+2. [ ] Implement `render.sh` template system
+3. [ ] Enhance templates with structural examples per ADR-006
 
 ---
 
@@ -71,7 +82,7 @@
 
 ### Current Blockers
 
-None - ready to proceed with Phase 1
+None - ready to proceed with Phase 2
 
 ### Risks
 
@@ -99,11 +110,12 @@ None - ready to proceed with Phase 1
 
 - [Feature Plan](feature-plan.md)
 - [Transition Plan](transition-plan.md)
-- [Phase 1](phase-1.md) - **Next to expand**
+- [Phase 1](phase-1.md) - ✅ Complete
+- [Phase 2](phase-2.md) - **Next to implement**
 - [ADRs](../../decisions/dt-workflow/)
 - [Research](../../research/dt-workflow/)
 
 ---
 
 **Last Updated:** 2026-01-26  
-**Next Action:** Create PR for Phase 1 (`/pr --phase 1`)
+**Next Action:** Begin Phase 2 implementation
