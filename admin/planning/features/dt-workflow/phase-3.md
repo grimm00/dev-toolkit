@@ -394,15 +394,15 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 **Steps:**
 
 1. **Add scenarios to manual-testing.md:**
-   - [ ] Scenario: Full chain with dt-workflow (`explore` → `research` → `decision`)
-   - [ ] Scenario: Each command with dt-workflow integration
-   - [ ] Scenario: Error handling (missing prerequisites)
+   - [x] Scenario: Full chain with dt-workflow (`explore` → `research` → `decision`)
+   - [x] Scenario: Each command with dt-workflow integration
+   - [x] Scenario: Error handling (missing prerequisites)
 
 2. **Document test steps:**
-   - [ ] Test `/explore` invokes dt-workflow
-   - [ ] Test `/research` chains from exploration
-   - [ ] Test `/decision` chains from research
-   - [ ] Verify context injection in all workflows
+   - [x] Test `/explore` invokes dt-workflow
+   - [x] Test `/research` chains from exploration
+   - [x] Test `/decision` chains from research
+   - [x] Verify context injection in all workflows
 
 **Test Scenarios:**
 
@@ -631,7 +631,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 6: research.md Conduct Mode | ✅ Complete | Context usage and handoff documented |
 | Task 7: decision.md integration section | ✅ Complete | dt-workflow section with chaining docs |
 | Task 8: decision.md process steps | ✅ Complete | Step 0 + ADR context usage docs |
-| Task 9: Integration test scenarios | 🔴 Not Started | |
+| Task 9: Integration test scenarios | ✅ Complete | 5 scenarios (3.1-3.5) added |
 | Task 10: Error handling documentation | 🔴 Not Started | |
 | Task 11: Cross-references | 🔴 Not Started | |
 | Task 12: Related documents | 🔴 Not Started | |

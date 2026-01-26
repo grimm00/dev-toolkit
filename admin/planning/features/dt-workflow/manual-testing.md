@@ -1,7 +1,7 @@
 # Manual Testing Guide - dt-workflow
 
 **Feature:** dt-workflow - Unified Workflow Orchestration  
-**Phases Covered:** 1, 2  
+**Phases Covered:** 1, 2, 3  
 **Last Updated:** 2026-01-26  
 **Status:** ✅ Active
 
@@ -785,6 +785,201 @@ echo "- Custom finding" >> custom/research/test-topic/research-summary.md
 
 ---
 
+## 🧪 Phase 3: Cursor Integration
+
+**What Phase 3 Adds:**
+- Documentation of how Cursor commands (`/explore`, `/research`, `/decision`) integrate with `dt-workflow`
+- End-to-end testing of the orchestrator pattern (ADR-004)
+- Verification that context flows correctly between all stages
+
+**Key Testing Focus:**
+- Verify dt-workflow output is suitable as starting context for Cursor commands
+- Validate complete workflow chain with dt-workflow at each stage
+- Test error handling when prerequisites are missing
+
+---
+
+### Scenario 3.1: /explore with dt-workflow
+
+**Objective:** Verify `dt-workflow explore` output is suitable for `/explore` command
+
+**Steps:**
+
+1. From dev-toolkit directory, run dt-workflow explore:
+   ```bash
+   ./bin/dt-workflow explore test-cursor-integration --interactive | head -50
+   ```
+
+2. Verify output contains:
+   - [ ] Header: `# dt-workflow Output: explore test-cursor-integration`
+   - [ ] Context section with Cursor rules (if present)
+   - [ ] Project identity information
+   - [ ] Exploration structure template
+   - [ ] Handoff guidance (research-topics.md)
+
+3. Verify output is valid starting context:
+   ```bash
+   ./bin/dt-workflow explore test-cursor-integration --interactive | grep -c "REQUIRED:"
+   ```
+   Expected: At least 1 required marker found
+
+**Expected Result:** ✅ Output matches what `/explore` should use as starting context
+
+---
+
+### Scenario 3.2: /research with dt-workflow
+
+**Objective:** Verify `dt-workflow research` chains correctly from exploration
+
+**Prerequisites:**
+```bash
+# Create exploration for chaining
+mkdir -p admin/explorations/test-cursor-integration
+./bin/dt-workflow explore test-cursor-integration --interactive > admin/explorations/test-cursor-integration/exploration.md
+```
+
+**Steps:**
+
+1. Run dt-workflow research with --from-explore:
+   ```bash
+   ./bin/dt-workflow research test-cursor-integration --from-explore --interactive | head -50
+   ```
+
+2. Verify output contains:
+   - [ ] Research topics from exploration context
+   - [ ] Research structure template
+   - [ ] Handoff guidance (research-summary.md)
+   - [ ] Reference to exploration source
+
+3. Cleanup:
+   ```bash
+   rm -rf admin/explorations/test-cursor-integration
+   ```
+
+**Expected Result:** ✅ Output shows chained context from exploration
+
+---
+
+### Scenario 3.3: /decision with dt-workflow
+
+**Objective:** Verify `dt-workflow decision` chains correctly from research
+
+**Prerequisites:**
+```bash
+# Create research directory with summary
+mkdir -p admin/research/test-cursor-integration
+echo "# Research Summary: test-cursor-integration" > admin/research/test-cursor-integration/research-summary.md
+echo "## Key Findings" >> admin/research/test-cursor-integration/research-summary.md
+echo "- Finding 1: Test cursor integration" >> admin/research/test-cursor-integration/research-summary.md
+```
+
+**Steps:**
+
+1. Run dt-workflow decision with --from-research:
+   ```bash
+   ./bin/dt-workflow decision test-cursor-integration --from-research --interactive | head -50
+   ```
+
+2. Verify output contains:
+   - [ ] Research summary context included
+   - [ ] ADR structure template
+   - [ ] Handoff guidance (decisions-summary.md)
+   - [ ] Reference to research source
+
+3. Cleanup:
+   ```bash
+   rm -rf admin/research/test-cursor-integration
+   ```
+
+**Expected Result:** ✅ Output shows chained context from research
+
+---
+
+### Scenario 3.4: Full Workflow Chain with dt-workflow
+
+**Objective:** Verify complete explore→research→decision chain using dt-workflow
+
+**Prerequisites:**
+- Clean workspace (no existing integration-test structures)
+- Running from dev-toolkit directory
+
+**Steps:**
+
+1. **Step 1: Exploration Stage**
+   ```bash
+   mkdir -p admin/explorations/integration-test
+   ./bin/dt-workflow explore integration-test --interactive > admin/explorations/integration-test/exploration.md
+   echo "Integration test exploration created"
+   ```
+   
+   **Verify:** exploration.md file created
+
+2. **Step 2: Research Stage (chained)**
+   ```bash
+   ./bin/dt-workflow research integration-test --from-explore --interactive > /tmp/research-context.md
+   grep -c "exploration" /tmp/research-context.md
+   ```
+   
+   **Verify:** Exploration context appears in research output (count > 0)
+
+3. **Step 3: Create Research Summary (simulating handoff)**
+   ```bash
+   mkdir -p admin/research/integration-test
+   echo "# Research Summary: integration-test" > admin/research/integration-test/research-summary.md
+   echo "## Key Findings" >> admin/research/integration-test/research-summary.md
+   echo "- Full chain integration verified" >> admin/research/integration-test/research-summary.md
+   ```
+   
+   **Verify:** research-summary.md created
+
+4. **Step 4: Decision Stage (chained)**
+   ```bash
+   ./bin/dt-workflow decision integration-test --from-research --interactive > /tmp/decision-context.md
+   grep -c "Research Summary" /tmp/decision-context.md
+   ```
+   
+   **Verify:** Research context appears in decision output (count > 0)
+
+5. **Cleanup:**
+   ```bash
+   rm -rf admin/explorations/integration-test admin/research/integration-test
+   rm -f /tmp/research-context.md /tmp/decision-context.md
+   ```
+
+**Expected Result:** ✅ Context flows through all stages - each stage receives handoff from previous
+
+---
+
+### Scenario 3.5: Error Handling - Missing Prerequisites
+
+**Objective:** Verify helpful errors when workflow prerequisites are missing
+
+**Steps:**
+
+1. **Test missing exploration:**
+   ```bash
+   ./bin/dt-workflow research nonexistent-topic --from-explore --interactive 2>&1 | head -10
+   ```
+   
+   **Verify:**
+   - [ ] Clear error about exploration not found
+   - [ ] Suggests creating exploration first
+   - [ ] Shows expected path
+
+2. **Test missing research:**
+   ```bash
+   ./bin/dt-workflow decision nonexistent-topic --from-research --interactive 2>&1 | head -10
+   ```
+   
+   **Verify:**
+   - [ ] Clear error about research not found
+   - [ ] Suggests creating research first
+   - [ ] Shows expected path
+
+**Expected Result:** ✅ Error messages are clear and actionable with suggestions
+
+---
+
 ## 🧹 Cleanup
 
 After completing manual testing:
@@ -834,6 +1029,15 @@ rm -rf /tmp/test-minimal-repo
 
 **All Phase 2 scenarios passing:** [ ] Yes / [ ] No
 
+### Phase 3: Cursor Integration
+- [ ] Scenario 3.1: /explore with dt-workflow context
+- [ ] Scenario 3.2: /research chains from exploration
+- [ ] Scenario 3.3: /decision chains from research
+- [ ] Scenario 3.4: Full workflow chain integration
+- [ ] Scenario 3.5: Error handling - missing prerequisites
+
+**All Phase 3 scenarios passing:** [ ] Yes / [ ] No
+
 ---
 
 ## 📝 Notes for Testers
@@ -854,6 +1058,7 @@ rm -rf /tmp/test-minimal-repo
 - [Feature Plan](feature-plan.md)
 - [Phase 1 Document](phase-1.md)
 - [Phase 2 Document](phase-2.md)
+- [Phase 3 Document](phase-3.md)
 - [Status and Next Steps](status-and-next-steps.md)
 - [Workflow Patterns](../../docs/patterns/workflow-patterns.md) - Pattern 4: Handoff File Contract
 - [Template Variables](../../lib/doc-gen/TEMPLATE-VARIABLES.md)
