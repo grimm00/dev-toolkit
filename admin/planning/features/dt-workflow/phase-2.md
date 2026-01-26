@@ -703,11 +703,11 @@ These tasks integrate enhanced templates into dt-workflow.
    - [x] List requirements by category (requirements.md included in full if exists)
 
 **Checklist:**
-- [ ] Test written and failing
-- [ ] Context gathering implemented
-- [ ] Research context included when available
-- [ ] Requirements included when available
-- [ ] Test passing
+- [x] Test written and passing (RED phase complete)
+- [x] Context gathering implemented (GREEN phase complete)
+- [x] Research context included when available (research-summary.md handoff file)
+- [x] Requirements included when available (requirements.md)
+- [x] Test passing (all 3 tests passing)
 
 ---
 
