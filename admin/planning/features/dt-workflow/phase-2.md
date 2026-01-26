@@ -85,9 +85,9 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
    ```
 
 3. **REFACTOR - Clean up and document:**
-   - [ ] Ensure consistent formatting across exploration templates
-   - [ ] Add template variable usage comments at top
-   - [ ] Verify alignment with spike heredoc output (NFR-7)
+   - [ ] Ensure consistent formatting across exploration templates (dev-infra task)
+   - [ ] Add template variable usage comments at top (dev-infra task)
+   - [x] Verify alignment with spike heredoc output (NFR-7) - ✅ Verified: Themes Analyzed table and Initial Recommendations list match spike structure
 
 **Checklist:**
 - [x] Test written and failing (RED phase complete)
