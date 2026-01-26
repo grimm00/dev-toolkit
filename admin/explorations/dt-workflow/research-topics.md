@@ -7,17 +7,20 @@
 
 ---
 
-## 🧪 Spike vs Research Summary
+## 🧪 Spike Results Summary (2026-01-23)
 
-**Key insight:** With AI-accelerated development, not all topics need formal research. Some benefit more from a quick spike (2-3 hours of prototyping) to "feel" the answer rather than analyze it.
+**Spike completed:** Built `bin/dt-workflow` to validate architecture + Phase 1 interface.
 
-| Approach | When to Use | Topics |
-|----------|-------------|--------|
-| **Spike first** | High pivot cost, need to feel UX | 1, 2 |
-| **Consider spike** | Format/details benefit from prototyping | 10 |
-| **Research only** | Clear path, need details | 3, 4, 5, 6, 7, 8, 9 |
+| Topic | Spike Result | Research Needed |
+|-------|--------------|-----------------|
+| 1. Unified Architecture | ✅ Validated | Minimal |
+| 2. Phase 1 Interface | ✅ Validated | Minimal |
+| 10. Context Gathering | ⚠️ Partially validated | **Expanded** - scalability questions |
+| 3-9 | Not spiked | Per original plan |
 
-**Recommended:** Spike Topics 1+2 (architecture + Phase 1 interface) before deep research on other topics. See [exploration.md](exploration.md#-spike-vs-research-determination) for full analysis.
+**Key spike learning:** Explicit context injection works and addresses user trust, but raises scalability question: What happens when rules are numerous? Should context be pointers instead of content?
+
+**Updated research focus:** Topic 10 now has expanded scope with new questions from spike.
 
 ---
 
@@ -36,9 +39,12 @@ These topics must be resolved before any implementation work.
 **Context:** This is the fundamental architecture decision that affects everything else. A unified approach (like Aider or Copilot Workspace) provides a single entry point but is opinionated. A composable approach (Unix philosophy) maintains flexibility but requires external orchestration. The right choice depends on user needs, maintenance considerations, and the Phase 1-3 evolution path.
 
 **Priority:** BLOCKING  
-**Approach:** 🧪 **SPIKE FIRST** - Build minimal prototype to feel the architecture
+**Approach:** 🧪 **SPIKE FIRST** - Build minimal prototype to feel the architecture  
+**Status:** ✅ **SPIKE VALIDATED** - Unified architecture feels right
 
-**Rationale:** Every other decision depends on this. Component decisions, command roles, and project organization all follow from the architecture choice. High pivot cost means a spike is more valuable than extended analysis.
+**Spike Result:** Built `dt-workflow explore topic --interactive`. Single unified command with internal components feels natural. Proceed with unified architecture.
+
+**Remaining Research:** Minimal - focus on implementation details rather than architecture choice.
 
 **Options:**
 - **A: Unified** - `dt-workflow explore topic` does gen→fill→validate→commit
@@ -60,9 +66,12 @@ These topics must be resolved before any implementation work.
 **Context:** Cursor CLI cannot programmatically invoke AI agents (as of research date). This means Phase 1 dt-workflow can only generate structure and validate output - the AI fill step requires interactive Cursor usage. The interface must provide value despite this limitation.
 
 **Priority:** BLOCKING  
-**Approach:** 🧪 **SPIKE FIRST** - Prototype to feel the UX before committing
+**Approach:** 🧪 **SPIKE FIRST** - Prototype to feel the UX before committing  
+**Status:** ✅ **SPIKE VALIDATED** - Phase 1 --interactive provides value
 
-**Rationale:** Determines what we can build now. If Phase 1 interface has no value, we should wait for Phase 3 capabilities. User-facing interface decisions benefit from being "felt" rather than analyzed.
+**Spike Result:** `--interactive` mode outputs CONTEXT + TASK + INSTRUCTIONS as markdown. User runs command, gets output, pastes/pipes to AI. Clear UX that communicates Phase 1 limitations.
+
+**Remaining Research:** Minimal - may refine output format based on usage.
 
 **Options:**
 - **A: Interactive mode** - `dt-workflow explore topic --interactive` opens Cursor
@@ -149,9 +158,44 @@ These topics determine what happens to existing tools.
 **Context:** Different workflows need different context. Some context is universal (Cursor rules, project identity) and should ALWAYS be included explicitly. Other context is workflow-specific (related explorations, research findings). The current system relies on implicit rule loading which is invisible and unreliable, leading to user distrust.
 
 **Priority:** HIGH  
-**Approach:** 🧪 **CONSIDER SPIKE** - Format details benefit from prototyping
+**Approach:** 🧪 **CONSIDER SPIKE** - Format details benefit from prototyping  
+**Status:** ⚠️ **SPIKE PARTIALLY VALIDATED** - Core concept works, new questions emerged
 
-**Rationale:** Directly addresses user trust ("are rules being followed?"), enables Phase 1 value, and is foundational to how workflows operate. Context gathering was identified in dev-infra research but not fully designed. The core concept is clear, but format details (inline vs references vs tiered) would benefit from feeling the output.
+**Spike Result:** Explicit context injection works and addresses trust concern. User can see exactly what rules are loaded. However, spike revealed scalability question.
+
+**New Question from Spike:** What happens when rules are numerous?
+
+The spike injected full rule content inline (~500+ lines for 4 rule files). This works for small rule sets but:
+- What about projects with 10+ rule files?
+- What about very large individual rules?
+- Should context be **pointers** (file references) instead of **content**?
+
+**Refined Research Questions:**
+
+1. **Content vs Pointers:** Should context be injected as full content or as file references?
+   - Content: AI has everything, no tool calls needed, but token-heavy
+   - Pointers: Token-efficient, but AI must read files (may not)
+   - Hybrid: Summary + pointers for deep dive?
+
+2. **Token Budget:** What's the practical token limit for context injection?
+   - How much context before diminishing returns?
+   - Should we measure/report token usage?
+
+3. **Context Prioritization:** If we can't inject everything, what's most important?
+   - Universal rules (always)
+   - Workflow-specific context (always)
+   - Project identity (summary vs full?)
+   - Related documents (pointers only?)
+
+4. **Dynamic Context:** Should context vary based on project size?
+   - Small project: inject everything
+   - Large project: inject summaries + pointers
+
+**Suggested Research Approach:**
+- Analyze token counts of current spike output
+- Test with larger rule sets (synthetic or real)
+- Compare AI behavior with content vs pointers
+- Design tiered context strategy
 
 **Key insight (user feedback):** Users don't trust that rules are always followed in new chats. Explicitly injecting universal context (including rules) provides transparency, reliability, and auditability.
 
@@ -316,32 +360,36 @@ These topics can be decided after architecture is clear.
 
 ## 🎯 Research Workflow
 
-### Recommended Order (Updated with Spike)
+### Recommended Order (Post-Spike)
 
-1. **🧪 Spike Topics 1 + 2:** Build minimal prototype (2-3 hours) to validate architecture + Phase 1 interface
-2. **Evaluate spike:** Does unified + interactive feel right? Pivot if needed.
-3. **Research Topics 3 + 4 + 10:** Component decisions + Context gathering (post-spike)
-4. **Research Topics 5 + 6 + 7:** Integration decisions (depends on components)
-5. **Decide Topics 8 + 9:** Organizational (after architecture clear)
+1. ~~**🧪 Spike Topics 1 + 2:**~~ ✅ Complete - Architecture validated
+2. **Research Topic 10:** Context gathering scalability (expanded from spike learnings)
+3. **Quick decisions Topics 3, 4:** Component decisions (clear from exploration)
+4. **Research/decide Topics 5, 6, 7:** Integration decisions
+5. **Decide Topics 8, 9:** Organizational (when ready to merge)
 
 ### Commands
 
 ```bash
-# After spike validates architecture:
-/research dt-workflow --from-explore dt-workflow
+# Research expanded Topic 10 (context scalability):
+/research dt-workflow --topic context-gathering
 
-# After research, make decisions
+# Or make quick decisions on clear topics:
+/decision dt-workflow --from-explore
+
+# After research, formalize all decisions:
 /decision dt-workflow --from-research
 ```
 
-### Decision Gates
+### Decision Gates (Updated)
 
-| Gate | Method | Topics | Unlocks |
+| Gate | Status | Topics | Unlocks |
 |------|--------|--------|---------|
-| Architecture | 🧪 Spike | 1, 2 | Topics 3-7, 10 |
-| Components + Context | Research | 3, 4, 10 | Topics 5-7, implementation start |
-| Integration | Research | 5, 6, 7 | Final design |
-| Organization | Research | 8, 9 | Merge strategy |
+| Architecture | ✅ Spike validated | 1, 2 | Topics 3-10 |
+| Context Strategy | 🔴 Research needed | 10 | MVP polish |
+| Components | 🟡 Quick decision | 3, 4 | Integration topics |
+| Integration | 🟡 Research/decide | 5, 6, 7 | Final design |
+| Organization | 🟡 Decide later | 8, 9 | Merge strategy |
 
 ---
 

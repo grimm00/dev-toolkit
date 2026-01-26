@@ -764,13 +764,49 @@ Consider adding to `/explore` command output or as a section in exploration.md t
 
 ---
 
+## 🧪 Spike Learnings (2026-01-23)
+
+**Spike:** Built `bin/dt-workflow` to validate unified architecture + Phase 1 interface.
+
+### What Was Validated
+
+| Topic | Result | Confidence |
+|-------|--------|------------|
+| Unified Architecture | ✅ Feels right | High |
+| Phase 1 --interactive | ✅ Provides value | High |
+| Explicit Context Injection | ⚠️ Works, but scalability question | Medium |
+
+### What Was Learned
+
+1. **Unified command is natural** - `dt-workflow explore topic --interactive` flows well
+2. **Context + Task + Instructions** format is clear and actionable
+3. **Explicit rule injection addresses trust concern** - User sees what's loaded
+4. **Phase 1 limitations are acceptable** - Clear messaging about manual AI step
+
+### New Questions Revealed
+
+**Context Scalability:** The spike injects full rule content inline (~500+ lines for 4 files). What happens with larger rule sets?
+
+- Should context be pointers (file references) instead of content?
+- What's the token budget before diminishing returns?
+- Should we use a hybrid approach (summaries + pointers)?
+
+This question expands Topic 10 research scope.
+
+### Spike Artifacts
+
+- `bin/dt-workflow` - Spike implementation (599 lines)
+- Can become MVP skeleton if research confirms approach
+
+---
+
 ## 🚀 Next Steps
 
-1. **Spike Topics 1+2** - Build minimal dt-workflow to validate architecture (2-3 hours)
-2. **Review research topics** in `research-topics.md` for post-spike investigation
-3. **Decide based on spike results** - Does unified + Phase 1 interactive feel right?
-4. Use `/research dt-workflow --from-explore dt-workflow` for remaining topics
-5. After research, use `/decision dt-workflow --from-research` to make formal decisions
+1. ~~**Spike Topics 1+2**~~ ✅ Complete - Architecture validated
+2. **Research Topic 10** - Context gathering scalability (new questions from spike)
+3. **Quick decisions on Topics 3-9** - Most have clear answers from exploration analysis
+4. **Polish spike into MVP** - Add remaining workflows, improve context strategy
+5. Use `/decision dt-workflow --from-research` to formalize decisions
 
 ---
 
