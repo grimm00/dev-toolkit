@@ -59,6 +59,16 @@ dt-workflow explore my-feature --interactive > admin/explorations/my-feature/exp
    - Creates `research-topics.md` handoff file guidance
    - Enables workflow chaining to `/research` command
 
+### Error Handling
+
+**Explore is the first workflow** - no upstream prerequisites required.
+
+**Possible Errors:**
+- Not in a git repository: dt-workflow will report git context unavailable
+- No `.cursor/rules/`: Output proceeds but "CRITICAL RULES" section will be empty
+
+**Note:** These are non-fatal - exploration can proceed even without rules or git context.
+
 ### Integration Workflow
 
 ```

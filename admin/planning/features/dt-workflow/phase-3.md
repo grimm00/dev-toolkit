@@ -496,14 +496,14 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 **Steps:**
 
 1. **Document prerequisite errors:**
-   - [ ] `/research` without exploration: Expected error message
-   - [ ] `/decision` without research: Expected error message
-   - [ ] Missing handoff files: Guidance for user
+   - [x] `/research` without exploration: Expected error message
+   - [x] `/decision` without research: Expected error message
+   - [x] Missing handoff files: Guidance for user
 
 2. **Add error scenarios to testing:**
-   - [ ] Test missing exploration for research
-   - [ ] Test missing research for decision
-   - [ ] Verify helpful error messages
+   - [x] Test missing exploration for research
+   - [x] Test missing research for decision
+   - [x] Verify helpful error messages
 
 **Error Handling Scenarios:**
 
@@ -632,7 +632,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 7: decision.md integration section | ✅ Complete | dt-workflow section with chaining docs |
 | Task 8: decision.md process steps | ✅ Complete | Step 0 + ADR context usage docs |
 | Task 9: Integration test scenarios | ✅ Complete | 5 scenarios (3.1-3.5) added |
-| Task 10: Error handling documentation | 🔴 Not Started | |
+| Task 10: Error handling documentation | ✅ Complete | All commands have Error Handling docs |
 | Task 11: Cross-references | 🔴 Not Started | |
 | Task 12: Related documents | 🔴 Not Started | |
 
