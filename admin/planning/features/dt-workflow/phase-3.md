@@ -2,7 +2,7 @@
 
 **Phase:** 3 - Cursor Integration  
 **Duration:** 6-8 hours  
-**Status:** ✅ Expanded  
+**Status:** 🟠 In Progress  
 **Last Updated:** 2026-01-26
 **Prerequisites:** Phase 2 complete (PR #33 merged 2026-01-26)
 
@@ -57,20 +57,20 @@ User: /explore my-feature
 **Steps:**
 
 1. **Read current explore.md structure:**
-   - [ ] Review `.cursor/commands/explore.md`
-   - [ ] Identify where dt-workflow integration fits
-   - [ ] Note existing workflow steps that dt-workflow replaces/enhances
+   - [x] Review `.cursor/commands/explore.md`
+   - [x] Identify where dt-workflow integration fits
+   - [x] Note existing workflow steps that dt-workflow replaces/enhances
 
 2. **Add dt-workflow Integration section:**
-   - [ ] Add new section "## dt-workflow Integration" after Configuration
-   - [ ] Document the orchestrator pattern per ADR-004
-   - [ ] Show command invocation: `dt-workflow explore <topic> --interactive`
-   - [ ] Explain what dt-workflow provides (context injection, structure)
+   - [x] Add new section "## dt-workflow Integration" after Configuration
+   - [x] Document the orchestrator pattern per ADR-004
+   - [x] Show command invocation: `dt-workflow explore <topic> --interactive`
+   - [x] Explain what dt-workflow provides (context injection, structure)
 
 3. **Update workflow steps:**
-   - [ ] In Setup Mode, add step to run dt-workflow first
-   - [ ] Add note that dt-workflow provides injected context (rules, project identity)
-   - [ ] Update any manual context gathering steps to reference dt-workflow output
+   - [x] In Setup Mode, add step to run dt-workflow first
+   - [x] Add note that dt-workflow provides injected context (rules, project identity)
+   - [x] Update any manual context gathering steps to reference dt-workflow output
 
 **Integration Section Template:**
 
@@ -109,10 +109,10 @@ dt-workflow explore <topic> --interactive
 ```
 
 **Checklist:**
-- [ ] Integration section added
-- [ ] dt-workflow command documented
-- [ ] Workflow steps updated
-- [ ] ADR-004 referenced
+- [x] Integration section added
+- [x] dt-workflow command documented
+- [x] Workflow steps updated
+- [x] ADR-004 referenced
 
 ---
 
@@ -623,7 +623,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Task 1: explore.md integration section | 🔴 Not Started | |
+| Task 1: explore.md integration section | ✅ Complete | dt-workflow Integration section added |
 | Task 2: explore.md Setup Mode | 🔴 Not Started | |
 | Task 3: explore.md Conduct Mode | 🔴 Not Started | |
 | Task 4: research.md integration section | 🔴 Not Started | |
