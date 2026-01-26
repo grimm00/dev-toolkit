@@ -271,18 +271,18 @@ dt-workflow research <topic> --from-explore /path/to/exploration --interactive
 **Steps:**
 
 1. **Review Conduct Mode workflow:**
-   - [ ] Identify where web search fits
-   - [ ] Note: dt-workflow provides structure, not research content
+   - [x] Identify where web search fits
+   - [x] Note: dt-workflow provides structure, not research content
 
 2. **Document context usage:**
-   - [ ] Conduct Mode uses structure from dt-workflow
-   - [ ] AI fills in research findings
-   - [ ] Handoff file created at end
+   - [x] Conduct Mode uses structure from dt-workflow
+   - [x] AI fills in research findings
+   - [x] Handoff file created at end
 
 **Checklist:**
-- [ ] Conduct Mode reviewed
-- [ ] Context usage clear
-- [ ] Handoff file documented
+- [x] Conduct Mode reviewed
+- [x] Context usage clear
+- [x] Handoff file documented
 
 ---
 
@@ -628,7 +628,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 3: explore.md Conduct Mode | ✅ Complete | Checklist updated with context refresh |
 | Task 4: research.md integration section | ✅ Complete | dt-workflow section with chaining docs |
 | Task 5: research.md Setup Mode | ✅ Complete | Step 0 with checklist and error handling |
-| Task 6: research.md Conduct Mode | 🔴 Not Started | |
+| Task 6: research.md Conduct Mode | ✅ Complete | Context usage and handoff documented |
 | Task 7: decision.md integration section | 🔴 Not Started | |
 | Task 8: decision.md process steps | 🔴 Not Started | |
 | Task 9: Integration test scenarios | 🔴 Not Started | |

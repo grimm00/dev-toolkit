@@ -745,6 +745,32 @@ This directory contains research documents supporting exploration and decision-m
 
 **When to use:** After research structure has been created (Setup Mode), use Conduct Mode to actually perform the research.
 
+**Context Usage:**
+
+Conduct Mode uses the structure created from dt-workflow in Setup Mode:
+- Research questions and methodology (from dt-workflow template)
+- Injected context (rules, project identity) already embedded in structure
+- AI fills in findings via web search, not dt-workflow
+
+**Context Refresh (Optional):**
+
+If project context has changed significantly, you can re-run dt-workflow:
+
+```bash
+dt-workflow research <topic> --from-explore --interactive
+```
+
+This provides fresh context but is typically not needed for Conduct Mode.
+
+**Handoff at Completion:**
+
+When research is complete, create `research-summary.md` as handoff for `/decision`:
+- Key findings summary
+- Recommendations
+- Research status (complete/partial)
+
+---
+
 ### 1. Identify Research to Conduct
 
 **Determine scope:**
