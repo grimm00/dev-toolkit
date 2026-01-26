@@ -707,6 +707,69 @@ teardown() {
 }
 
 # ============================================================================
+# Task 13: --from-explore Flag Implementation Tests (RED)
+# ============================================================================
+
+@test "--from-explore auto-detects exploration directory" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create exploration
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    
+    run "$DT_WORKFLOW" research test-topic --from-explore --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should have loaded exploration context
+    grep -q "Related Exploration" "$TEST_OUTPUT" || grep -q "exploration.md" "$TEST_OUTPUT" || {
+        echo "FAIL: Exploration context not loaded"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "--from-explore with explicit path uses that path" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create custom exploration location
+    mkdir -p "$TEST_PROJECT/custom/explorations/my-topic"
+    echo "# Custom Exploration" > "$TEST_PROJECT/custom/explorations/my-topic/exploration.md"
+    
+    run "$DT_WORKFLOW" research test-topic --from-explore "$TEST_PROJECT/custom/explorations/my-topic" --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should have loaded custom exploration context
+    grep -q "Custom Exploration" "$TEST_OUTPUT" || {
+        echo "FAIL: Custom exploration context not loaded"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "--from-explore fails gracefully when exploration not found" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # No exploration directory exists
+    
+    run "$DT_WORKFLOW" research test-topic --from-explore --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -ne 0 ]
+    
+    # Should show error message (check both output variable and file)
+    grep -q "Exploration not found" <<< "$output" || grep -q "ERROR" <<< "$output" || grep -q "Exploration not found" "$TEST_OUTPUT" || grep -q "ERROR" "$TEST_OUTPUT" || {
+        echo "FAIL: Error message not shown for missing exploration"
+        echo "Output: $output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 

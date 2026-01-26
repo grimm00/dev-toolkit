@@ -771,10 +771,10 @@ These tasks integrate enhanced templates into dt-workflow.
 **TDD Flow:**
 
 1. **RED - Write test for --from-explore:**
-   - [ ] Test `dt-workflow research topic --from-explore topic` chains correctly
-   - [ ] Test validates exploration context is automatically loaded
-   - [ ] Test auto-detection: `--from-explore` without path finds exploration
-   - [ ] Verify test fails
+   - [x] Test `dt-workflow research topic --from-explore topic` chains correctly
+   - [x] Test validates exploration context is automatically loaded
+   - [x] Test auto-detection: `--from-explore` without path finds exploration
+   - [x] Verify test fails (tests written, now passing after implementation)
 
    **Test:**
    ```bash
@@ -802,12 +802,12 @@ These tasks integrate enhanced templates into dt-workflow.
    ```
 
 2. **GREEN - Implement --from-explore:**
-   - [ ] Add `--from-explore` flag parsing
-   - [ ] Implement auto-detection: check `admin/explorations/$topic/`
-   - [ ] Allow explicit path override
-   - [ ] Validate exploration exists (L1 validation)
-   - [ ] Load exploration context when flag present
-   - [ ] Verify test passes
+   - [x] Add `--from-explore` flag parsing (with optional explicit path)
+   - [x] Implement auto-detection: check `admin/explorations/$topic/`
+   - [x] Allow explicit path override (when path provided after flag)
+   - [x] Validate exploration exists (L1 validation via parse_from_explore)
+   - [x] Load exploration context when flag present (pass path to gather_research_context)
+   - [x] Verify test passes (all 3 tests passing)
 
    **Implementation:**
    ```bash
@@ -838,16 +838,17 @@ These tasks integrate enhanced templates into dt-workflow.
    ```
 
 3. **REFACTOR:**
-   - [ ] Add helpful error messages for missing explorations
-   - [ ] Support alternative exploration locations
+   - [x] Add helpful error messages for missing explorations (error messages with suggestions)
+   - [x] Support alternative exploration locations (explicit path override supported)
+   - [x] Redirect error messages to stderr (prevents capture in variable assignment)
    - [ ] Add debug logging for auto-detection
 
 **Checklist:**
-- [ ] Test written and failing
-- [ ] --from-explore flag implemented
-- [ ] Auto-detection working
-- [ ] Explicit path override working
-- [ ] Test passing
+- [x] Test written and passing (RED phase complete)
+- [x] --from-explore flag implemented (GREEN phase complete)
+- [x] Auto-detection working (checks admin/explorations/$topic/)
+- [x] Explicit path override working (when path provided after flag)
+- [x] Test passing (all 3 tests passing)
 
 ---
 

@@ -163,7 +163,15 @@ gather_workflow_context() {
             fi
             ;;
         research)
-            gather_research_context "$topic" "$project_dir"
+            # Resolve exploration path if --from-explore was used
+            local exploration_path=""
+            if [ -n "$from_explore_path" ]; then
+                exploration_path=$(parse_from_explore "$topic" "$from_explore_path" "$project_dir")
+                if [ $? -ne 0 ]; then
+                    exit 1
+                fi
+            fi
+            gather_research_context "$topic" "$project_dir" "$exploration_path"
             ;;
         decision)
             gather_decision_context "$topic" "$project_dir"
@@ -175,15 +183,65 @@ gather_workflow_context() {
     esac
 }
 
+parse_from_explore() {
+    # Parse and resolve --from-explore path
+    # Parameters:
+    #   $1 - Topic name
+    #   $2 - Explicit path or "AUTO" for auto-detection
+    #   $3 - Project directory
+    # Returns: Exploration directory path (or empty if not found)
+    
+    local topic="$1"
+    local explicit_path="${2:-}"
+    local project_dir="${3:-.}"
+    
+    if [ -z "$explicit_path" ]; then
+        # No --from-explore flag used
+        echo ""
+        return 0
+    fi
+    
+    if [ "$explicit_path" = "AUTO" ]; then
+        # Auto-detect: check standard location
+        local auto_path="$project_dir/admin/explorations/$topic"
+        if [ ! -d "$auto_path" ]; then
+            dt_print_status "ERROR" "Exploration not found: $auto_path" >&2
+            echo "" >&2
+            echo "💡 Suggestion: Run '/explore $topic' first to create the exploration" >&2
+            echo "   Or use: $SCRIPT_NAME research $topic --from-explore <path>" >&2
+            return 1
+        fi
+        echo "$auto_path"
+        return 0
+    else
+        # Explicit path provided
+        if [ ! -d "$explicit_path" ]; then
+            dt_print_status "ERROR" "Exploration not found: $explicit_path" >&2
+            echo "" >&2
+            echo "💡 Suggestion: Check the path or run '/explore $topic' first" >&2
+            return 1
+        fi
+        echo "$explicit_path"
+        return 0
+    fi
+}
+
 gather_research_context() {
     local topic="$1"
     local project_dir="${2:-.}"
+    local exploration_path="${3:-}"
     
     echo "### Research Context"
     echo ""
     
-    # Check for exploration (upstream)
-    local exp_dir="$project_dir/admin/explorations/$topic"
+    # Check for exploration (upstream) - use provided path or auto-detect
+    local exp_dir
+    if [ -n "$exploration_path" ]; then
+        exp_dir="$exploration_path"
+    else
+        exp_dir="$project_dir/admin/explorations/$topic"
+    fi
+    
     if [ -d "$exp_dir" ]; then
         echo "#### Related Exploration"
         echo ""
@@ -712,20 +770,10 @@ validate_inputs() {
         
         # Workflow-specific L1 checks
         case "$workflow" in
-            research)
-                # L1: Check if exploration exists (for --from-explore)
-                local exp_dir="$project_dir/admin/explorations/$topic"
-                if [ ! -d "$exp_dir" ]; then
-                    dt_print_status "ERROR" "Error: Exploration directory not found: $exp_dir"
-                    echo ""
-                    echo "💡 Suggestion: Run '/explore $topic' first to create the exploration"
-                    if [ "$exit_on_fail" = "true" ]; then
-                        exit 1
-                    else
-                        return 1
-                    fi
-                fi
-                ;;
+        research)
+            # L1: Check if exploration exists (only if --from-explore is used)
+            # Note: Validation for --from-explore is handled separately in parse_from_explore
+            ;;
             decision)
                 # L1: Check if research exists (for --from-research)
                 local research_dir="$project_dir/admin/research/$topic"
@@ -1011,6 +1059,7 @@ main() {
     local validate_only=false
     local output_file=""
     local project_dir="."
+    local from_explore_path=""
     
     # Parse arguments
     while [[ $# -gt 0 ]]; do
@@ -1042,6 +1091,17 @@ main() {
             --project|-p)
                 project_dir="$2"
                 shift 2
+                ;;
+            --from-explore)
+                # Check if next argument is a path (doesn't start with -)
+                if [ $# -gt 1 ] && [[ ! "$2" =~ ^- ]]; then
+                    from_explore_path="$2"
+                    shift 2
+                else
+                    # Auto-detect: will be resolved later using topic
+                    from_explore_path="AUTO"
+                    shift
+                fi
                 ;;
             -*)
                 dt_print_status "ERROR" "Unknown option: $1"
@@ -1140,6 +1200,15 @@ main() {
         echo "Phase 1 (current): Script outputs context + structure for manual AI fill"
         echo "Phase 3 (future):  Script will invoke AI directly"
         exit 1
+    fi
+    
+    # Validate --from-explore flag if used (before other validation)
+    if [ "$workflow" = "research" ] && [ -n "$from_explore_path" ]; then
+        local exploration_path
+        exploration_path=$(parse_from_explore "$topic" "$from_explore_path" "$project_dir")
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
     fi
     
     # L1 Validation: Check required inputs exist (Research Finding: REQ-IO-1)
