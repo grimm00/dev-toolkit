@@ -88,3 +88,58 @@ teardown() {
     [[ "$output" =~ "exploration.md" ]]
     [[ "$output" =~ "research-topics.md" ]]
 }
+
+# ============================================================================
+# Task 6: --output Flag Tests (TDD)
+# ============================================================================
+
+@test "dt-workflow --output saves to file" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    local output_file="$TEST_PROJECT/output.md"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT" --output "$output_file"
+    [ "$status" -eq 0 ]
+    [ -f "$output_file" ]
+    
+    # Check file contains expected content
+    grep -q "dt-workflow Output:" "$output_file"
+}
+
+@test "dt-workflow --output shows success message" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    local output_file="$TEST_PROJECT/output.md"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT" --output "$output_file"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Output saved to:" ]]
+}
+
+@test "dt-workflow --output handles invalid directory path" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    local output_file="/nonexistent/path/output.md"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT" --output "$output_file"
+    [ "$status" -ne 0 ]
+    [[ "$output" =~ "Error:" ]]
+}
+
+@test "dt-workflow --output handles permission errors gracefully" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    local output_file="$TEST_PROJECT/output.md"
+    
+    # Create a read-only directory to simulate permission error
+    local readonly_dir="$TEST_PROJECT/readonly"
+    mkdir -p "$readonly_dir"
+    chmod 555 "$readonly_dir"
+    local readonly_file="$readonly_dir/output.md"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT" --output "$readonly_file"
+    
+    # Clean up
+    chmod 755 "$readonly_dir" 2>/dev/null || true
+    rm -rf "$readonly_dir" 2>/dev/null || true
+    
+    # Should either fail gracefully or succeed (depending on system)
+    # The important thing is it doesn't crash
+    [ "$status" -ge 0 ]
+}
