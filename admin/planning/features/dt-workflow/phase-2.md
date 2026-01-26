@@ -156,17 +156,17 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
 **TDD Flow:**
 
 1. **RED - Write test for decision template structure:**
-   - [ ] Test validates ADR template has structural examples
-   - [ ] Test expects alternatives table, consequences lists
-   - [ ] Verify test fails
+   - [x] Test validates ADR template has structural examples
+   - [x] Test expects alternatives table, consequences lists
+   - [x] Verify test fails (tests written, but templates already enhanced so tests pass)
 
 2. **GREEN - Enhance decision templates:**
-   - [ ] Update `decision/adr.md.tmpl` with structural examples
-   - [ ] Add alternatives considered table
-   - [ ] Add consequences (positive/negative) list structures
-   - [ ] Add decision rationale section structure
-   - [ ] Add `<!-- REQUIRED: -->` markers
-   - [ ] Verify test passes
+   - [x] Update `decision/adr.md.tmpl` with structural examples (dev-infra PR #64)
+   - [x] Add alternatives considered table
+   - [x] Add consequences (positive/negative) list structures
+   - [x] Add decision rationale section structure
+   - [x] Add `<!-- REQUIRED: -->` markers
+   - [x] Verify test passes (all 5 tests passing)
 
    **Template enhancement:**
    ```markdown
@@ -196,10 +196,10 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
    - [ ] Document template variables
 
 **Checklist:**
-- [ ] Test written and failing
-- [ ] Decision templates enhanced
-- [ ] MADR alignment maintained
-- [ ] Test passing
+- [x] Test written and passing (RED phase complete - templates already enhanced)
+- [x] Decision templates enhanced (GREEN phase complete - dev-infra PR #64)
+- [ ] MADR alignment maintained (REFACTOR phase)
+- [x] Test passing (all 5 tests passing)
 
 ---
 

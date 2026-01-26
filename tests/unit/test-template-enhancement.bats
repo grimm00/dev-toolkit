@@ -315,6 +315,154 @@ teardown() {
     }
 }
 
+# ============================================================================
+# Task 3: Decision Template Enhancement Tests (RED)
+# ============================================================================
+
+@test "decision template includes alternatives considered table structure" {
+    skip_if_no_templates
+    
+    # Set template variables
+    dt_set_decision_vars "test-topic" "006" "Test Decision"
+    
+    # Render template
+    local template="$TEMPLATE_DIR/decision/adr.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Decision template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "adr"
+    
+    # Alternatives Considered table structure should exist
+    grep -q "## Alternatives Considered" "$TEST_OUTPUT" || {
+        echo "FAIL: Alternatives Considered section not found"
+        return 1
+    }
+    
+    grep -q "| Alternative | Pros | Cons | Why Not Chosen |" "$TEST_OUTPUT" || {
+        echo "FAIL: Alternatives table header not found"
+        return 1
+    }
+    
+    grep -q "|-------------|------|------|----------------|" "$TEST_OUTPUT" || {
+        echo "FAIL: Alternatives table separator not found"
+        return 1
+    }
+    
+    grep -q "<!-- AI: Fill alternatives table" "$TEST_OUTPUT" || {
+        echo "FAIL: AI placeholder for alternatives table not found"
+        return 1
+    }
+}
+
+@test "decision template includes consequences section structure" {
+    skip_if_no_templates
+    
+    dt_set_decision_vars "test-topic" "006" "Test Decision"
+    
+    local template="$TEMPLATE_DIR/decision/adr.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Decision template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "adr"
+    
+    # Consequences section should exist
+    grep -q "## Consequences" "$TEST_OUTPUT" || {
+        echo "FAIL: Consequences section not found"
+        return 1
+    }
+    
+    # Positive consequences subsection should exist
+    grep -q "### Positive" "$TEST_OUTPUT" || {
+        echo "FAIL: Positive consequences subsection not found"
+        return 1
+    }
+    
+    # Negative consequences subsection should exist
+    grep -q "### Negative" "$TEST_OUTPUT" || {
+        echo "FAIL: Negative consequences subsection not found"
+        return 1
+    }
+    
+    # Should have list items with AI placeholders
+    grep -q "<!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: Consequences list items with AI placeholders not found"
+        return 1
+    }
+    
+    # Verify list structure exists (check for dash followed by space)
+    grep -q "^\- " "$TEST_OUTPUT" || grep -q "  - " "$TEST_OUTPUT" || {
+        echo "FAIL: List structure not found in Consequences section"
+        return 1
+    }
+}
+
+@test "decision template includes decision rationale section" {
+    skip_if_no_templates
+    
+    dt_set_decision_vars "test-topic" "006" "Test Decision"
+    
+    local template="$TEMPLATE_DIR/decision/adr.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Decision template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "adr"
+    
+    # Decision Rationale section should exist
+    grep -q "## Decision Rationale" "$TEST_OUTPUT" || {
+        echo "FAIL: Decision Rationale section not found"
+        return 1
+    }
+    
+    # Should have AI placeholder
+    grep -q "<!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: AI placeholder not found in Decision Rationale"
+        return 1
+    }
+}
+
+@test "decision template includes REQUIRED markers" {
+    skip_if_no_templates
+    
+    dt_set_decision_vars "test-topic" "006" "Test Decision"
+    
+    local template="$TEMPLATE_DIR/decision/adr.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Decision template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "adr"
+    
+    # REQUIRED markers should exist per FR-26
+    grep -q "<!-- REQUIRED:" "$TEST_OUTPUT" || {
+        echo "FAIL: REQUIRED markers not found (FR-26)"
+        echo "Template should include markers like: <!-- REQUIRED: At least 2 alternatives -->"
+        return 1
+    }
+}
+
+@test "decision template includes template variable documentation" {
+    skip_if_no_templates
+    
+    dt_set_decision_vars "test-topic" "006" "Test Decision"
+    
+    local template="$TEMPLATE_DIR/decision/adr.md.tmpl"
+    if [ ! -f "$template" ]; then
+        skip "Decision template not found: $template"
+    fi
+    
+    dt_render_template "$template" "$TEST_OUTPUT" "adr"
+    
+    # Template variable documentation should exist (from REFACTOR phase)
+    # Check for variable documentation comment
+    grep -q "# Template Variables" "$TEST_OUTPUT" || {
+        echo "FAIL: Template variable documentation not found"
+        return 1
+    }
+}
+
 # Helper function to skip tests if templates not available
 skip_if_no_templates() {
     if [ -z "$TEMPLATE_DIR" ]; then
