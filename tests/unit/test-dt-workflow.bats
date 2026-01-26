@@ -166,3 +166,85 @@ teardown() {
     [ "$result" -gt 20 ]
     [ "$result" -lt 30 ]
 }
+
+# ============================================================================
+# Task 5: Template Integration Tests (RED)
+# ============================================================================
+
+@test "dt-workflow explore uses template-rendered structure" {
+    TEST_OUTPUT=$(mktemp)
+    
+    run "$DT_WORKFLOW" explore test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check that output contains template-rendered content
+    # Template should include "Themes Analyzed" section (from enhanced template)
+    grep -q "### Themes Analyzed" "$TEST_OUTPUT" || {
+        echo "FAIL: Themes Analyzed section not found (should be from template)"
+        cat "$TEST_OUTPUT"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for template structure markers (not heredoc placeholders)
+    grep -q "| Theme | Key Finding |" "$TEST_OUTPUT" || {
+        echo "FAIL: Themes table structure not found (should be from template)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for Initial Recommendations (from enhanced template)
+    grep -q "### Initial Recommendations" "$TEST_OUTPUT" || {
+        echo "FAIL: Initial Recommendations section not found (should be from template)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow explore substitutes template variables correctly" {
+    TEST_OUTPUT=$(mktemp)
+    
+    run "$DT_WORKFLOW" explore my-test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check that topic name is substituted in output
+    grep -q "my-test-topic" "$TEST_OUTPUT" || {
+        echo "FAIL: Topic name not substituted in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for date substitution (should be current date format)
+    grep -qE "[0-9]{4}-[0-9]{2}-[0-9]{2}" "$TEST_OUTPUT" || {
+        echo "FAIL: Date not substituted in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow explore structure matches template output format" {
+    TEST_OUTPUT=$(mktemp)
+    
+    run "$DT_WORKFLOW" explore test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check for REQUIRED markers (from enhanced templates)
+    grep -q "<!-- REQUIRED:" "$TEST_OUTPUT" || {
+        echo "FAIL: REQUIRED markers not found (should be from enhanced template)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for AI placeholders (from templates)
+    grep -q "<!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: AI placeholders not found (should be from template)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}

@@ -21,6 +21,8 @@ TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
 
 # Source shared libraries
 source "$TOOLKIT_ROOT/lib/core/output-utils.sh"
+source "$TOOLKIT_ROOT/lib/doc-gen/render.sh"
+source "$TOOLKIT_ROOT/lib/doc-gen/templates.sh"
 
 # Initialize colors
 dt_setup_colors
@@ -205,8 +207,21 @@ gather_git_context() {
 
 generate_exploration_structure() {
     local topic="$1"
-    local date
-    date=$(date +%Y-%m-%d)
+    
+    # Find templates directory
+    local templates_root
+    templates_root=$(dt_find_templates) || {
+        dt_print_status "WARNING" "Templates not found, falling back to heredoc structure"
+        dt_print_debug "Template search failed, using fallback heredoc function"
+        generate_exploration_structure_heredoc "$topic"
+        return 0
+    }
+    
+    dt_print_debug "Using templates from: $templates_root"
+    
+    # Set template variables
+    dt_set_exploration_vars "$topic" "Exploration of $topic"
+    dt_print_debug "Set exploration variables for topic: $topic"
     
     echo "## Generated Structure"
     echo ""
@@ -215,62 +230,98 @@ generate_exploration_structure() {
     echo "The following files should be created in \`admin/explorations/$topic/\`:"
     echo ""
     
-    # README.md (Hub)
-    echo "#### README.md (Hub)"
-    echo ""
-    echo '```markdown'
-    cat << EOF
-# $topic - Exploration Hub
-
-**Purpose:** [Brief description of what we're exploring]  
-**Status:** 🔴 Exploration  
-**Created:** $date  
-**Last Updated:** $date
-
----
-
-## 📋 Quick Links
-
-- **[Exploration Document](exploration.md)** - Full exploration with theme analysis
-- **[Research Topics](research-topics.md)** - Prioritized research questions
-
----
-
-## 🎯 Overview
-
-[What problem are we solving? Why now?]
-
----
-
-## 📊 Exploration Summary
-
-### Themes Analyzed
-
-| Theme | Key Finding |
-|-------|-------------|
-| [Theme 1] | [Finding] |
-| [Theme 2] | [Finding] |
-
-### Initial Recommendations
-
-1. [Recommendation 1]
-2. [Recommendation 2]
-
----
-
-## 🚀 Next Steps
-
-1. [Next action]
-2. [Next action]
-
----
-
-**Last Updated:** $date
-EOF
-    echo '```'
-    echo ""
+    # Render exploration.md template
+    local exploration_template
+    exploration_template=$(dt_get_template_path "exploration" "exploration" "$templates_root")
+    dt_print_debug "Exploration template path: $exploration_template"
     
-    # exploration.md
+    if [ -f "$exploration_template" ]; then
+        echo "#### exploration.md (Main Analysis)"
+        echo ""
+        echo '```markdown'
+        local temp_output
+        temp_output=$(mktemp)
+        if dt_render_template "$exploration_template" "$temp_output" "exploration" 2>/dev/null; then
+            cat "$temp_output"
+            dt_print_debug "Successfully rendered exploration template"
+        else
+            # Fallback to heredoc if rendering fails
+            dt_print_status "WARNING" "Template rendering failed, using fallback"
+            dt_print_debug "Template rendering failed for: $exploration_template"
+            generate_exploration_structure_heredoc "$topic"
+            rm -f "$temp_output"
+            return 0
+        fi
+        rm -f "$temp_output"
+        echo '```'
+        echo ""
+    else
+        dt_print_status "WARNING" "Exploration template not found: $exploration_template"
+        dt_print_debug "Template file missing: $exploration_template"
+        generate_exploration_structure_heredoc "$topic"
+        return 0
+    fi
+    
+    # Render research-topics.md template
+    local research_topics_template
+    research_topics_template=$(dt_get_template_path "research_topics" "research_topics" "$templates_root")
+    dt_print_debug "Research topics template path: $research_topics_template"
+    
+    if [ -f "$research_topics_template" ]; then
+        echo "#### research-topics.md (Research Questions)"
+        echo ""
+        echo '```markdown'
+        local temp_output2
+        temp_output2=$(mktemp)
+        if dt_render_template "$research_topics_template" "$temp_output2" "research_topics" 2>/dev/null; then
+            cat "$temp_output2"
+            dt_print_debug "Successfully rendered research-topics template"
+        else
+            dt_print_debug "Research-topics template rendering failed, using minimal output"
+            echo "# Research Topics - ${TOPIC_TITLE} Exploration"
+            echo ""
+            echo "**Status:** ${STATUS}"
+            echo "**Created:** ${DATE}"
+            echo "**Last Updated:** ${DATE}"
+        fi
+        rm -f "$temp_output2"
+        echo '```'
+        echo ""
+    else
+        dt_print_debug "Research-topics template not found: $research_topics_template (skipping)"
+    fi
+    
+    # Render exploration hub (README.md) template
+    local hub_template
+    hub_template=$(dt_get_template_path "exploration_hub" "exploration_hub" "$templates_root")
+    dt_print_debug "Exploration hub template path: $hub_template"
+    
+    if [ -f "$hub_template" ]; then
+        echo "#### README.md (Hub)"
+        echo ""
+        echo '```markdown'
+        local temp_output3
+        temp_output3=$(mktemp)
+        if dt_render_template "$hub_template" "$temp_output3" "exploration_hub" 2>/dev/null; then
+            cat "$temp_output3"
+            dt_print_debug "Successfully rendered exploration hub template"
+        else
+            dt_print_debug "Exploration hub template rendering failed (skipping)"
+        fi
+        rm -f "$temp_output3"
+        echo '```'
+        echo ""
+    else
+        dt_print_debug "Exploration hub template not found: $hub_template (skipping)"
+    fi
+}
+
+# Fallback function for when templates are unavailable
+generate_exploration_structure_heredoc() {
+    local topic="$1"
+    local date
+    date=$(date +%Y-%m-%d)
+    
     echo "#### exploration.md (Main Analysis)"
     echo ""
     echo '```markdown'
@@ -291,109 +342,25 @@ EOF
 
 ## 🔍 Themes
 
-### Theme 1: [Name]
-
-[Analysis of this theme]
-
-**Connections:**
-- [How this relates to other themes]
-
-**Implications:**
-- [What this means for the solution]
-
-**Concerns:**
-- [Potential issues]
-
----
-
-### Theme 2: [Name]
-
-[Analysis]
+[Analysis of themes]
 
 ---
 
 ## ❓ Key Questions
 
-### Question 1: [Question]
-
-**Context:** [Why this matters]
-
-**Sub-questions:**
-- [Sub-question 1]
-- [Sub-question 2]
+[Key questions to investigate]
 
 ---
 
 ## 💡 Initial Thoughts
 
-[Preliminary analysis and recommendations]
+[Preliminary analysis]
 
 ---
 
 ## 🚀 Next Steps
 
-1. [Next action]
-2. [Next action]
-
----
-
-## 🔗 Related
-
-- [Related document 1]
-- [Related document 2]
-
----
-
-**Last Updated:** $date
-EOF
-    echo '```'
-    echo ""
-    
-    # research-topics.md
-    echo "#### research-topics.md (Research Questions)"
-    echo ""
-    echo '```markdown'
-    cat << EOF
-# Research Topics - $topic Exploration
-
-**Status:** 🔴 Exploration  
-**Created:** $date  
-**Last Updated:** $date
-
----
-
-## 📋 Research Topics
-
-### Priority 1: [BLOCKING]
-
-#### Topic 1: [Name]
-
-**Question:** [Research question]
-
-**Context:** [Why this matters]
-
-**Priority:** BLOCKING / HIGH / MEDIUM / LOW  
-**Approach:** 🧪 SPIKE FIRST / Research only
-
-**Suggested Approach:**
-- [How to investigate]
-
----
-
-### Priority 2: [HIGH]
-
-#### Topic 2: [Name]
-
-[Details]
-
----
-
-## 🎯 Research Workflow
-
-### Recommended Order
-
-1. [First topics]
-2. [Second topics]
+[Next actions]
 
 ---
 
