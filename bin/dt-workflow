@@ -837,7 +837,37 @@ main() {
     
     # Generate output
     if [ -n "$output_file" ]; then
-        output_for_ai "$workflow" "$topic" "$project_dir" > "$output_file"
+        # Validate output directory exists (handle invalid paths)
+        local output_dir
+        output_dir=$(dirname "$output_file")
+        if [ ! -d "$output_dir" ]; then
+            dt_print_status "ERROR" "Error: Output directory does not exist: $output_dir"
+            echo ""
+            echo "💡 Suggestion: Create the directory first or use a valid path"
+            exit 1
+        fi
+        
+        # Attempt to write output file (capture both stdout and stderr)
+        # Use a temp file first to catch write errors before finalizing
+        local temp_output
+        temp_output=$(mktemp)
+        if ! output_for_ai "$workflow" "$topic" "$project_dir" > "$temp_output" 2>&1; then
+            rm -f "$temp_output"
+            dt_print_status "ERROR" "Error: Failed to generate output"
+            echo ""
+            echo "💡 Suggestion: Check workflow inputs and try again"
+            exit 1
+        fi
+        
+        # Move temp file to final location (catches permission errors)
+        if ! mv "$temp_output" "$output_file" 2>/dev/null; then
+            rm -f "$temp_output"
+            dt_print_status "ERROR" "Error: Failed to write output file: $output_file"
+            echo ""
+            echo "💡 Suggestion: Check file permissions and directory access"
+            exit 1
+        fi
+        
         dt_print_status "SUCCESS" "Output saved to: $output_file"
         echo ""
         echo "💡 Next: Open $output_file in Cursor and let AI fill the structure"

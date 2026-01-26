@@ -384,14 +384,17 @@ teardown() {
 ```
 
 2. **GREEN - Verify implementation**
+   - [x] Run tests: `bats tests/integration/test-dt-workflow-integration.bats`
+   - [x] All tests passing
+
 3. **REFACTOR - Handle edge cases:**
-   - [ ] Invalid output path
-   - [ ] Permission errors
+   - [x] Invalid output path
+   - [x] Permission errors
 
 **Checklist:**
-- [ ] --output writes file correctly
-- [ ] Success message displayed
-- [ ] Edge cases handled
+- [x] --output writes file correctly
+- [x] Success message displayed
+- [x] Edge cases handled
 
 ---
 
@@ -522,7 +525,7 @@ teardown() {
 | Task 3: Validation Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
 | Task 4: Context Gathering Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
 | Task 5: Output Generation Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
-| Task 6: --output Flag Tests | 🔴 Not Started | |
+| Task 6: --output Flag Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
 | Task 7: Code Restructuring | 🔴 Not Started | |
 | Task 8: Portability Validation | 🔴 Not Started | |
 | Task 9: Final Validation | 🔴 Not Started | |
