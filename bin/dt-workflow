@@ -163,10 +163,7 @@ gather_workflow_context() {
             fi
             ;;
         research)
-            echo "### Research Context"
-            echo ""
-            echo "*Research-specific context would be gathered here*"
-            echo ""
+            gather_research_context "$topic" "$project_dir"
             ;;
         decision)
             echo "### Decision Context"
@@ -179,6 +176,78 @@ gather_workflow_context() {
             echo ""
             ;;
     esac
+}
+
+gather_research_context() {
+    local topic="$1"
+    local project_dir="${2:-.}"
+    
+    echo "### Research Context"
+    echo ""
+    
+    # Check for exploration (upstream)
+    local exp_dir="$project_dir/admin/explorations/$topic"
+    if [ -d "$exp_dir" ]; then
+        echo "#### Related Exploration"
+        echo ""
+        
+        if [ -f "$exp_dir/exploration.md" ]; then
+            echo "**Exploration Document:** \`exploration.md\`"
+            echo ""
+            echo '```markdown'
+            # Limit to first 100 lines to avoid token bloat
+            head -100 "$exp_dir/exploration.md"
+            echo '```'
+            echo ""
+        fi
+        
+        # Include handoff file (research-topics.md)
+        if [ -f "$exp_dir/research-topics.md" ]; then
+            echo "#### Research Topics (from exploration)"
+            echo ""
+            echo "**Source:** \`research-topics.md\`"
+            echo ""
+            cat "$exp_dir/research-topics.md"
+            echo ""
+        fi
+    else
+        dt_print_debug "Exploration directory not found: $exp_dir"
+    fi
+    
+    # Check for existing research
+    local research_dir="$project_dir/admin/research/$topic"
+    if [ -d "$research_dir" ]; then
+        echo "#### Existing Research"
+        echo ""
+        
+        local research_files
+        research_files=$(find "$research_dir" -maxdepth 1 -name "*.md" -type f 2>/dev/null | sort)
+        
+        if [ -n "$research_files" ]; then
+            local file_count
+            file_count=$(echo "$research_files" | wc -l | tr -d ' ')
+            
+            if [ "$file_count" -le 5 ]; then
+                # List all files if 5 or fewer
+                echo "$research_files" | while read -r f; do
+                    echo "- \`$(basename "$f")\`"
+                done
+            else
+                # Show summary if more than 5 files
+                echo "**Found $file_count research documents:**"
+                echo ""
+                echo "$research_files" | head -5 | while read -r f; do
+                    echo "- \`$(basename "$f")\`"
+                done
+                echo "- ... and $((file_count - 5)) more"
+            fi
+            echo ""
+        else
+            dt_print_debug "No existing research documents found in: $research_dir"
+        fi
+    else
+        dt_print_debug "Research directory not found: $research_dir (will be created)"
+    fi
 }
 
 gather_git_context() {

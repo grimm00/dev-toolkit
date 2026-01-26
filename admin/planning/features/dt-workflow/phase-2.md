@@ -427,10 +427,10 @@ These tasks integrate enhanced templates into dt-workflow.
 **TDD Flow:**
 
 1. **RED - Write test for research context:**
-   - [ ] Test validates exploration context is gathered when available
-   - [ ] Test validates existing research documents are discovered
-   - [ ] Test verifies context appears in output
-   - [ ] Verify test fails
+   - [x] Test validates exploration context is gathered when available
+   - [x] Test validates existing research documents are discovered
+   - [x] Test verifies context appears in output
+   - [x] Verify test fails (tests written, now passing after implementation)
 
    **Test:**
    ```bash
@@ -449,12 +449,12 @@ These tasks integrate enhanced templates into dt-workflow.
    ```
 
 2. **GREEN - Implement research context gathering:**
-   - [ ] Create `gather_research_context()` function
-   - [ ] Discover exploration directory for topic
-   - [ ] Include exploration.md content if exists
-   - [ ] Include research-topics.md if exists (handoff from explore)
-   - [ ] Discover existing research documents
-   - [ ] Verify test passes
+   - [x] Create `gather_research_context()` function
+   - [x] Discover exploration directory for topic
+   - [x] Include exploration.md content if exists (limited to first 100 lines)
+   - [x] Include research-topics.md if exists (handoff from explore)
+   - [x] Discover existing research documents (with summary for 5+ files)
+   - [x] Verify test passes (all 3 tests passing)
 
    **Implementation:**
    ```bash
@@ -497,9 +497,9 @@ These tasks integrate enhanced templates into dt-workflow.
    ```
 
 3. **REFACTOR:**
-   - [ ] Handle missing directories gracefully
-   - [ ] Limit context size to avoid token bloat
-   - [ ] Add summary counts for large document sets
+   - [x] Handle missing directories gracefully (debug messages, no errors)
+   - [x] Limit context size to avoid token bloat (head -100 for exploration.md)
+   - [x] Add summary counts for large document sets (shows first 5, then "... and N more")
 
 **Checklist:**
 - [ ] Test written and failing

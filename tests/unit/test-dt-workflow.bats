@@ -346,6 +346,82 @@ teardown() {
 }
 
 # ============================================================================
+# Task 8: Research Context Gathering Tests (RED)
+# ============================================================================
+
+@test "dt-workflow research includes exploration context" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create exploration
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration: test-topic" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    echo "Some exploration content here" >> "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    
+    run "$DT_WORKFLOW" research test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Context section should include exploration
+    grep -q "## Workflow-Specific Context" "$TEST_OUTPUT" || {
+        echo "FAIL: Workflow-Specific Context section not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "exploration.md" "$TEST_OUTPUT" || grep -q "Related Exploration" "$TEST_OUTPUT" || {
+        echo "FAIL: Exploration context not found in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow research includes research-topics.md from exploration" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create exploration with research-topics.md
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    echo "# Research Topics" > "$TEST_PROJECT/admin/explorations/test-topic/research-topics.md"
+    echo "Topic 1: Some research question" >> "$TEST_PROJECT/admin/explorations/test-topic/research-topics.md"
+    
+    run "$DT_WORKFLOW" research test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should include research-topics.md content
+    grep -q "Research Topics" "$TEST_OUTPUT" || grep -q "research-topics.md" "$TEST_OUTPUT" || {
+        echo "FAIL: Research topics from exploration not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow research discovers existing research documents" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create exploration and existing research
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Document 1" > "$TEST_PROJECT/admin/research/test-topic/research-1.md"
+    echo "# Research Document 2" > "$TEST_PROJECT/admin/research/test-topic/research-2.md"
+    
+    run "$DT_WORKFLOW" research test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should mention existing research
+    grep -q "Existing Research" "$TEST_OUTPUT" || grep -q "research-1.md" "$TEST_OUTPUT" || grep -q "research-2.md" "$TEST_OUTPUT" || {
+        echo "FAIL: Existing research documents not discovered"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 
