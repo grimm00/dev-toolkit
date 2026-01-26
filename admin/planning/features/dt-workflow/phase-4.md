@@ -150,10 +150,10 @@ get_recommended_model() {
 **Steps:**
 
 1. **Write tests for context profiles:**
-   - [ ] Test default profile includes all context
-   - [ ] Test --profile flag accepts profile name
-   - [ ] Test minimal profile excludes optional context
-   - [ ] Test custom profile from config file
+   - [x] Test default profile includes all context
+   - [x] Test --profile flag accepts profile name
+   - [x] Test minimal profile excludes optional context
+   - [x] Test custom profile from config file (deferred - config file support future)
 
 **Test examples:**
 
@@ -180,8 +180,8 @@ get_recommended_model() {
 ```
 
 **Checklist:**
-- [ ] Tests written for profile functionality
-- [ ] Tests run and FAIL (RED phase complete)
+- [x] Tests written for profile functionality
+- [x] Tests run and FAIL (RED phase complete)
 
 ---
 
@@ -192,18 +192,18 @@ get_recommended_model() {
 **Steps:**
 
 1. **Define profile structure:**
-   - [ ] `default` - All context (current behavior)
-   - [ ] `minimal` - Rules only, skip project identity
-   - [ ] `full` - All context + additional (future)
+   - [x] `default` - All context (current behavior)
+   - [x] `minimal` - Rules only, skip project identity
+   - [x] `full` - All context + additional (future)
 
 2. **Add --profile flag:**
-   - [ ] Parse --profile argument
-   - [ ] Validate profile name
-   - [ ] Apply profile to context selection
+   - [x] Parse --profile argument
+   - [x] Validate profile name
+   - [x] Apply profile to context selection
 
 3. **Implement profile logic:**
-   - [ ] Modify context injection based on profile
-   - [ ] Keep backward compatibility (default = current)
+   - [x] Modify context injection based on profile
+   - [x] Keep backward compatibility (default = current)
 
 **Implementation example:**
 
@@ -526,8 +526,8 @@ fi
 | Task 1: Model recommendation tests (RED) | ✅ Complete | All tests pass |
 | Task 2: Model recommendation impl (GREEN) | ✅ Complete | Feature implemented |
 | Task 3: Model recommendation refactor | 🔴 Not Started | |
-| Task 4: Context profile tests (RED) | 🔴 Not Started | |
-| Task 5: Context profile impl (GREEN) | 🔴 Not Started | |
+| Task 4: Context profile tests (RED) | ✅ Complete | All tests pass |
+| Task 5: Context profile impl (GREEN) | ✅ Complete | Feature implemented |
 | Task 6: Context profile refactor | 🔴 Not Started | |
 | Task 7: Dry run tests (RED) | 🔴 Not Started | |
 | Task 8: Dry run impl (GREEN) | 🔴 Not Started | |
