@@ -40,3 +40,51 @@ teardown() {
     [ -d "$TEST_PROJECT" ]
     [ -d "$TEST_PROJECT/.cursor/rules" ]
 }
+
+# ============================================================================
+# Task 5: Output Generation Tests (TDD)
+# ============================================================================
+
+@test "explore workflow generates valid markdown structure" {
+    # Create minimal test project
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    echo "# Test Rule" > "$TEST_PROJECT/.cursor/rules/main.mdc"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check output structure per ADR-002 (context ordering)
+    [[ "$output" =~ "# dt-workflow Output:" ]]
+    [[ "$output" =~ "CRITICAL RULES (START" ]]
+    [[ "$output" =~ "BACKGROUND CONTEXT (MIDDLE" ]]
+    [[ "$output" =~ "TASK (END" ]]
+}
+
+@test "explore workflow includes token estimate" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Token Estimate:" ]]
+}
+
+@test "explore workflow includes next steps" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "NEXT STEPS" ]]
+    [[ "$output" =~ "/research" ]]
+}
+
+@test "explore workflow generates valid exploration structure" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    
+    run "$DT_WORKFLOW" explore my-feature --interactive --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check generated structure templates
+    [[ "$output" =~ "README.md" ]]
+    [[ "$output" =~ "exploration.md" ]]
+    [[ "$output" =~ "research-topics.md" ]]
+}
