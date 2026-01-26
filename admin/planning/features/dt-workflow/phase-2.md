@@ -137,9 +137,9 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
    ```
 
 3. **REFACTOR:**
-   - [ ] Ensure consistent section ordering across research templates
-   - [ ] Add clear guidance comments for AI
-   - [ ] Verify template variable usage documented
+   - [x] Ensure consistent section ordering across research templates (verified: logical flow maintained)
+   - [x] Add clear guidance comments for AI (AI/EXPAND comments present and clear)
+   - [x] Verify template variable usage documented (completed in dev-infra PR #64)
 
 **Checklist:**
 - [x] Test written and failing (RED phase complete)
