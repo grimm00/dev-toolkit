@@ -833,6 +833,87 @@ teardown() {
 }
 
 # ============================================================================
+# Task 15: Full Workflow Chain Integration Test (RED)
+# ============================================================================
+
+@test "full workflow chain: explore → research → decision" {
+    # Stage 1: Explore
+    run "$DT_WORKFLOW" explore test-topic --interactive --output "$TEST_PROJECT/explore-output.md" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    grep -q "## 📋 Research Topics" "$TEST_PROJECT/explore-output.md" || grep -q "Research Topics" "$TEST_PROJECT/explore-output.md" || {
+        echo "FAIL: Explore output missing Research Topics section"
+        return 1
+    }
+    
+    # Simulate exploration completion (create handoff file)
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration: test-topic" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    echo "## 📋 Research Topics" > "$TEST_PROJECT/admin/explorations/test-topic/research-topics.md"
+    echo "| # | Topic | Priority | Status |" >> "$TEST_PROJECT/admin/explorations/test-topic/research-topics.md"
+    echo "|---|-------|----------|--------|" >> "$TEST_PROJECT/admin/explorations/test-topic/research-topics.md"
+    echo "| 1 | Test Topic | HIGH | Pending |" >> "$TEST_PROJECT/admin/explorations/test-topic/research-topics.md"
+    
+    # Stage 2: Research (from explore)
+    run "$DT_WORKFLOW" research test-topic --from-explore --interactive --output "$TEST_PROJECT/research-output.md" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    grep -q "Related Exploration" "$TEST_PROJECT/research-output.md" || grep -q "exploration.md" "$TEST_PROJECT/research-output.md" || {
+        echo "FAIL: Research output missing exploration context"
+        return 1
+    }
+    
+    # Simulate research completion (create handoff file)
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    echo "## 🔍 Key Findings" >> "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    echo "Finding 1: Test finding" >> "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    echo "## 💡 Recommendations" >> "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    echo "Recommendation 1: Test recommendation" >> "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    # Stage 3: Decision (from research)
+    run "$DT_WORKFLOW" decision test-topic --from-research --interactive --output "$TEST_PROJECT/decision-output.md" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    grep -q "Research Summary" "$TEST_PROJECT/decision-output.md" || grep -q "research-summary.md" "$TEST_PROJECT/decision-output.md" || {
+        echo "FAIL: Decision output missing research context"
+        return 1
+    }
+}
+
+@test "full workflow chain validates handoff files at each stage" {
+    # Stage 1: Explore - should generate research-topics.md guidance
+    run "$DT_WORKFLOW" explore test-topic --interactive --output "$TEST_PROJECT/explore-output.md" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    grep -q "research-topics.md" "$TEST_PROJECT/explore-output.md" || grep -q "Research Topics" "$TEST_PROJECT/explore-output.md" || {
+        echo "FAIL: Explore output missing research-topics.md handoff guidance"
+        return 1
+    }
+    
+    # Create exploration with handoff file
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    echo "## 📋 Research Topics" > "$TEST_PROJECT/admin/explorations/test-topic/research-topics.md"
+    
+    # Stage 2: Research - should reference research-summary.md handoff
+    run "$DT_WORKFLOW" research test-topic --from-explore --interactive --output "$TEST_PROJECT/research-output.md" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    grep -q "research-summary.md" "$TEST_PROJECT/research-output.md" || grep -q "Handoff" "$TEST_PROJECT/research-output.md" || {
+        echo "FAIL: Research output missing research-summary.md handoff guidance"
+        return 1
+    }
+    
+    # Create research with handoff file
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    # Stage 3: Decision - should reference decisions-summary.md handoff
+    run "$DT_WORKFLOW" decision test-topic --from-research --interactive --output "$TEST_PROJECT/decision-output.md" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    grep -q "decisions-summary.md" "$TEST_PROJECT/decision-output.md" || grep -q "Handoff" "$TEST_PROJECT/decision-output.md" || {
+        echo "FAIL: Decision output missing decisions-summary.md handoff guidance"
+        return 1
+    }
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 

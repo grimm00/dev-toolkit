@@ -1084,9 +1084,32 @@ Options:
     --debug           Enable debug output
 
 Examples:
+    # Start an exploration
     $SCRIPT_NAME explore my-feature --interactive
+    
+    # Explore with output file
     $SCRIPT_NAME explore auth-system --interactive --output context.md
-    $SCRIPT_NAME research my-feature --from-explore my-feature --interactive
+    
+    # Research workflow (chained from exploration)
+    $SCRIPT_NAME research my-feature --from-explore --interactive
+    
+    # Research with explicit exploration path
+    $SCRIPT_NAME research my-feature --from-explore /path/to/exploration --interactive
+    
+    # Decision workflow (chained from research)
+    $SCRIPT_NAME decision my-feature --from-research --interactive
+    
+    # Decision with explicit research path
+    $SCRIPT_NAME decision my-feature --from-research /path/to/research --interactive
+    
+    # Full workflow chain example:
+    # 1. $SCRIPT_NAME explore my-feature --interactive
+    # 2. (Create exploration files, including research-topics.md)
+    # 3. $SCRIPT_NAME research my-feature --from-explore --interactive
+    # 4. (Create research files, including research-summary.md)
+    # 5. $SCRIPT_NAME decision my-feature --from-research --interactive
+    
+    # Validate inputs only
     $SCRIPT_NAME explore test-topic --validate
 
 EOF

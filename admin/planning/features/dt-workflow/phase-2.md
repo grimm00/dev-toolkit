@@ -907,10 +907,10 @@ These tasks integrate enhanced templates into dt-workflow.
 **TDD Flow:**
 
 1. **RED - Write integration test for full chain:**
-   - [ ] Test creates exploration, then research, then decision
-   - [ ] Test validates handoff files are generated at each stage
-   - [ ] Test validates context flows correctly between stages
-   - [ ] Verify test fails (not all workflows implemented)
+   - [x] Test creates exploration, then research, then decision
+   - [x] Test validates handoff files are generated at each stage
+   - [x] Test validates context flows correctly between stages
+   - [x] Verify test fails (tests written, now passing after implementation)
 
    **Test:**
    ```bash
@@ -942,21 +942,21 @@ These tasks integrate enhanced templates into dt-workflow.
    ```
 
 2. **GREEN - Ensure all components work together:**
-   - [ ] All workflows produce expected output
-   - [ ] Handoff files are correctly referenced
-   - [ ] Context flows between stages
-   - [ ] Verify test passes
+   - [x] All workflows produce expected output (explore, research, decision)
+   - [x] Handoff files are correctly referenced (research-topics.md, research-summary.md, decisions-summary.md)
+   - [x] Context flows between stages (--from-explore, --from-research flags working)
+   - [x] Verify test passes (all 2 integration tests passing)
 
 3. **REFACTOR:**
-   - [ ] Add error handling for partial chains
-   - [ ] Document chain workflow in help text
-   - [ ] Add examples to documentation
+   - [x] Add error handling for partial chains (error messages already in place via parse_from_explore/parse_from_research)
+   - [x] Document chain workflow in help text (full workflow chain example added)
+   - [x] Add examples to documentation (help text includes chain examples)
 
 **Checklist:**
-- [ ] Integration test written
-- [ ] Full chain working
-- [ ] Context flows correctly
-- [ ] Test passing
+- [x] Integration test written (RED phase complete)
+- [x] Full chain working (GREEN phase complete)
+- [x] Context flows correctly (explore→research→decision chain validated)
+- [x] Test passing (all 2 integration tests passing)
 
 ---
 
