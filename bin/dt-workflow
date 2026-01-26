@@ -76,6 +76,23 @@ get_recommended_model() {
 
 apply_context_profile() {
     # Apply context profile settings (FR-7)
+    #
+    # Profiles control which context sections are included in output:
+    # - INCLUDE_RULES: Cursor rules (always included for critical guidance)
+    # - INCLUDE_PROJECT_IDENTITY: Project roadmap, admin structure (can be skipped)
+    # - INCLUDE_WORKFLOW_CONTEXT: Workflow-specific context (always included)
+    #
+    # Profile Definitions:
+    # - default: All context (backward compatible, current behavior)
+    # - minimal: Rules + workflow context only (reduces token usage)
+    # - full: All context + future additions (extensibility point)
+    #
+    # Extension Points (Future):
+    # - Config file support: Read custom profiles from config file
+    #   Format: JSON/YAML with profile definitions
+    #   Location: config/dt-workflow-profiles.json (or similar)
+    # - Additional context types: Git history, related docs, etc.
+    #
     # Parameters:
     #   $1 - Profile name (default, minimal, full)
     # Sets global variables: INCLUDE_RULES, INCLUDE_PROJECT_IDENTITY, INCLUDE_WORKFLOW_CONTEXT
@@ -84,20 +101,28 @@ apply_context_profile() {
     
     case "$profile" in
         default)
+            # Full context: Rules + Project Identity + Workflow Context
+            # Use when: Need complete context for complex workflows
             INCLUDE_RULES=true
             INCLUDE_PROJECT_IDENTITY=true
             INCLUDE_WORKFLOW_CONTEXT=true
             ;;
         minimal)
+            # Minimal context: Rules + Workflow Context only
+            # Use when: Token limits or quick iterations
+            # Skips: Project identity (roadmap, admin structure)
             INCLUDE_RULES=true
             INCLUDE_PROJECT_IDENTITY=false
             INCLUDE_WORKFLOW_CONTEXT=true
             ;;
         full)
+            # Extended context: All + future additions
+            # Use when: Need maximum context (future: additional context types)
+            # Currently same as default, but extensible
             INCLUDE_RULES=true
             INCLUDE_PROJECT_IDENTITY=true
             INCLUDE_WORKFLOW_CONTEXT=true
-            # Future: additional context
+            # Future: Additional context types (git history, related docs, etc.)
             ;;
         *)
             dt_print_status "ERROR" "Unknown profile: $profile"
@@ -107,6 +132,7 @@ apply_context_profile() {
             echo "  minimal  - Rules only, skip project identity"
             echo "  full     - All context + additional (future)"
             echo ""
+            echo "💡 Future: Custom profiles via config file (see extension points)"
             exit 1
             ;;
     esac
@@ -1174,7 +1200,7 @@ Options:
     --validate        Validate inputs without generating output (L1/L2/L3 checks)
     --output FILE     Save output to file instead of stdout
     --project PATH    Project directory (default: current directory)
-    --profile NAME    Context profile (default, minimal, full) - Controls context inclusion
+    --profile NAME    Context profile: default (all), minimal (rules only), full (all + future)
     --help            Show this help message
     --version         Show version information
     --debug           Enable debug output
