@@ -175,20 +175,20 @@ dt-workflow explore <topic> --interactive
 **Steps:**
 
 1. **Read current research.md structure:**
-   - [ ] Review `.cursor/commands/research.md`
-   - [ ] Identify where dt-workflow integration fits
-   - [ ] Note existing workflow steps
+   - [x] Review `.cursor/commands/research.md`
+   - [x] Identify where dt-workflow integration fits
+   - [x] Note existing workflow steps
 
 2. **Add dt-workflow Integration section:**
-   - [ ] Add section "## dt-workflow Integration" after Configuration
-   - [ ] Document orchestrator pattern
-   - [ ] Show command: `dt-workflow research <topic> --from-explore --interactive`
-   - [ ] Document workflow chaining via `--from-explore` flag
+   - [x] Add section "## dt-workflow Integration" after Configuration
+   - [x] Document orchestrator pattern
+   - [x] Show command: `dt-workflow research <topic> --from-explore --interactive`
+   - [x] Document workflow chaining via `--from-explore` flag
 
 3. **Document context chaining:**
-   - [ ] Explain `--from-explore` auto-detection
-   - [ ] Show explicit path option: `--from-explore /path/to/exploration`
-   - [ ] Note: research-topics.md provides handoff context
+   - [x] Explain `--from-explore` auto-detection
+   - [x] Show explicit path option: `--from-explore /path/to/exploration`
+   - [x] Note: research-topics.md provides handoff context
 
 **Integration Section Template:**
 
@@ -626,7 +626,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 1: explore.md integration section | ✅ Complete | dt-workflow Integration section added |
 | Task 2: explore.md Setup Mode | ✅ Complete | Checklist and output section updated |
 | Task 3: explore.md Conduct Mode | ✅ Complete | Checklist updated with context refresh |
-| Task 4: research.md integration section | 🔴 Not Started | |
+| Task 4: research.md integration section | ✅ Complete | dt-workflow section with chaining docs |
 | Task 5: research.md Setup Mode | 🔴 Not Started | |
 | Task 6: research.md Conduct Mode | 🔴 Not Started | |
 | Task 7: decision.md integration section | 🔴 Not Started | |

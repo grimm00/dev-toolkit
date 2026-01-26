@@ -34,6 +34,57 @@ This command supports multiple project organization patterns:
 
 ---
 
+## dt-workflow Integration
+
+**Per ADR-004:** This command acts as an orchestrator, calling dt-workflow for core logic.
+
+### Command Invocation
+
+Before conducting research, run dt-workflow to gather context:
+
+```bash
+# Auto-detect exploration (looks for admin/explorations/<topic>/)
+dt-workflow research <topic> --from-explore --interactive
+
+# Or with explicit path
+dt-workflow research <topic> --from-explore /path/to/exploration --interactive
+
+# Example with output redirection
+mkdir -p admin/research/my-topic
+dt-workflow research my-topic --from-explore --interactive > admin/research/my-topic/research-doc-1.md
+```
+
+### What dt-workflow Provides
+
+1. **Chained Context:**
+   - Exploration context (from research-topics.md)
+   - Research questions to investigate
+   - Previous workflow handoff
+
+2. **Injected Context:**
+   - Cursor rules (.cursor/rules/*.mdc)
+   - Project identity (roadmap, admin structure)
+
+3. **Structure Template:**
+   - Research template with structural examples
+   - Required markers for completeness
+   - Handoff guidance for decision workflow
+
+### Integration Workflow
+
+```
+User runs: /research my-topic --from-explore
+
+Cursor Command (orchestrator):
+  1. dt-workflow research my-topic --from-explore --interactive
+     → Outputs: Context + research template
+  2. Create research directory structure
+  3. Apply template to create research documents
+  4. AI expands with actual research
+```
+
+---
+
 ## Workflow Overview
 
 **When to use:**
