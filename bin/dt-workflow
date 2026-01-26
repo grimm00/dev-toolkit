@@ -408,13 +408,28 @@ EOF
 # ============================================================================
 
 validate_inputs() {
+    # Validate workflow inputs using tiered validation levels (L1/L2/L3)
+    # Parameters:
+    #   $1 - Workflow type (explore, research, decision)
+    #   $2 - Topic name
+    #   $3 - Project directory (default: current directory)
+    #   $4 - Validation level: L1 (existence), L2 (structure), L3 (content), or "all"
+    #   $5 - Exit on failure: "true" (exit 1) or "false" (return 1)
+    # Returns: 0 on success, 1 on failure (if exit_on_fail=false)
+    #
+    # Validation Levels:
+    # - L1: Existence checks (hard fail) - Required directories/files must exist
+    # - L2: Structure checks (warn, proceed) - Expected sections/format may be missing
+    # - L3: Content checks (warn, allow continue) - Content quality/completeness warnings
+    # This tiered approach allows graceful degradation while catching critical issues early.
+    
     local workflow="$1"
     local topic="$2"
     local project_dir="${3:-.}"
     local validation_level="${4:-L1}"
     local exit_on_fail="${5:-true}"
     
-    # L1: Existence checks (hard fail)
+    # L1: Existence checks (hard fail) - Block execution if prerequisites missing
     if [ "$validation_level" = "L1" ] || [ "$validation_level" = "all" ]; then
         # Check project directory exists
         if [ ! -d "$project_dir" ]; then
@@ -461,7 +476,7 @@ validate_inputs() {
         esac
     fi
     
-    # L2: Structure checks (warn, proceed)
+    # L2: Structure checks (warn, proceed) - Missing expected sections but can continue
     if [ "$validation_level" = "L2" ] || [ "$validation_level" = "all" ]; then
         case "$workflow" in
             research)
@@ -476,7 +491,7 @@ validate_inputs() {
         esac
     fi
     
-    # L3: Content checks (warn, allow continue)
+    # L3: Content checks (warn, allow continue) - Quality/completeness warnings only
     if [ "$validation_level" = "L3" ] || [ "$validation_level" = "all" ]; then
         case "$workflow" in
             research)
@@ -517,15 +532,29 @@ estimate_tokens() {
 }
 
 # ============================================================================
-# MAIN OUTPUT (Updated with Research Findings)
+# OUTPUT GENERATION
 # ============================================================================
 
 output_for_ai() {
+    # Generate formatted output for AI consumption with explicit context injection
+    # Parameters:
+    #   $1 - Workflow type (explore, research, decision)
+    #   $2 - Topic name
+    #   $3 - Project directory (default: current directory)
+    # Returns: Markdown-formatted output with context and task structure
+    # 
+    # Context Ordering Rationale (per ADR-002):
+    # - START: Critical rules (highest attention) - AI must follow these
+    # - MIDDLE: Background context (lower attention) - Reference material
+    # - END: Task + Instructions (high attention) - What AI should do
+    # This ordering addresses "lost in middle" problem where important info
+    # placed in middle gets less attention from LLMs.
+    
     local workflow="$1"
     local topic="$2"
     local project_dir="${3:-.}"
     
-    # Capture output for token counting
+    # Capture output for token counting (Research Finding: FR-5)
     local output_buffer
     output_buffer=$(mktemp)
     
@@ -547,6 +576,7 @@ output_for_ai() {
         
         # ====================================================================
         # START: Critical Rules (Highest Attention - Research Finding)
+        # Placed at START to ensure maximum AI attention (ADR-002)
         # ====================================================================
         echo "## 🔴 CRITICAL RULES (START - Highest Attention)"
         echo ""
