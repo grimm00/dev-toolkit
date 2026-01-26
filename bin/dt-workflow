@@ -503,6 +503,87 @@ HANDOFF_EOF
     echo ""
 }
 
+generate_decision_structure() {
+    local topic="$1"
+    local project_dir="${2:-.}"
+    
+    # Find templates directory
+    local templates_root
+    templates_root=$(dt_find_templates) || {
+        dt_print_status "ERROR" "Templates not found - templates are required for structure generation"
+        dt_print_debug "Template search failed - templates must be available"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are installed or DT_TEMPLATES_PATH is set"
+        echo ""
+        echo "Expected locations:"
+        echo "  - \$HOME/Projects/dev-infra/scripts/doc-gen/templates"
+        echo "  - \$HOME/dev-infra/scripts/doc-gen/templates"
+        echo "  - Or set DT_TEMPLATES_PATH environment variable"
+        return 1
+    }
+    
+    dt_print_debug "Using templates from: $templates_root"
+    
+    # Auto-detect ADR number from existing ADRs (or default to 001)
+    local adr_number="001"
+    local decisions_dir="$project_dir/admin/decisions/$topic"
+    if [ -d "$decisions_dir" ]; then
+        local existing_adrs
+        existing_adrs=$(find "$decisions_dir" -name "adr-*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+        if [ "$existing_adrs" -gt 0 ]; then
+            # Increment: find highest ADR number and add 1
+            local highest_adr
+            highest_adr=$(find "$decisions_dir" -name "adr-*.md" -type f 2>/dev/null | sed 's/.*adr-\([0-9]*\)\.md/\1/' | sort -n | tail -1)
+            if [ -n "$highest_adr" ]; then
+                adr_number=$(printf "%03d" $((highest_adr + 1)))
+            fi
+        fi
+    fi
+    
+    # Set template variables
+    dt_set_decision_vars "$topic" "$adr_number" "Decision for $topic" "Decisions for $topic"
+    dt_print_debug "Set decision variables for topic: $topic, ADR: $adr_number"
+    
+    echo "## Generated Structure"
+    echo ""
+    echo "### Files to Create"
+    echo ""
+    echo "The following files should be created in \`admin/decisions/$topic/\`:"
+    echo ""
+    
+    # Render adr.md template
+    local adr_template
+    adr_template=$(dt_get_template_path "adr" "adr" "$templates_root")
+    dt_print_debug "ADR template path: $adr_template"
+    
+    if [ -f "$adr_template" ]; then
+        echo "#### adr-${adr_number}.md (Architectural Decision Record)"
+        echo ""
+        echo '```markdown'
+        local temp_output
+        temp_output=$(mktemp)
+        if dt_render_template "$adr_template" "$temp_output" "adr" 2>/dev/null; then
+            cat "$temp_output"
+            dt_print_debug "Successfully rendered ADR template"
+        else
+            # Template rendering failed - templates are required
+            dt_print_status "ERROR" "Template rendering failed for: $adr_template"
+            dt_print_debug "Template rendering failed - check template file and variables"
+            rm -f "$temp_output"
+            return 1
+        fi
+        rm -f "$temp_output"
+        echo '```'
+        echo ""
+    else
+        dt_print_status "ERROR" "ADR template not found: $adr_template"
+        dt_print_debug "Template file missing: $adr_template"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are properly installed"
+        return 1
+    fi
+}
+
 # ============================================================================
 # VALIDATION (L1/L2/L3 Levels)
 # ============================================================================
@@ -719,6 +800,13 @@ output_for_ai() {
                 echo "Fill in the placeholders with thoughtful analysis based on the context provided."
                 echo ""
                 generate_research_structure "$topic"
+                ;;
+            decision)
+                echo "Create a decision document (ADR) for **$topic** using the structure below."
+                echo ""
+                echo "Fill in the placeholders with thoughtful analysis based on the context provided."
+                echo ""
+                generate_decision_structure "$topic" "$project_dir"
                 ;;
             *)
                 echo "Workflow '$workflow' structure generation not yet implemented."

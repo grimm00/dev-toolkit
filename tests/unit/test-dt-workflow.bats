@@ -484,6 +484,90 @@ teardown() {
 }
 
 # ============================================================================
+# Task 10: Decision Structure Generation Tests (RED)
+# ============================================================================
+
+@test "dt-workflow decision generates ADR structure via template" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Create research directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # ADR structure sections
+    grep -q "## Context" "$TEST_OUTPUT" || grep -q "## Decision" "$TEST_OUTPUT" || {
+        echo "FAIL: ADR structure sections not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "## Consequences" "$TEST_OUTPUT" || grep -q "## Alternatives Considered" "$TEST_OUTPUT" || {
+        echo "FAIL: ADR structure sections not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow decision uses template rendering" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Create research directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check for template-rendered content (AI placeholders)
+    grep -q "<!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: AI placeholders not found (should be from template)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for REQUIRED markers (from enhanced templates)
+    grep -q "<!-- REQUIRED:" "$TEST_OUTPUT" || {
+        echo "FAIL: REQUIRED markers not found (should be from enhanced template)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow decision substitutes template variables correctly" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Create research directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/research/my-decision-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/my-decision-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision my-decision-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check that topic name is substituted in output
+    grep -q "my-decision-topic" "$TEST_OUTPUT" || grep -q "My Decision Topic" "$TEST_OUTPUT" || {
+        echo "FAIL: Topic name not substituted in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for date substitution (should be current date format)
+    grep -qE "[0-9]{4}-[0-9]{2}-[0-9]{2}" "$TEST_OUTPUT" || {
+        echo "FAIL: Date not substituted in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 
