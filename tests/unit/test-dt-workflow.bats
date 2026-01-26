@@ -69,3 +69,45 @@ teardown() {
     [ "$status" -eq 0 ]
     [[ "$output" =~ "version" ]]
 }
+
+# ============================================================================
+# Task 3: Input Validation Tests (TDD)
+# ============================================================================
+
+@test "dt-workflow requires workflow argument" {
+    run "$DT_WORKFLOW"
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Workflow type is required" ]]
+    [[ "$output" =~ "💡" ]]  # Actionable suggestion
+}
+
+@test "dt-workflow requires topic argument" {
+    run "$DT_WORKFLOW" explore
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Topic is required" ]]
+    [[ "$output" =~ "💡" ]]
+}
+
+@test "dt-workflow rejects unknown workflow" {
+    run "$DT_WORKFLOW" unknown-workflow test-topic --interactive
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Unknown workflow" ]]
+}
+
+@test "dt-workflow requires --interactive in Phase 1" {
+    run "$DT_WORKFLOW" explore test-topic
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Phase 1 requires --interactive" ]]
+}
+
+@test "dt-workflow --validate checks L1 existence" {
+    run "$DT_WORKFLOW" research nonexistent-topic --validate --project "$TEST_PROJECT"
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Exploration directory not found" ]]
+}
+
+@test "dt-workflow --validate passes for explore (no prereqs)" {
+    run "$DT_WORKFLOW" explore test-topic --validate --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "L1 checks passed" ]]
+}
