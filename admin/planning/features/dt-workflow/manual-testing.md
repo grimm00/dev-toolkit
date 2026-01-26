@@ -730,10 +730,10 @@ echo "- Custom finding" >> custom/research/test-topic/research-summary.md
 
 3. **Verify required markers are present:**
    ```bash
-   ./bin/dt-workflow research test-template --interactive | grep "<!-- REQUIRED:"
-   ./bin/dt-workflow decision test-template --interactive | grep "<!-- REQUIRED:"
+   ./bin/dt-workflow research test-template --interactive | grep "REQUIRED:"
+   ./bin/dt-workflow decision test-template --interactive | grep "REQUIRED:"
    ```
-   Expected: Multiple required markers found
+   Expected: Multiple required markers found (lines containing `<!-- REQUIRED: -->`)
 
 **Expected Result:** 
 - ✅ No heredoc artifacts in template output sections
