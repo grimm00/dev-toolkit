@@ -153,6 +153,40 @@ Cursor Command (orchestrator):
 
 ## Step-by-Step Process
 
+### 0. Run dt-workflow (Setup Mode)
+
+**Before creating structure, gather context:**
+
+```bash
+# Verify exploration exists and get context
+dt-workflow research <topic> --from-explore --interactive
+
+# Or with explicit exploration path
+dt-workflow research <topic> --from-explore /path/to/exploration --interactive
+```
+
+**What dt-workflow provides:**
+- Validates exploration prerequisites (research-topics.md exists)
+- Provides chained context from exploration
+- Provides research template structure
+- Outputs injected context (rules, project identity)
+
+**Error Handling:**
+
+If exploration doesn't exist, dt-workflow will report:
+```
+Error: Exploration not found for topic '<topic>'
+Expected: admin/explorations/<topic>/research-topics.md
+```
+
+**Setup Mode Checklist:**
+
+- [ ] dt-workflow context gathered (`dt-workflow research <topic> --from-explore --interactive`)
+- [ ] Prerequisites validated (exploration exists)
+- [ ] Chained context available (research-topics.md read)
+
+---
+
 ### 1. Identify Research Source
 
 **Determine input source:**
@@ -162,6 +196,7 @@ Cursor Command (orchestrator):
    - **Template Structure:** Read `docs/maintainers/planning/explorations/[explore-topic]/research-topics.md`
    - Extract research topics/questions
    - Use explore-topic as research topic name (or use --topic to override)
+   - **Note:** dt-workflow already validated this in Step 0
 
 2. **From Reflection (`--from-reflect`):**
    - Read reflection document

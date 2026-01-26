@@ -249,18 +249,18 @@ dt-workflow research <topic> --from-explore /path/to/exploration --interactive
 **Steps:**
 
 1. **Add dt-workflow as first step:**
-   - [ ] Document invocation before creating structure
-   - [ ] Show how to verify exploration exists first
-   - [ ] Note auto-detection behavior
+   - [x] Document invocation before creating structure
+   - [x] Show how to verify exploration exists first
+   - [x] Note auto-detection behavior
 
 2. **Update prerequisite checking:**
-   - [ ] Can use `dt-workflow research --validate` to check prerequisites
-   - [ ] Document error handling when exploration missing
+   - [x] Can use `dt-workflow research --validate` to check prerequisites
+   - [x] Document error handling when exploration missing
 
 **Checklist:**
-- [ ] Setup Mode updated
-- [ ] Prerequisites documented
-- [ ] Validation option documented
+- [x] Setup Mode updated
+- [x] Prerequisites documented
+- [x] Validation option documented
 
 ---
 
@@ -627,7 +627,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 2: explore.md Setup Mode | ✅ Complete | Checklist and output section updated |
 | Task 3: explore.md Conduct Mode | ✅ Complete | Checklist updated with context refresh |
 | Task 4: research.md integration section | ✅ Complete | dt-workflow section with chaining docs |
-| Task 5: research.md Setup Mode | 🔴 Not Started | |
+| Task 5: research.md Setup Mode | ✅ Complete | Step 0 with checklist and error handling |
 | Task 6: research.md Conduct Mode | 🔴 Not Started | |
 | Task 7: decision.md integration section | 🔴 Not Started | |
 | Task 8: decision.md process steps | 🔴 Not Started | |
