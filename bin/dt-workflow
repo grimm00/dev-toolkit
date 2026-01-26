@@ -77,10 +77,13 @@ get_recommended_model() {
 apply_context_profile() {
     # Apply context profile settings (FR-7)
     #
-    # Profiles control which context sections are included in output:
-    # - INCLUDE_RULES: Cursor rules (always included for critical guidance)
-    # - INCLUDE_PROJECT_IDENTITY: Project roadmap, admin structure (can be skipped)
-    # - INCLUDE_WORKFLOW_CONTEXT: Workflow-specific context (always included)
+    # Profiles control which context sections are included in output.
+    # Note: Rules and workflow context are always included (critical for AI guidance).
+    # Only project identity is configurable.
+    #
+    # Configurable via INCLUDE_PROJECT_IDENTITY:
+    # - true: Include project roadmap, admin structure
+    # - false: Skip project identity (reduces token usage)
     #
     # Profile Definitions:
     # - default: All context (backward compatible, current behavior)
@@ -95,7 +98,7 @@ apply_context_profile() {
     #
     # Parameters:
     #   $1 - Profile name (default, minimal, full)
-    # Sets global variables: INCLUDE_RULES, INCLUDE_PROJECT_IDENTITY, INCLUDE_WORKFLOW_CONTEXT
+    # Sets global variable: INCLUDE_PROJECT_IDENTITY
     
     local profile="${1:-default}"
     
@@ -103,25 +106,19 @@ apply_context_profile() {
         default)
             # Full context: Rules + Project Identity + Workflow Context
             # Use when: Need complete context for complex workflows
-            INCLUDE_RULES=true
             INCLUDE_PROJECT_IDENTITY=true
-            INCLUDE_WORKFLOW_CONTEXT=true
             ;;
         minimal)
             # Minimal context: Rules + Workflow Context only
             # Use when: Token limits or quick iterations
             # Skips: Project identity (roadmap, admin structure)
-            INCLUDE_RULES=true
             INCLUDE_PROJECT_IDENTITY=false
-            INCLUDE_WORKFLOW_CONTEXT=true
             ;;
         full)
             # Extended context: All + future additions
             # Use when: Need maximum context (future: additional context types)
             # Currently same as default, but extensible
-            INCLUDE_RULES=true
             INCLUDE_PROJECT_IDENTITY=true
-            INCLUDE_WORKFLOW_CONTEXT=true
             # Future: Additional context types (git history, related docs, etc.)
             ;;
         *)
