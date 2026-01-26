@@ -2,59 +2,507 @@
 
 **Phase:** 4 - Enhancement  
 **Duration:** 8-10 hours  
-**Status:** 🔴 Scaffolding (needs expansion)  
+**Status:** ✅ Expanded  
 **Prerequisites:** Phase 3 complete
+**Last Updated:** 2026-01-26
 
 ---
 
 ## 📋 Overview
 
-Add advanced features including model recommendations, context profiles, and prepare for Phase 2/3 evolution (config-assisted and automated modes).
+Add advanced features including model recommendations, context profiles, --dry-run flag, and performance optimizations. Document evolution path for future config-assisted and automated modes.
 
-**Success Definition:** Enhanced dt-workflow with model recommendations, configurable context, and documented evolution path.
+**Success Definition:** Enhanced dt-workflow with model recommendations, configurable context, performance benchmarks, and documented evolution path.
 
 ---
 
 ## 🎯 Goals
 
-1. **Model Recommendations** - Output recommended model per workflow type
-2. **Context Profiles** - Configurable context sets
-3. **Performance** - Optimize for speed and token efficiency
-4. **Evolution Path** - Document Phase 2/3 preparation
+1. **Model Recommendations** - Output recommended model per workflow type (FR-6)
+2. **Context Profiles** - Configurable context sets (FR-7)
+3. **Dry Run Mode** - Preview output without full generation
+4. **Performance** - Optimize for speed and token efficiency (NFR-2, NFR-3)
+5. **Evolution Path** - Document Phase 2/3 preparation
 
 ---
 
 ## 📝 Tasks
 
-> **Scaffolding:** Run `/transition-plan dt-workflow --expand --phase 4` to add detailed TDD tasks.
+### Task Group 1: Model Recommendations (2-3 hours)
 
-### Task Categories
+#### Task 1: Write Model Recommendation Tests (TDD - RED)
 
-- [ ] **Model Recommendations** - Add recommended model to output (FR-6)
-- [ ] **Context Profiles** - Implement configurable context sets (FR-7)
-- [ ] **--dry-run Flag** - Preview output without full generation
-- [ ] **Performance Optimization** - Measure and optimize speed
-- [ ] **Evolution Documentation** - Document Phase 2/3 path
+**Purpose:** Test model recommendation output per workflow type.
+
+**Steps:**
+
+1. **Create test file:**
+   - [ ] Create `tests/unit/test-model-recommendations.bats`
+   - [ ] Add test helper setup
+
+2. **Write tests for model recommendations:**
+   - [ ] Test explore workflow recommends appropriate model
+   - [ ] Test research workflow recommends appropriate model
+   - [ ] Test decision workflow recommends appropriate model
+   - [ ] Test recommendation appears in output header
+
+**Test examples:**
+
+```bash
+@test "explore workflow recommends model in output" {
+    run "$DT_WORKFLOW" explore test-topic --interactive
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Recommended Model:" ]]
+}
+
+@test "research workflow recommends model in output" {
+    run "$DT_WORKFLOW" research test-topic --interactive
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Recommended Model:" ]]
+}
+
+@test "decision workflow recommends model in output" {
+    run "$DT_WORKFLOW" decision test-topic --interactive
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Recommended Model:" ]]
+}
+```
+
+**Checklist:**
+- [ ] Test file created
+- [ ] Tests written for all workflow types
+- [ ] Tests run and FAIL (RED phase complete)
+
+---
+
+#### Task 2: Implement Model Recommendations (TDD - GREEN)
+
+**Purpose:** Add model recommendation to dt-workflow output.
+
+**Steps:**
+
+1. **Add model recommendation function:**
+   - [ ] Create `get_recommended_model()` function in dt-workflow
+   - [ ] Return model based on workflow type
+   - [ ] Consider output size (explore=smaller, decision=larger)
+
+2. **Add to output header:**
+   - [ ] Include recommendation in output header section
+   - [ ] Format: `Recommended Model: [model-name]`
+   - [ ] Add brief rationale
+
+**Implementation example:**
+
+```bash
+get_recommended_model() {
+    local workflow="$1"
+    case "$workflow" in
+        explore)
+            echo "claude-3-5-sonnet (fast iteration, good for brainstorming)"
+            ;;
+        research)
+            echo "claude-3-5-sonnet (balanced analysis)"
+            ;;
+        decision)
+            echo "claude-3-opus (complex reasoning for ADRs)"
+            ;;
+        *)
+            echo "claude-3-5-sonnet (general purpose)"
+            ;;
+    esac
+}
+```
+
+**Checklist:**
+- [ ] Function implemented
+- [ ] Output includes recommendation
+- [ ] All tests PASS (GREEN phase complete)
+
+---
+
+#### Task 3: Refactor Model Recommendations (TDD - REFACTOR)
+
+**Purpose:** Clean up and document model recommendation feature.
+
+**Steps:**
+
+1. **Extract configuration:**
+   - [ ] Consider making recommendations configurable
+   - [ ] Add comments explaining rationale
+
+2. **Update documentation:**
+   - [ ] Add to dt-workflow --help output
+   - [ ] Document in TEMPLATE-VARIABLES.md
+
+**Checklist:**
+- [ ] Code reviewed for improvements
+- [ ] Tests still pass
+- [ ] Documentation updated
+
+---
+
+### Task Group 2: Context Profiles (2-3 hours)
+
+#### Task 4: Write Context Profile Tests (TDD - RED)
+
+**Purpose:** Test configurable context profiles.
+
+**Steps:**
+
+1. **Write tests for context profiles:**
+   - [ ] Test default profile includes all context
+   - [ ] Test --profile flag accepts profile name
+   - [ ] Test minimal profile excludes optional context
+   - [ ] Test custom profile from config file
+
+**Test examples:**
+
+```bash
+@test "default profile includes all context" {
+    run "$DT_WORKFLOW" explore test-topic --interactive
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "CRITICAL RULES" ]]
+    [[ "$output" =~ "PROJECT IDENTITY" ]]
+}
+
+@test "--profile minimal reduces context" {
+    run "$DT_WORKFLOW" explore test-topic --interactive --profile minimal
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "CRITICAL RULES" ]]
+    # Minimal profile skips optional context
+}
+
+@test "--profile flag validates profile name" {
+    run "$DT_WORKFLOW" explore test-topic --interactive --profile nonexistent
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Unknown profile" ]]
+}
+```
+
+**Checklist:**
+- [ ] Tests written for profile functionality
+- [ ] Tests run and FAIL (RED phase complete)
+
+---
+
+#### Task 5: Implement Context Profiles (TDD - GREEN)
+
+**Purpose:** Add configurable context profiles.
+
+**Steps:**
+
+1. **Define profile structure:**
+   - [ ] `default` - All context (current behavior)
+   - [ ] `minimal` - Rules only, skip project identity
+   - [ ] `full` - All context + additional (future)
+
+2. **Add --profile flag:**
+   - [ ] Parse --profile argument
+   - [ ] Validate profile name
+   - [ ] Apply profile to context selection
+
+3. **Implement profile logic:**
+   - [ ] Modify context injection based on profile
+   - [ ] Keep backward compatibility (default = current)
+
+**Implementation example:**
+
+```bash
+apply_context_profile() {
+    local profile="${1:-default}"
+    
+    case "$profile" in
+        default)
+            INCLUDE_RULES=true
+            INCLUDE_PROJECT_IDENTITY=true
+            INCLUDE_WORKFLOW_CONTEXT=true
+            ;;
+        minimal)
+            INCLUDE_RULES=true
+            INCLUDE_PROJECT_IDENTITY=false
+            INCLUDE_WORKFLOW_CONTEXT=true
+            ;;
+        full)
+            INCLUDE_RULES=true
+            INCLUDE_PROJECT_IDENTITY=true
+            INCLUDE_WORKFLOW_CONTEXT=true
+            # Future: additional context
+            ;;
+        *)
+            echo "❌ Unknown profile: $profile" >&2
+            return 1
+            ;;
+    esac
+}
+```
+
+**Checklist:**
+- [ ] Profile structure defined
+- [ ] --profile flag implemented
+- [ ] All tests PASS (GREEN phase complete)
+
+---
+
+#### Task 6: Refactor Context Profiles (TDD - REFACTOR)
+
+**Purpose:** Clean up and make profiles extensible.
+
+**Steps:**
+
+1. **Consider config file support:**
+   - [ ] Design config format for custom profiles
+   - [ ] Document extension points
+
+2. **Update help text:**
+   - [ ] Add --profile to --help output
+   - [ ] List available profiles
+
+**Checklist:**
+- [ ] Code reviewed for improvements
+- [ ] Tests still pass
+- [ ] Help text updated
+
+---
+
+### Task Group 3: Dry Run Mode (1-2 hours)
+
+#### Task 7: Write Dry Run Tests (TDD - RED)
+
+**Purpose:** Test --dry-run flag functionality.
+
+**Steps:**
+
+1. **Write tests for dry run:**
+   - [ ] Test --dry-run shows preview without full output
+   - [ ] Test --dry-run shows what would be included
+   - [ ] Test --dry-run completes quickly
+
+**Test examples:**
+
+```bash
+@test "--dry-run shows preview only" {
+    run "$DT_WORKFLOW" explore test-topic --dry-run
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Dry Run Preview" ]]
+    [[ "$output" =~ "Would include:" ]]
+    # Should NOT include full template content
+    [[ ! "$output" =~ "# dt-workflow Output:" ]]
+}
+
+@test "--dry-run completes quickly" {
+    start=$(date +%s%N)
+    run "$DT_WORKFLOW" explore test-topic --dry-run
+    end=$(date +%s%N)
+    duration=$(( (end - start) / 1000000 )) # ms
+    [ "$duration" -lt 500 ]
+}
+```
+
+**Checklist:**
+- [ ] Tests written for dry run
+- [ ] Tests run and FAIL (RED phase complete)
+
+---
+
+#### Task 8: Implement Dry Run Mode (TDD - GREEN)
+
+**Purpose:** Add --dry-run flag for preview.
+
+**Steps:**
+
+1. **Add --dry-run flag parsing:**
+   - [ ] Parse --dry-run argument
+   - [ ] Set DRY_RUN variable
+
+2. **Implement preview output:**
+   - [ ] Show workflow type
+   - [ ] Show what context would be included
+   - [ ] Show estimated output size
+   - [ ] Skip full template rendering
+
+**Implementation example:**
+
+```bash
+if [ "$DRY_RUN" = true ]; then
+    cat << EOF
+🔍 Dry Run Preview
+==================
+
+Workflow: $WORKFLOW
+Topic: $TOPIC
+
+Would include:
+- Cursor rules: $([ -d ".cursor/rules" ] && echo "Yes" || echo "No")
+- Project identity: $([ -f "admin/planning/roadmap.md" ] && echo "Yes" || echo "No")
+- Workflow template: Yes
+
+Profile: ${PROFILE:-default}
+Estimated output: ~${ESTIMATED_TOKENS:-5000} tokens
+
+Run without --dry-run to generate full output.
+EOF
+    exit 0
+fi
+```
+
+**Checklist:**
+- [ ] --dry-run flag implemented
+- [ ] Preview shows useful information
+- [ ] All tests PASS (GREEN phase complete)
+
+---
+
+### Task Group 4: Performance Optimization (1-2 hours)
+
+#### Task 9: Write Performance Tests (TDD - RED)
+
+**Purpose:** Test performance requirements.
+
+**Steps:**
+
+1. **Write performance tests:**
+   - [ ] Test context injection completes in <1 second (NFR-2)
+   - [ ] Test validation completes in <500ms (NFR-3)
+   - [ ] Test full output generation time
+
+**Test examples:**
+
+```bash
+@test "context injection under 1 second" {
+    start=$(date +%s%N)
+    run "$DT_WORKFLOW" explore test-topic --interactive 2>/dev/null
+    end=$(date +%s%N)
+    duration=$(( (end - start) / 1000000 )) # ms
+    [ "$duration" -lt 1000 ]
+}
+
+@test "validation under 500ms" {
+    start=$(date +%s%N)
+    run "$DT_WORKFLOW" explore --help
+    end=$(date +%s%N)
+    duration=$(( (end - start) / 1000000 )) # ms
+    [ "$duration" -lt 500 ]
+}
+```
+
+**Checklist:**
+- [ ] Performance tests written
+- [ ] Tests run and measure baseline
+
+---
+
+#### Task 10: Implement Performance Optimizations (TDD - GREEN)
+
+**Purpose:** Optimize dt-workflow for speed.
+
+**Steps:**
+
+1. **Profile current performance:**
+   - [ ] Measure context injection time
+   - [ ] Measure template rendering time
+   - [ ] Identify bottlenecks
+
+2. **Optimize if needed:**
+   - [ ] Cache repeated file reads
+   - [ ] Minimize subshell spawning
+   - [ ] Use built-in bash over external commands
+
+3. **Document benchmark results:**
+   - [ ] Record before/after times
+   - [ ] Add to phase documentation
+
+**Checklist:**
+- [ ] Performance profiled
+- [ ] Optimizations applied (if needed)
+- [ ] Performance tests PASS
+
+---
+
+### Task Group 5: Evolution Documentation (1 hour)
+
+#### Task 11: Document Evolution Path
+
+**Purpose:** Document future phases (config-assisted, automated modes).
+
+**Steps:**
+
+1. **Create evolution document:**
+   - [ ] Create `docs/dt-workflow-evolution.md`
+   - [ ] Document current Phase 1 (interactive) state
+   - [ ] Outline Phase 2 (config-assisted) vision
+   - [ ] Outline Phase 3 (automated) vision
+
+2. **Update related docs:**
+   - [ ] Reference in feature-plan.md
+   - [ ] Reference in README.md (if exists)
+
+**Evolution Document Structure:**
+
+```markdown
+# dt-workflow Evolution Path
+
+## Current: Phase 1 - Interactive Mode
+- Manual workflow initiation
+- AI-assisted content generation
+- Human-in-the-loop
+
+## Future: Phase 2 - Config-Assisted Mode
+- Configuration-based workflow triggers
+- Reduced manual steps
+- Semi-automated handoffs
+
+## Future: Phase 3 - Automated Mode
+- Full automation for routine workflows
+- Event-driven triggers
+- Minimal human intervention
+```
+
+**Checklist:**
+- [ ] Evolution document created
+- [ ] References added to related docs
+- [ ] Vision clearly documented
+
+---
+
+#### Task 12: Update Manual Testing Guide
+
+**Purpose:** Add Phase 4 test scenarios to manual testing guide.
+
+**Steps:**
+
+1. **Add Phase 4 scenarios:**
+   - [ ] Scenario 4.1: Model recommendation output
+   - [ ] Scenario 4.2: Context profile switching
+   - [ ] Scenario 4.3: Dry run preview
+   - [ ] Scenario 4.4: Performance verification
+
+**Checklist:**
+- [ ] Manual testing scenarios documented
+- [ ] All Phase 4 features covered
 
 ---
 
 ## ✅ Completion Criteria
 
-- [ ] Model recommendations included in output
-- [ ] Context profiles configurable via config file
-- [ ] --dry-run flag working
+- [ ] Model recommendations included in output for all workflows
+- [ ] Context profiles configurable via --profile flag
+- [ ] --dry-run flag shows preview without full generation
 - [ ] Context injection <1 second (NFR-2)
 - [ ] Validation <500ms (NFR-3)
-- [ ] Evolution path documented
+- [ ] Evolution path documented in `docs/dt-workflow-evolution.md`
+- [ ] All tests passing
+- [ ] Manual testing scenarios added
 
 ---
 
 ## 📦 Deliverables
 
-- Model recommendation feature
-- Context profile configuration
+- Model recommendation feature in dt-workflow output
+- Context profile system with --profile flag
+- --dry-run flag for preview mode
 - Performance benchmark results
-- `docs/dt-workflow-evolution.md` - Future phases
+- `docs/dt-workflow-evolution.md` - Future phases documentation
+- Updated manual-testing.md with Phase 4 scenarios
 
 ---
 
@@ -62,7 +510,7 @@ Add advanced features including model recommendations, context profiles, and pre
 
 ### Prerequisites
 
-- [ ] Phase 3 complete (Cursor integration)
+- [x] Phase 3 complete (Cursor integration)
 
 ### Blocks
 
@@ -71,14 +519,35 @@ Add advanced features including model recommendations, context profiles, and pre
 
 ---
 
+## 📊 Progress Tracking
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Task 1: Model recommendation tests (RED) | 🔴 Not Started | |
+| Task 2: Model recommendation impl (GREEN) | 🔴 Not Started | |
+| Task 3: Model recommendation refactor | 🔴 Not Started | |
+| Task 4: Context profile tests (RED) | 🔴 Not Started | |
+| Task 5: Context profile impl (GREEN) | 🔴 Not Started | |
+| Task 6: Context profile refactor | 🔴 Not Started | |
+| Task 7: Dry run tests (RED) | 🔴 Not Started | |
+| Task 8: Dry run impl (GREEN) | 🔴 Not Started | |
+| Task 9: Performance tests (RED) | 🔴 Not Started | |
+| Task 10: Performance optimization (GREEN) | 🔴 Not Started | |
+| Task 11: Evolution documentation | 🔴 Not Started | |
+| Task 12: Manual testing scenarios | 🔴 Not Started | |
+
+---
+
 ## 🔗 Related Documents
 
 - [Feature Hub](README.md)
+- [Feature Plan](feature-plan.md)
 - [Previous Phase: Phase 3](phase-3.md)
+- [Requirements](../../research/dt-workflow/requirements.md)
 - [Pattern 5: Phase-Based Evolution](../../../../docs/patterns/workflow-patterns.md)
 
 ---
 
-**Last Updated:** 2026-01-22  
-**Status:** 🔴 Scaffolding  
-**Next:** Expand with `/transition-plan dt-workflow --expand --phase 4`
+**Last Updated:** 2026-01-26  
+**Status:** ✅ Expanded  
+**Next:** Begin implementation with Task 1
