@@ -1,6 +1,8 @@
 #!/bin/bash
 # Template Rendering Functions for dt-doc-gen
 # Implements selective variable expansion per ADR-003
+#
+# Template Variables: See TEMPLATE-VARIABLES.md for complete variable documentation
 
 # ============================================================================
 # VARIABLE EXPANSION (per ADR-003)
