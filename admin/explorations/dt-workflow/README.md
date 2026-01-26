@@ -11,6 +11,7 @@
 
 - **[Exploration Document](exploration.md)** - Full exploration with theme analysis
 - **[Research Topics](research-topics.md)** - Prioritized research questions
+- **[Research Hub](../../research/dt-workflow/README.md)** - Active research documents
 
 ### Related Context
 
