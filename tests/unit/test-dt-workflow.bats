@@ -568,6 +568,81 @@ teardown() {
 }
 
 # ============================================================================
+# Task 11: Decision Context Gathering Tests (RED)
+# ============================================================================
+
+@test "dt-workflow decision includes research context" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create research
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    echo "## Key Findings" >> "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    grep -q "## Workflow-Specific Context" "$TEST_OUTPUT" || {
+        echo "FAIL: Workflow-Specific Context section not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "research-summary.md" "$TEST_OUTPUT" || grep -q "Research Summary" "$TEST_OUTPUT" || {
+        echo "FAIL: Research context not found in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow decision includes requirements.md if exists" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create research with requirements.md
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    echo "# Requirements" > "$TEST_PROJECT/admin/research/test-topic/requirements.md"
+    echo "FR-1: Some requirement" >> "$TEST_PROJECT/admin/research/test-topic/requirements.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should include requirements
+    grep -q "Requirements" "$TEST_OUTPUT" || grep -q "requirements.md" "$TEST_OUTPUT" || {
+        echo "FAIL: Requirements not found in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow decision discovers existing ADRs" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create research and existing ADRs
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    mkdir -p "$TEST_PROJECT/admin/decisions/test-topic"
+    echo "# ADR 001" > "$TEST_PROJECT/admin/decisions/test-topic/adr-001.md"
+    echo "# ADR 002" > "$TEST_PROJECT/admin/decisions/test-topic/adr-002.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should mention existing ADRs
+    grep -q "Existing ADRs" "$TEST_OUTPUT" || grep -q "adr-001.md" "$TEST_OUTPUT" || grep -q "adr-002.md" "$TEST_OUTPUT" || {
+        echo "FAIL: Existing ADRs not discovered"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 

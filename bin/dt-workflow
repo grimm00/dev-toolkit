@@ -166,10 +166,7 @@ gather_workflow_context() {
             gather_research_context "$topic" "$project_dir"
             ;;
         decision)
-            echo "### Decision Context"
-            echo ""
-            echo "*Decision-specific context (existing ADRs, research) would be gathered here*"
-            echo ""
+            gather_decision_context "$topic" "$project_dir"
             ;;
         *)
             echo "*No workflow-specific context defined for: $workflow*"
@@ -247,6 +244,82 @@ gather_research_context() {
         fi
     else
         dt_print_debug "Research directory not found: $research_dir (will be created)"
+    fi
+}
+
+gather_decision_context() {
+    local topic="$1"
+    local project_dir="${2:-.}"
+    
+    echo "### Decision Context"
+    echo ""
+    
+    # Check for research (upstream)
+    local research_dir="$project_dir/admin/research/$topic"
+    if [ -d "$research_dir" ]; then
+        echo "#### Research Summary (from research workflow)"
+        echo ""
+        
+        if [ -f "$research_dir/research-summary.md" ]; then
+            echo "**Source:** \`research-summary.md\` (handoff file per Pattern 4)"
+            echo ""
+            echo '```markdown'
+            # Limit to first 150 lines to avoid token bloat
+            head -150 "$research_dir/research-summary.md"
+            echo '```'
+            echo ""
+        else
+            dt_print_debug "Research summary not found: $research_dir/research-summary.md"
+        fi
+        
+        # Include requirements if exists
+        if [ -f "$research_dir/requirements.md" ]; then
+            echo "#### Requirements"
+            echo ""
+            echo "**Source:** \`requirements.md\`"
+            echo ""
+            cat "$research_dir/requirements.md"
+            echo ""
+        else
+            dt_print_debug "Requirements file not found: $research_dir/requirements.md"
+        fi
+    else
+        dt_print_debug "Research directory not found: $research_dir"
+    fi
+    
+    # Check for existing decisions
+    local decisions_dir="$project_dir/admin/decisions/$topic"
+    if [ -d "$decisions_dir" ]; then
+        echo "#### Existing ADRs"
+        echo ""
+        
+        local adr_files
+        adr_files=$(find "$decisions_dir" -maxdepth 1 -name "adr-*.md" -type f 2>/dev/null | sort)
+        
+        if [ -n "$adr_files" ]; then
+            local adr_count
+            adr_count=$(echo "$adr_files" | wc -l | tr -d ' ')
+            
+            if [ "$adr_count" -le 5 ]; then
+                # List all ADRs if 5 or fewer
+                echo "$adr_files" | while read -r f; do
+                    echo "- \`$(basename "$f")\`"
+                done
+            else
+                # Show summary if more than 5 ADRs
+                echo "**Found $adr_count ADRs:**"
+                echo ""
+                echo "$adr_files" | head -5 | while read -r f; do
+                    echo "- \`$(basename "$f")\`"
+                done
+                echo "- ... and $((adr_count - 5)) more"
+            fi
+            echo ""
+        else
+            dt_print_debug "No existing ADRs found in: $decisions_dir"
+        fi
+    else
+        dt_print_debug "Decisions directory not found: $decisions_dir (will be created)"
     fi
 }
 
