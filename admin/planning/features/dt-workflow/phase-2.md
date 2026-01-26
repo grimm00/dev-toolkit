@@ -107,7 +107,7 @@ Implement the research and decision workflows with enhanced templates. This phas
 - [Research: Template Structure](../../research/dt-workflow/research-template-structure.md)
 - [Research: Workflow I/O Specs](../../research/dt-workflow/research-workflow-io-specs.md)
 - [Pattern 4: Handoff File Contract](../../../../docs/patterns/workflow-patterns.md)
-- [Dev-Infra Templates](~/Projects/dev-infra/scripts/doc-gen/templates/)
+- Dev-Infra Templates: See `dev-infra` project's `scripts/doc-gen/templates/` directory
 
 ---
 
