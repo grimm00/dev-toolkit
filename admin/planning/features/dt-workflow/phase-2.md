@@ -985,19 +985,19 @@ These tasks integrate enhanced templates into dt-workflow.
 ## ✅ Completion Criteria
 
 ### Template Enhancement (ADR-006)
-- [ ] Dev-infra exploration templates enhanced with structural examples
-- [ ] Dev-infra research templates enhanced with structural examples
-- [ ] Dev-infra decision templates enhanced with structural examples
-- [ ] Template variable contract documented (FR-27)
-- [ ] dt-workflow uses render.sh instead of heredocs (NFR-7)
+- [x] Dev-infra exploration templates enhanced with structural examples (Task 1-2, dev-infra PR #64)
+- [x] Dev-infra research templates enhanced with structural examples (Task 1-2, dev-infra PR #64)
+- [x] Dev-infra decision templates enhanced with structural examples (Task 1-2, dev-infra PR #64)
+- [x] Template variable contract documented (FR-27) (Task 4, `lib/doc-gen/TEMPLATE-VARIABLES.md`)
+- [x] dt-workflow uses render.sh instead of heredocs (NFR-7) (Task 5, all workflows use render.sh)
 
 ### Workflow Implementation
-- [ ] `dt-workflow research topic --interactive` works
-- [ ] `dt-workflow decision topic --interactive` works
-- [ ] `dt-workflow research --from-explore topic --interactive` chains correctly
-- [ ] `dt-workflow decision --from-research topic --interactive` chains correctly
-- [ ] Handoff files generated with required sections
-- [ ] All tests passing
+- [x] `dt-workflow research topic --interactive` works (Task 7, research structure generation)
+- [x] `dt-workflow decision topic --interactive` works (Task 10, decision structure generation)
+- [x] `dt-workflow research --from-explore topic --interactive` chains correctly (Task 13, --from-explore flag)
+- [x] `dt-workflow decision --from-research topic --interactive` chains correctly (Task 14, --from-research flag)
+- [x] Handoff files generated with required sections (Tasks 9 & 12, research-summary.md and decisions-summary.md guidance)
+- [x] All tests passing (25 tests passing, including full workflow chain integration test)
 
 ---
 
