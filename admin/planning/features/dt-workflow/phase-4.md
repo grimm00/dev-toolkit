@@ -37,14 +37,14 @@ Add advanced features including model recommendations, context profiles, --dry-r
 **Steps:**
 
 1. **Create test file:**
-   - [ ] Create `tests/unit/test-model-recommendations.bats`
-   - [ ] Add test helper setup
+   - [x] Create `tests/unit/test-model-recommendations.bats`
+   - [x] Add test helper setup
 
 2. **Write tests for model recommendations:**
-   - [ ] Test explore workflow recommends appropriate model
-   - [ ] Test research workflow recommends appropriate model
-   - [ ] Test decision workflow recommends appropriate model
-   - [ ] Test recommendation appears in output header
+   - [x] Test explore workflow recommends appropriate model
+   - [x] Test research workflow recommends appropriate model
+   - [x] Test decision workflow recommends appropriate model
+   - [x] Test recommendation appears in output header
 
 **Test examples:**
 
@@ -69,9 +69,9 @@ Add advanced features including model recommendations, context profiles, --dry-r
 ```
 
 **Checklist:**
-- [ ] Test file created
-- [ ] Tests written for all workflow types
-- [ ] Tests run and FAIL (RED phase complete)
+- [x] Test file created
+- [x] Tests written for all workflow types
+- [x] Tests run and FAIL (RED phase complete)
 
 ---
 
@@ -82,14 +82,14 @@ Add advanced features including model recommendations, context profiles, --dry-r
 **Steps:**
 
 1. **Add model recommendation function:**
-   - [ ] Create `get_recommended_model()` function in dt-workflow
-   - [ ] Return model based on workflow type
-   - [ ] Consider output size (explore=smaller, decision=larger)
+   - [x] Create `get_recommended_model()` function in dt-workflow
+   - [x] Return model based on workflow type
+   - [x] Consider output size (explore=smaller, decision=larger)
 
 2. **Add to output header:**
-   - [ ] Include recommendation in output header section
-   - [ ] Format: `Recommended Model: [model-name]`
-   - [ ] Add brief rationale
+   - [x] Include recommendation in output header section
+   - [x] Format: `Recommended Model: [model-name]`
+   - [x] Add brief rationale
 
 **Implementation example:**
 
@@ -523,8 +523,8 @@ fi
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Task 1: Model recommendation tests (RED) | 🔴 Not Started | |
-| Task 2: Model recommendation impl (GREEN) | 🔴 Not Started | |
+| Task 1: Model recommendation tests (RED) | ✅ Complete | All tests pass |
+| Task 2: Model recommendation impl (GREEN) | ✅ Complete | Feature implemented |
 | Task 3: Model recommendation refactor | 🔴 Not Started | |
 | Task 4: Context profile tests (RED) | 🔴 Not Started | |
 | Task 5: Context profile impl (GREEN) | 🔴 Not Started | |
