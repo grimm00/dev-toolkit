@@ -99,16 +99,29 @@ From exploration analysis:
 
 ---
 
-### Finding 5: Decision Propagation Patterns (Topic 3) - NEW
+### Finding 5: Decision Propagation Patterns (Topic 3) ✅
 
-**Status:** 🔴 Research needed
+**Status:** ✅ Complete
 
-Decisions made here should inform future workflows:
-- Spike determination pattern
-- Explicit context injection pattern
-- Phase-based evolution pattern
+**Key findings:**
+- **Two-tier documentation approach:**
+  - Tier 1: Cursor rules (AI-discoverable, concise)
+  - Tier 2: docs/patterns/ (detailed, with rationale)
+  - Tier 3: ADRs (architecturally significant decisions)
 
-Where should these patterns be documented? How do we ensure future workflows follow them?
+- **5 Universal Patterns identified:**
+  1. Spike Determination (already in workflow.mdc)
+  2. Explicit Context Injection
+  3. L1/L2/L3 Validation Levels
+  4. Handoff File Contract
+  5. Phase-Based Evolution
+
+- **Pattern evolution process:**
+  Initiation → Consolidation → Documentation → Communication
+
+**Action items:**
+- Create `docs/patterns/workflow-patterns.md`
+- Add pattern checklist to `/explore` command
 
 **Source:** [research-decision-propagation.md](research-decision-propagation.md)
 
@@ -162,7 +175,7 @@ From exploration analysis:
 |---|----------------|----------|--------|---------------|
 | 1 | Context Gathering | 🔴 HIGH | ✅ Complete | Full injection validated |
 | 2 | Workflow I/O Specs | 🔴 HIGH | ✅ Complete | Handoff contracts defined |
-| 3 | Decision Propagation | 🔴 HIGH | 🔴 Not Started | **YES** - patterns |
+| 3 | Decision Propagation | 🔴 HIGH | ✅ Complete | Two-tier pattern system |
 | 4 | Component Decisions | 🟠 HIGH | 🟡 Analysis Ready | Quick decision |
 | 5 | Cursor Command Role | 🟡 MEDIUM | 🟡 Analysis Ready | Validate |
 | 6 | Model Selection | 🟡 MEDIUM | 🟡 Analysis Ready | Defer |

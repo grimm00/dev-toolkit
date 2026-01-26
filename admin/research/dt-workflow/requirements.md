@@ -181,6 +181,68 @@ These requirements are confirmed by spike implementation:
 
 ---
 
+### Decision Propagation Requirements (Research Complete)
+
+#### FR-14: Two-Tier Pattern Documentation
+
+**Description:** Universal patterns must be documented in both Cursor rules (Tier 1 - concise, AI-discoverable) and docs/patterns/ (Tier 2 - detailed with rationale)
+
+**Source:** [research-decision-propagation.md](research-decision-propagation.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-15: Pattern Checklist in Explore
+
+**Description:** `/explore` command must include pattern checklist step to verify compliance with established patterns
+
+**Source:** [research-decision-propagation.md](research-decision-propagation.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-16: Pattern Rationale Documentation
+
+**Description:** All pattern documentation must include rationale (why, not just what) using Y-statement or equivalent format
+
+**Source:** [research-decision-propagation.md](research-decision-propagation.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-17: Create Pattern Library
+
+**Description:** Create `docs/patterns/workflow-patterns.md` as centralized pattern library with the 5 identified patterns
+
+**Source:** [research-decision-propagation.md](research-decision-propagation.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-18: Pattern Evolution Process
+
+**Description:** Implement pattern evolution process: Initiation → Consolidation → Documentation → Communication
+
+**Source:** [research-decision-propagation.md](research-decision-propagation.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
 ### Pending Research Requirements
 
 ---
