@@ -3,7 +3,7 @@
 **Purpose:** Explicit documentation of all template variables used in dt-doc-gen templates  
 **Status:** ✅ Active  
 **Last Updated:** 2026-01-26  
-**Related:** FR-27, ADR-003
+**Related:** FR-27, ADR-003, FR-6
 
 ---
 
@@ -246,6 +246,35 @@ dt_render_template "$template_path" "$output_file" "adr"
 ```
 
 **Result:** Template rendered with `ADR_NUMBER="006"`, `DECISION_TITLE="Use REST API Pattern"`, etc.
+
+---
+
+## dt-workflow Output Fields
+
+**Note:** These are not template variables, but output fields included in dt-workflow output headers.
+
+### Model Recommendation (FR-6)
+
+**Field:** `**Recommended Model:**`  
+**Location:** Output header (after `**Generated:**` field)  
+**Purpose:** Recommend appropriate AI model for each workflow type
+
+**Recommendations by Workflow:**
+
+| Workflow | Recommended Model | Rationale |
+|----------|-------------------|-----------|
+| `explore` | claude-3-5-sonnet | Fast iteration, good for brainstorming |
+| `research` | claude-3-5-sonnet | Balanced analysis, cost-effective |
+| `decision` | claude-3-opus | Complex reasoning for ADRs |
+
+**Implementation:** Set via `get_recommended_model()` function in `bin/dt-workflow`
+
+**Example Output:**
+```markdown
+**Mode:** --interactive (Phase 1)
+**Generated:** 2026-01-26 14:30
+**Recommended Model:** claude-3-5-sonnet (fast iteration, good for brainstorming)
+```
 
 ---
 

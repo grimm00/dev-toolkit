@@ -33,6 +33,17 @@ dt_setup_colors
 
 get_recommended_model() {
     # Get recommended model for workflow type (FR-6)
+    # 
+    # Model recommendations are based on workflow characteristics:
+    # - explore: Fast iteration needed, brainstorming focus → Sonnet (speed + creativity)
+    # - research: Balanced analysis, moderate complexity → Sonnet (cost-effective)
+    # - decision: Complex reasoning, ADR quality critical → Opus (highest reasoning)
+    #
+    # Rationale:
+    # - Sonnet provides good balance of speed, cost, and quality for most workflows
+    # - Opus used for decisions where reasoning quality is paramount
+    # - Future: Could be made configurable via config file or --model flag
+    #
     # Parameters:
     #   $1 - Workflow type (explore, research, decision)
     # Returns: Model recommendation with brief rationale
@@ -41,15 +52,19 @@ get_recommended_model() {
     
     case "$workflow" in
         explore)
+            # Fast iteration and brainstorming benefit from Sonnet's speed
             echo "claude-3-5-sonnet (fast iteration, good for brainstorming)"
             ;;
         research)
+            # Balanced analysis doesn't require Opus-level reasoning
             echo "claude-3-5-sonnet (balanced analysis)"
             ;;
         decision)
+            # ADRs require complex reasoning - Opus provides best quality
             echo "claude-3-opus (complex reasoning for ADRs)"
             ;;
         *)
+            # Default to Sonnet for unknown workflows (general purpose)
             echo "claude-3-5-sonnet (general purpose)"
             ;;
     esac
@@ -1139,6 +1154,12 @@ Usage: $SCRIPT_NAME <workflow> <topic> [OPTIONS]
 Unified workflow orchestration for dev-toolkit. Orchestrates the
 exploration→research→decision workflow pipeline with explicit context injection.
 
+Features:
+    - Explicit context injection (Cursor rules, project identity)
+    - Model recommendations per workflow type (FR-6)
+    - Configurable context profiles (FR-7)
+    - Workflow chaining (--from-explore, --from-research)
+
 Workflows:
     explore           Start an exploration
     research          Conduct research (requires --from-explore)
@@ -1153,6 +1174,7 @@ Options:
     --validate        Validate inputs without generating output (L1/L2/L3 checks)
     --output FILE     Save output to file instead of stdout
     --project PATH    Project directory (default: current directory)
+    --profile NAME    Context profile (default, minimal, full) - Controls context inclusion
     --help            Show this help message
     --version         Show version information
     --debug           Enable debug output
