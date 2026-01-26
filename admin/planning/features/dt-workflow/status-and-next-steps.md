@@ -1,7 +1,7 @@
 # dt-workflow - Status and Next Steps
 
 **Feature:** dt-workflow - Unified Workflow Orchestration  
-**Status:** 🟠 In Progress (Phase 1 Merged, Ready for Phase 2)  
+**Status:** 🟠 In Progress (Phase 2 Complete, Ready for Phase 3)  
 **Last Updated:** 2026-01-26
 
 ---
@@ -19,7 +19,7 @@
 | Pattern Library | ✅ Complete | 5 patterns documented |
 | Transition Plan | ✅ Complete | 4 phases scaffolded |
 | Phase 1 | ✅ Complete | PR #32 merged (2026-01-26) |
-| Phase 2 | ✅ Expanded | Ready for implementation (15 tasks) |
+| Phase 2 | ✅ Complete | Ready for PR |
 | Phase 3 | 🔴 Scaffolding | Blocked by Phase 2 |
 | Phase 4 | 🔴 Scaffolding | Blocked by Phase 3 |
 
@@ -28,8 +28,8 @@
 | Phase | Status | Progress | Notes |
 |-------|--------|----------|-------|
 | Phase 1: Foundation | ✅ Complete | 100% | All 9 tasks complete (2026-01-26) |
-| Phase 2: Workflow Expansion | ✅ Expanded | 0% impl | Ready for implementation (15 tasks) |
-| Phase 3: Cursor Integration | 🔴 Scaffolding | 0% | Blocked by Phase 2 |
+| Phase 2: Workflow Expansion | ✅ Complete | 100% | All 15 tasks complete (2026-01-26) |
+| Phase 3: Cursor Integration | 🔴 Scaffolding | 0% | Ready to start |
 | Phase 4: Enhancement | 🔴 Scaffolding | 0% | Blocked by Phase 3 |
 
 ---
@@ -37,6 +37,15 @@
 ## 🎯 Recent Accomplishments
 
 ### 2026-01-26
+
+- ✅ **Phase 2: Workflow Expansion + Template Enhancement Complete** (2026-01-26)
+  - Research and decision workflows implemented via render.sh
+  - Enhanced dev-infra templates (exploration, research, decision) - PR #64
+  - Template variable contract documented (TEMPLATE-VARIABLES.md)
+  - Workflow chaining flags (--from-explore, --from-research)
+  - Handoff file generation (research-summary.md, decisions-summary.md)
+  - Full test coverage: 48 tests passing (all workflows validated)
+  - Complete explore→research→decision chain working end-to-end
 
 - ✅ **Phase 1: Foundation Complete** (PR #32, 2026-01-26)
   - Production-ready `dt-workflow` v0.2.0 with explore workflow
@@ -69,12 +78,15 @@
 1. [x] Expanded Phase 1 with 9 detailed TDD tasks
 2. [x] Completed Phase 1 implementation (all 9 tasks)
 3. [x] Created and merged PR #32 for Phase 1
+4. [x] Expanded Phase 2 with 15 detailed TDD tasks
+5. [x] Completed Phase 2 implementation (all 15 tasks)
+6. [ ] Create PR for Phase 2
 
 ### Next Session
 
-1. [ ] Begin Phase 2: Workflow Expansion (research and decision workflows)
-2. [ ] Implement `render.sh` template system
-3. [ ] Enhance templates with structural examples per ADR-006
+1. [ ] Begin Phase 3: Cursor Integration
+2. [ ] Implement Cursor command orchestration
+3. [ ] Add AI invocation capabilities
 
 ---
 
