@@ -16,6 +16,7 @@
 ### Implementation Phase Learnings
 
 - **[Phase 2 Learnings](phase-2-learnings.md)** - Workflow Expansion + Template Enhancement (PR #33)
+- **[Phase 3 Learnings](phase-3-learnings.md)** - Cursor Integration (Direct merge)
 
 ---
 
@@ -35,13 +36,14 @@ This directory contains learnings from the dt-workflow feature development that 
 
 ## 📊 Summary
 
-**Total Learning Documents:** 2  
+**Total Learning Documents:** 3  
 **Status:** ✅ Active
 
 | Document | Phase | Key Learnings |
 |----------|-------|---------------|
 | [Exploration-to-Planning](exploration-to-planning-learnings.md) | Planning | Spike-first, ADR patterns, requirements extraction |
 | [Phase 2](phase-2-learnings.md) | Phase 2 | TDD checkboxes, render.sh, cross-project coordination |
+| [Phase 3](phase-3-learnings.md) | Phase 3 | Docs-only detection, worktree merge, 85% faster than estimate |
 
 ---
 

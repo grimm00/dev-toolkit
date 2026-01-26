@@ -1,7 +1,7 @@
 # dt-workflow - Status and Next Steps
 
 **Feature:** dt-workflow - Unified Workflow Orchestration  
-**Status:** 🟠 In Progress (Phase 2 Complete, Ready for Phase 3)  
+**Status:** 🟠 In Progress (Phase 3 Complete, Ready for Phase 4)  
 **Last Updated:** 2026-01-26
 
 ---
@@ -20,8 +20,8 @@
 | Transition Plan | ✅ Complete | 4 phases scaffolded |
 | Phase 1 | ✅ Complete | PR #32 merged (2026-01-26) |
 | Phase 2 | ✅ Complete | PR #33 merged (2026-01-26) |
-| Phase 3 | ✅ Expanded | Ready for implementation |
-| Phase 4 | 🔴 Scaffolding | Blocked by Phase 3 |
+| Phase 3 | ✅ Complete | Direct merged (2026-01-26) |
+| Phase 4 | 🔴 Scaffolding | Ready for expansion |
 
 ### Phase Progress
 
@@ -29,14 +29,21 @@
 |-------|--------|----------|-------|
 | Phase 1: Foundation | ✅ Complete | 100% | All 9 tasks complete (2026-01-26) |
 | Phase 2: Workflow Expansion | ✅ Complete | 100% | All 15 tasks complete, PR #33 merged (2026-01-26) |
-| Phase 3: Cursor Integration | ✅ Expanded | 0% impl | 12 tasks across 5 task groups |
-| Phase 4: Enhancement | 🔴 Scaffolding | 0% | Blocked by Phase 3 |
+| Phase 3: Cursor Integration | ✅ Complete | 100% | Direct merged (2026-01-26) |
+| Phase 4: Enhancement | 🔴 Scaffolding | 0% | Ready for expansion |
 
 ---
 
 ## 🎯 Recent Accomplishments
 
 ### 2026-01-26
+
+- ✅ **Phase 3: Cursor Integration Complete** (Direct merged, 2026-01-26)
+  - Updated /explore, /research, /decision commands with dt-workflow integration
+  - Added ADR-004 pattern documentation to all commands
+  - Added cross-references and error handling documentation
+  - Updated workflow.mdc with dt-workflow integration section
+  - Added 5 Phase 3 test scenarios to manual-testing.md
 
 - ✅ **Phase 2: Workflow Expansion + Template Enhancement Complete** (PR #33, 2026-01-26)
   - Research and decision workflows implemented via render.sh
