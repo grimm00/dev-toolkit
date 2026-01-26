@@ -12,6 +12,7 @@
 ### Feature-Specific Learnings
 
 - **[Doc Infrastructure](doc-infrastructure/README.md)** - Learnings from dt-doc-gen/dt-doc-validate implementation
+- **[dt-workflow](dt-workflow/README.md)** - Learnings from exploration→research→ADR→planning workflow
 
 ---
 
@@ -32,10 +33,10 @@ This directory contains learnings from dev-toolkit features that can inform:
 
 ## 📊 Summary
 
-**Total Learning Documents:** 1  
-**Feature-Specific Learnings:** 1 feature  
+**Total Learning Documents:** 2  
+**Feature-Specific Learnings:** 2 features  
 **Status:** ✅ Active
 
 ---
 
-**Last Updated:** 2026-01-21
+**Last Updated:** 2026-01-22
