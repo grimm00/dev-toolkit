@@ -107,6 +107,80 @@ These requirements are confirmed by spike implementation:
 
 ---
 
+### Workflow I/O Requirements (Research Complete)
+
+#### FR-8: Input Validation (L1 - Existence)
+
+**Description:** dt-workflow must validate that required input files exist before proceeding; fail with helpful message if missing
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-9: Input Validation (L2/L3 - Structure/Content)
+
+**Description:** dt-workflow must warn (not fail) when optional content is missing or incomplete
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-10: Standardized Handoff Files
+
+**Description:** Each workflow must produce a standardized handoff file with required sections (e.g., research-topics.md with ## Topics table)
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-11: --from-* Flag Auto-Detection
+
+**Description:** `--from-*` flags must accept explicit paths OR auto-detect from topic name
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-12: --validate Flag
+
+**Description:** Add `--validate` flag to check inputs without executing the workflow
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** Low
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-13: Next Steps Section
+
+**Description:** All workflow outputs must include "Next Steps" section pointing to the next workflow in chain
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
 ### Pending Research Requirements
 
 ---
@@ -156,6 +230,30 @@ These requirements are confirmed by spike implementation:
 **Source:** [research-context-gathering.md](research-context-gathering.md)
 
 **Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### NFR-3: Validation Speed
+
+**Description:** Input validation must complete in under 500ms
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### NFR-4: Actionable Error Messages
+
+**Description:** All error messages must suggest corrective action (e.g., "Missing X. Run Y first.")
+
+**Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** High
 
 **Status:** ✅ Research complete
 

@@ -76,14 +76,24 @@ From exploration analysis:
 
 ---
 
-### Finding 4: Workflow Input/Output Specs (Topic 2) - NEW
+### Finding 4: Workflow Input/Output Specs (Topic 2) ✅
 
-**Status:** 🔴 Research needed
+**Status:** ✅ Complete
 
-Each workflow needs specific inputs and produces outputs for the next stage:
-- What does /explore need? What does it output for /research?
-- How should dt-workflow validate inputs before proceeding?
-- How should outputs be formatted for optimal handoff?
+**Key findings:**
+- Each workflow has a **primary handoff file** that next workflow depends on
+- **Validation levels:** L1 (existence) = hard fail, L2/L3 (structure/content) = warn
+- `--from-*` flags should auto-detect OR accept explicit paths
+- All outputs must include "Next Steps" pointing to next workflow
+
+**Data contracts:**
+| Workflow | Handoff File | Required Sections |
+|----------|--------------|-------------------|
+| explore | research-topics.md | ## Topics table |
+| research | research-summary.md | ## Key Findings, ## Recommendations |
+| decision | decisions-summary.md | ## Decisions table |
+
+**Requirements discovered:** 8 (REQ-IO-1 through REQ-IO-8)
 
 **Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
 
@@ -151,7 +161,7 @@ From exploration analysis:
 | # | Research Topic | Priority | Status | Primary Focus |
 |---|----------------|----------|--------|---------------|
 | 1 | Context Gathering | 🔴 HIGH | ✅ Complete | Full injection validated |
-| 2 | Workflow I/O Specs | 🔴 HIGH | 🔴 Not Started | **YES** - handoffs |
+| 2 | Workflow I/O Specs | 🔴 HIGH | ✅ Complete | Handoff contracts defined |
 | 3 | Decision Propagation | 🔴 HIGH | 🔴 Not Started | **YES** - patterns |
 | 4 | Component Decisions | 🟠 HIGH | 🟡 Analysis Ready | Quick decision |
 | 5 | Cursor Command Role | 🟡 MEDIUM | 🟡 Analysis Ready | Validate |
