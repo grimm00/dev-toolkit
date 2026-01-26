@@ -50,6 +50,9 @@ Build a unified `dt-workflow` command that orchestrates the exploration→resear
 | FR-12 | --validate flag | Low | ✅ Spike |
 | FR-13 | Next Steps section | Medium | ✅ Spike |
 | FR-14 | Two-tier pattern documentation | High | ✅ Complete |
+| FR-24 | Template structural examples | High | 🔴 Phase 2 |
+| FR-26 | Section completeness markers | Medium | 🔴 Phase 2 |
+| FR-27 | Template variable documentation | High | 🔴 Phase 2 |
 
 ### Non-Functional Requirements
 
@@ -59,6 +62,7 @@ Build a unified `dt-workflow` command that orchestrates the exploration→resear
 | NFR-2 | Context injection <1s | Medium |
 | NFR-3 | Validation <500ms | Medium |
 | NFR-4 | Actionable error messages | High |
+| NFR-7 | Template-spike alignment | High |
 
 ---
 
