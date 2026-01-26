@@ -42,10 +42,10 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
 **TDD Flow:**
 
 1. **RED - Write test for template output structure:**
-   - [ ] Create test in dev-infra that validates exploration template output
-   - [ ] Test expects structural examples (tables, lists) not just placeholders
-   - [ ] Test validates `<!-- REQUIRED: -->` markers exist
-   - [ ] Verify test fails (current templates lack structural examples)
+   - [x] Create test in dev-toolkit that validates exploration template output
+   - [x] Test expects structural examples (tables, lists) not just placeholders
+   - [x] Test validates `<!-- REQUIRED: -->` markers exist
+   - [x] Verify test fails (current templates lack structural examples)
 
    **Test approach (in dev-infra):**
    ```bash
