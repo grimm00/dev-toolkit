@@ -390,7 +390,114 @@ EOF
 }
 
 # ============================================================================
-# MAIN OUTPUT
+# VALIDATION (L1/L2/L3 Levels)
+# ============================================================================
+
+validate_inputs() {
+    local workflow="$1"
+    local topic="$2"
+    local project_dir="${3:-.}"
+    local validation_level="${4:-L1}"
+    local exit_on_fail="${5:-true}"
+    
+    # L1: Existence checks (hard fail)
+    if [ "$validation_level" = "L1" ] || [ "$validation_level" = "all" ]; then
+        # Check project directory exists
+        if [ ! -d "$project_dir" ]; then
+            dt_print_status "ERROR" "Project directory does not exist: $project_dir"
+            echo ""
+            echo "💡 Suggestion: Check the path or use --project to specify correct directory"
+            if [ "$exit_on_fail" = "true" ]; then
+                exit 1
+            else
+                return 1
+            fi
+        fi
+        
+        # Workflow-specific L1 checks
+        case "$workflow" in
+            research)
+                # L1: Check if exploration exists (for --from-explore)
+                local exp_dir="$project_dir/admin/explorations/$topic"
+                if [ ! -d "$exp_dir" ]; then
+                    dt_print_status "ERROR" "Exploration directory not found: $exp_dir"
+                    echo ""
+                    echo "💡 Suggestion: Run '/explore $topic' first to create the exploration"
+                    if [ "$exit_on_fail" = "true" ]; then
+                        exit 1
+                    else
+                        return 1
+                    fi
+                fi
+                ;;
+            decision)
+                # L1: Check if research exists (for --from-research)
+                local research_dir="$project_dir/admin/research/$topic"
+                if [ ! -d "$research_dir" ]; then
+                    dt_print_status "ERROR" "Research directory not found: $research_dir"
+                    echo ""
+                    echo "💡 Suggestion: Run '/research $topic --from-explore $topic' first"
+                    if [ "$exit_on_fail" = "true" ]; then
+                        exit 1
+                    else
+                        return 1
+                    fi
+                fi
+                ;;
+        esac
+    fi
+    
+    # L2: Structure checks (warn, proceed)
+    if [ "$validation_level" = "L2" ] || [ "$validation_level" = "all" ]; then
+        case "$workflow" in
+            research)
+                local research_topics="$project_dir/admin/explorations/$topic/research-topics.md"
+                if [ -f "$research_topics" ]; then
+                    if ! grep -q "## 📋 Research Topics" "$research_topics" 2>/dev/null; then
+                        dt_print_status "WARNING" "research-topics.md missing expected '## 📋 Research Topics' section"
+                        echo "   Proceeding anyway, but structure may be incomplete."
+                    fi
+                fi
+                ;;
+        esac
+    fi
+    
+    # L3: Content checks (warn, allow continue)
+    if [ "$validation_level" = "L3" ] || [ "$validation_level" = "all" ]; then
+        case "$workflow" in
+            research)
+                local research_topics="$project_dir/admin/explorations/$topic/research-topics.md"
+                if [ -f "$research_topics" ]; then
+                    local topic_count
+                    topic_count=$(grep -c "^#### Topic" "$research_topics" 2>/dev/null || echo "0")
+                    if [ "$topic_count" -eq 0 ]; then
+                        dt_print_status "WARNING" "No research topics found in research-topics.md"
+                        echo "   You may want to add topics before conducting research."
+                    fi
+                fi
+                ;;
+        esac
+    fi
+    
+    return 0
+}
+
+# ============================================================================
+# TOKEN COUNT ESTIMATION
+# ============================================================================
+
+estimate_tokens() {
+    local text="$1"
+    # Rough estimation: ~4 characters per token (conservative)
+    local char_count
+    char_count=$(echo -n "$text" | wc -c | tr -d ' ')
+    local token_estimate
+    token_estimate=$((char_count / 4))
+    echo "$token_estimate"
+}
+
+# ============================================================================
+# MAIN OUTPUT (Updated with Research Findings)
 # ============================================================================
 
 output_for_ai() {
@@ -398,53 +505,123 @@ output_for_ai() {
     local topic="$2"
     local project_dir="${3:-.}"
     
-    echo "# dt-workflow Output: $workflow $topic"
-    echo ""
-    echo "**Mode:** --interactive (Phase 1)"
-    echo "**Generated:** $(date +%Y-%m-%d\ %H:%M)"
-    echo ""
+    # Capture output for token counting
+    local output_buffer
+    output_buffer=$(mktemp)
+    
+    {
+        echo "# dt-workflow Output: $workflow $topic"
+        echo ""
+        echo "**Mode:** --interactive (Phase 1)"
+        echo "**Generated:** $(date +%Y-%m-%d\ %H:%M)"
+        echo ""
+        echo "---"
+        echo ""
+        echo "# CONTEXT"
+        echo ""
+        echo "The following context has been gathered for this workflow."
+        echo "This replaces implicit rule loading with explicit context injection."
+        echo ""
+        echo "**Context Ordering:** Critical rules (START) → Background (MIDDLE) → Task (END)"
+        echo ""
+        
+        # ====================================================================
+        # START: Critical Rules (Highest Attention - Research Finding)
+        # ====================================================================
+        echo "## 🔴 CRITICAL RULES (START - Highest Attention)"
+        echo ""
+        gather_cursor_rules "$project_dir"
+        
+        # ====================================================================
+        # MIDDLE: Background Context (Lower Attention)
+        # ====================================================================
+        echo "---"
+        echo ""
+        echo "## 📋 BACKGROUND CONTEXT (MIDDLE)"
+        echo ""
+        gather_project_identity "$project_dir"
+        gather_git_context "$project_dir"
+        
+        # ====================================================================
+        # MIDDLE: Workflow-Specific Context
+        # ====================================================================
+        gather_workflow_context "$workflow" "$topic" "$project_dir"
+        
+        # ====================================================================
+        # END: Task + Instructions (High Attention - Research Finding)
+        # ====================================================================
+        echo "---"
+        echo ""
+        echo "# TASK (END - High Attention)"
+        echo ""
+        
+        case "$workflow" in
+            explore)
+                echo "Create an exploration for **$topic** using the structure below."
+                echo ""
+                echo "Fill in the placeholders with thoughtful analysis based on the context provided."
+                echo ""
+                generate_exploration_structure "$topic"
+                ;;
+            *)
+                echo "Workflow '$workflow' structure generation not yet implemented."
+                ;;
+        esac
+        
+        echo "---"
+        echo ""
+        echo "# INSTRUCTIONS (END - High Attention)"
+        echo ""
+        echo "1. Review the CONTEXT section above (rules, project identity, existing work)"
+        echo "2. Create the files in the TASK section with appropriate content"
+        echo "3. After creation, run \`dt-doc-validate\` to check compliance"
+        echo ""
+        
+        # ====================================================================
+        # NEXT STEPS (Research Finding: FR-13)
+        # ====================================================================
+        echo "---"
+        echo ""
+        echo "# 🚀 NEXT STEPS"
+        echo ""
+        case "$workflow" in
+            explore)
+                echo "After completing this exploration:"
+                echo ""
+                echo "1. Review the exploration documents"
+                echo "2. Run: \`/research $topic --from-explore $topic\` to conduct research"
+                echo "3. Or run: \`dt-workflow research $topic --from-explore $topic --interactive\`"
+                ;;
+            research)
+                echo "After completing research:"
+                echo ""
+                echo "1. Review research findings in \`admin/research/$topic/\`"
+                echo "2. Run: \`/decision $topic --from-research\` to make decisions"
+                echo "3. Or run: \`dt-workflow decision $topic --from-research --interactive\`"
+                ;;
+            decision)
+                echo "After making decisions:"
+                echo ""
+                echo "1. Review ADRs in \`admin/decisions/$topic/\`"
+                echo "2. Run: \`/transition-plan --from-adr\` to create feature plan"
+                ;;
+        esac
+        echo ""
+        
+    } | tee "$output_buffer"
+    
+    # Calculate and report token count (Research Finding: FR-5)
+    local output_content
+    output_content=$(cat "$output_buffer")
+    local token_count
+    token_count=$(estimate_tokens "$output_content")
+    
     echo "---"
     echo ""
-    echo "# CONTEXT"
-    echo ""
-    echo "The following context has been gathered for this workflow."
-    echo "This replaces implicit rule loading with explicit context injection."
+    echo "**📊 Token Estimate:** ~$token_count tokens (well within 100K+ limits)"
     echo ""
     
-    # Universal context
-    gather_cursor_rules "$project_dir"
-    gather_project_identity "$project_dir"
-    gather_git_context "$project_dir"
-    
-    # Workflow-specific context
-    gather_workflow_context "$workflow" "$topic" "$project_dir"
-    
-    echo "---"
-    echo ""
-    echo "# TASK"
-    echo ""
-    
-    case "$workflow" in
-        explore)
-            echo "Create an exploration for **$topic** using the structure below."
-            echo ""
-            echo "Fill in the placeholders with thoughtful analysis based on the context provided."
-            echo ""
-            generate_exploration_structure "$topic"
-            ;;
-        *)
-            echo "Workflow '$workflow' structure generation not yet implemented."
-            ;;
-    esac
-    
-    echo "---"
-    echo ""
-    echo "# INSTRUCTIONS"
-    echo ""
-    echo "1. Review the CONTEXT section above (rules, project identity, existing work)"
-    echo "2. Create the files in the TASK section with appropriate content"
-    echo "3. After creation, run \`dt-doc-validate\` to check compliance"
-    echo ""
+    rm -f "$output_buffer"
 }
 
 # ============================================================================
@@ -468,6 +645,7 @@ Arguments:
 
 Options:
     --interactive     Output context + structure for interactive AI fill (Phase 1)
+    --validate        Validate inputs without generating output (L1/L2/L3 checks)
     --output FILE     Save output to file instead of stdout
     --project PATH    Project directory (default: current directory)
     --help            Show this help message
@@ -499,6 +677,7 @@ main() {
     local workflow=""
     local topic=""
     local interactive=false
+    local validate_only=false
     local output_file=""
     local project_dir="."
     
@@ -519,6 +698,10 @@ main() {
                 ;;
             --interactive|-i)
                 interactive=true
+                shift
+                ;;
+            --validate)
+                validate_only=true
                 shift
                 ;;
             --output|-o)
@@ -549,18 +732,27 @@ main() {
         esac
     done
     
-    # Validate required arguments
+    # Validate required arguments (L1 Validation - Research Finding: REQ-IO-1)
     if [ -z "$workflow" ]; then
         dt_print_status "ERROR" "Workflow type is required"
         echo ""
-        show_help
+        echo "💡 Usage: $SCRIPT_NAME <workflow> <topic> --interactive"
+        echo ""
+        echo "Available workflows:"
+        echo "  explore   - Start an exploration"
+        echo "  research  - Conduct research (requires --from-explore)"
+        echo "  decision  - Make decisions (requires --from-research)"
+        echo ""
+        echo "Example: $SCRIPT_NAME explore my-feature --interactive"
         exit 1
     fi
     
     if [ -z "$topic" ]; then
         dt_print_status "ERROR" "Topic is required"
         echo ""
-        show_help
+        echo "💡 Usage: $SCRIPT_NAME $workflow <topic> --interactive"
+        echo ""
+        echo "Example: $SCRIPT_NAME $workflow my-feature --interactive"
         exit 1
     fi
     
@@ -571,26 +763,67 @@ main() {
             ;;
         *)
             dt_print_status "ERROR" "Unknown workflow: $workflow"
-            dt_print_status "INFO" "Available workflows: explore, research, decision"
+            echo ""
+            echo "💡 Available workflows: explore, research, decision"
+            echo ""
+            echo "Example: $SCRIPT_NAME explore $topic --interactive"
             exit 1
             ;;
     esac
     
+    # --validate mode: Check inputs only (Research Finding: REQ-IO-5)
+    if [ "$validate_only" = true ]; then
+        echo "🔍 Validating inputs for: $workflow $topic"
+        echo ""
+        
+        # L1: Existence checks
+        echo "L1 Validation (Existence - Hard Fail):"
+        if validate_inputs "$workflow" "$topic" "$project_dir" "L1" "false"; then
+            dt_print_status "SUCCESS" "L1 checks passed"
+        else
+            dt_print_status "ERROR" "L1 validation failed"
+            exit 1
+        fi
+        echo ""
+        
+        # L2: Structure checks
+        echo "L2 Validation (Structure - Warn):"
+        validate_inputs "$workflow" "$topic" "$project_dir" "L2" "false" || true
+        echo ""
+        
+        # L3: Content checks
+        echo "L3 Validation (Content - Warn):"
+        validate_inputs "$workflow" "$topic" "$project_dir" "L3" "false" || true
+        echo ""
+        
+        dt_print_status "SUCCESS" "Validation complete"
+        exit 0
+    fi
+    
     # Phase 1: Interactive mode required
     if [ "$interactive" != true ]; then
-        dt_print_status "WARNING" "Phase 1 requires --interactive mode"
-        dt_print_status "INFO" "Usage: $SCRIPT_NAME $workflow $topic --interactive"
-        dt_print_status "INFO" ""
-        dt_print_status "INFO" "Phase 1 (current): Script outputs context + structure for manual AI fill"
-        dt_print_status "INFO" "Phase 3 (future):  Script will invoke AI directly"
+        dt_print_status "ERROR" "Phase 1 requires --interactive mode"
+        echo ""
+        echo "💡 Usage: $SCRIPT_NAME $workflow $topic --interactive"
+        echo ""
+        echo "Phase 1 (current): Script outputs context + structure for manual AI fill"
+        echo "Phase 3 (future):  Script will invoke AI directly"
         exit 1
     fi
+    
+    # L1 Validation: Check required inputs exist (Research Finding: REQ-IO-1)
+    validate_inputs "$workflow" "$topic" "$project_dir" "L1"
+    
+    # L2/L3 Validation: Warn on structure/content issues (non-blocking)
+    validate_inputs "$workflow" "$topic" "$project_dir" "L2"
+    validate_inputs "$workflow" "$topic" "$project_dir" "L3"
     
     # Generate output
     if [ -n "$output_file" ]; then
         output_for_ai "$workflow" "$topic" "$project_dir" > "$output_file"
         dt_print_status "SUCCESS" "Output saved to: $output_file"
-        dt_print_status "INFO" "Next: Open $output_file in Cursor and let AI fill the structure"
+        echo ""
+        echo "💡 Next: Open $output_file in Cursor and let AI fill the structure"
     else
         output_for_ai "$workflow" "$topic" "$project_dir"
     fi
