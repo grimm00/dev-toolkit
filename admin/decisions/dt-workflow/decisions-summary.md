@@ -9,9 +9,9 @@
 
 ## 📋 Decisions Overview
 
-Five architecture decisions have been made for the dt-workflow unified workflow orchestration feature, based on exploration, spike validation, and formal research.
+Six architecture decisions have been made for the dt-workflow unified workflow orchestration feature, based on exploration, spike validation, and formal research.
 
-**Decision Points:** 5 decisions  
+**Decision Points:** 6 decisions  
 **Status:** ✅ All Accepted
 
 ---
@@ -78,6 +78,18 @@ Five architecture decisions have been made for the dt-workflow unified workflow 
 
 ---
 
+### ADR-006: Template Enhancement
+
+**Decision:** Enhance templates with structural examples, maintain two-phase placeholders, templates remain in dev-infra
+
+**Y-Statement:** In the context of AI-assisted document generation, facing inconsistent output from vague placeholders, we decided for enhanced templates with structural examples to achieve consistent, predictable output, accepting larger template files.
+
+**Status:** ✅ Accepted (research-backed)
+
+**ADR:** [adr-006-template-enhancement.md](adr-006-template-enhancement.md)
+
+---
+
 ## 📊 Decision Matrix
 
 | Decision | Confidence | Validation Method | Risk Level |
@@ -87,6 +99,7 @@ Five architecture decisions have been made for the dt-workflow unified workflow 
 | Component Integration | High | Analysis | Low (backward compatible) |
 | Cursor Command Role | High | Analysis | Low (can evolve) |
 | Pattern Documentation | High | Research | Low (documentation only) |
+| Template Enhancement | High | Research | Low (incremental) |
 
 ---
 
@@ -102,8 +115,12 @@ Five architecture decisions have been made for the dt-workflow unified workflow 
 | FR-4: Context Ordering | ADR-002 |
 | FR-5: Token Reporting | ADR-002 |
 | FR-14: Two-Tier Patterns | ADR-005 |
+| FR-24: Template Structural Examples | ADR-006 |
+| FR-26: Section Completeness Markers | ADR-006 |
+| FR-27: Template Variable Documentation | ADR-006 |
 | NFR-1: Token Budget | ADR-002 |
 | NFR-2: Portability | ADR-004 |
+| NFR-7: Template-Spike Alignment | ADR-006 |
 
 **See:** [requirements.md](../../research/dt-workflow/requirements.md) for complete requirements
 

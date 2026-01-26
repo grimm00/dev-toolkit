@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # ============================================================================
-# DT-WORKFLOW - Unified Workflow Orchestration (SPIKE)
+# DT-WORKFLOW - Unified Workflow Orchestration
 # Usage: dt-workflow <workflow> <topic> [OPTIONS]
 # 
-# SPIKE PURPOSE: Validate unified architecture + Phase 1 interactive UX
-# This is time-boxed exploration code, not production quality.
+# Unified command for orchestrating exploration→research→decision workflows.
+# Provides explicit context injection and standardized output formats.
 # ============================================================================
 
 set -euo pipefail
@@ -14,7 +14,7 @@ set -euo pipefail
 # CONFIGURATION
 # ============================================================================
 
-VERSION="0.1.0-spike"
+VERSION="0.2.0"
 SCRIPT_NAME=$(basename "$0")
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
@@ -30,9 +30,15 @@ dt_setup_colors
 # ============================================================================
 
 gather_cursor_rules() {
+    # Gather Cursor rules from .cursor/rules directory for context injection
+    # Parameters:
+    #   $1 - Project directory (default: current directory)
+    # Returns: Markdown-formatted rules output, or empty if no rules found
+    
     local project_dir="${1:-.}"
     local rules_dir="$project_dir/.cursor/rules"
     
+    # Check if rules directory exists (graceful degradation)
     if [ ! -d "$rules_dir" ]; then
         dt_print_debug "No .cursor/rules directory found"
         return 0
@@ -43,7 +49,7 @@ gather_cursor_rules() {
     echo "These rules define project standards and must always be followed."
     echo ""
     
-    # Find all .mdc files and output their contents
+    # Find all .mdc files and output their contents (sorted for consistency)
     local rule_files
     rule_files=$(find "$rules_dir" -name "*.mdc" -type f 2>/dev/null | sort)
     
@@ -52,6 +58,7 @@ gather_cursor_rules() {
         return 0
     fi
     
+    # Output each rule file in markdown code blocks for clarity
     for rule_file in $rule_files; do
         local filename
         filename=$(basename "$rule_file")
@@ -65,12 +72,18 @@ gather_cursor_rules() {
 }
 
 gather_project_identity() {
+    # Gather project identity context (roadmap, admin structure) for context injection
+    # Parameters:
+    #   $1 - Project directory (default: current directory)
+    # Returns: Markdown-formatted project identity output
+    # Note: Checks multiple common locations for roadmap files
+    
     local project_dir="${1:-.}"
     
     echo "## Project Identity (Universal Context)"
     echo ""
     
-    # Check for roadmap
+    # Check for roadmap in common locations (priority order)
     local roadmap_paths=(
         "$project_dir/admin/planning/roadmap.md"
         "$project_dir/docs/roadmap.md"
@@ -84,7 +97,7 @@ gather_project_identity() {
             echo "From: \`$roadmap\`"
             echo ""
             echo '```markdown'
-            # Output first 100 lines to keep context manageable
+            # Output first 100 lines to keep context manageable (per ADR-002)
             head -100 "$roadmap"
             echo '```'
             echo ""
@@ -92,7 +105,7 @@ gather_project_identity() {
         fi
     done
     
-    # Check for admin README
+    # Check for admin README (provides project structure context)
     local admin_readme="$project_dir/admin/README.md"
     if [ -f "$admin_readme" ]; then
         echo "### Admin Structure"
@@ -100,6 +113,7 @@ gather_project_identity() {
         echo "From: \`$admin_readme\`"
         echo ""
         echo '```markdown'
+        # Output first 80 lines (slightly less than roadmap)
         head -80 "$admin_readme"
         echo '```'
         echo ""
@@ -394,17 +408,32 @@ EOF
 # ============================================================================
 
 validate_inputs() {
+    # Validate workflow inputs using tiered validation levels (L1/L2/L3)
+    # Parameters:
+    #   $1 - Workflow type (explore, research, decision)
+    #   $2 - Topic name
+    #   $3 - Project directory (default: current directory)
+    #   $4 - Validation level: L1 (existence), L2 (structure), L3 (content), or "all"
+    #   $5 - Exit on failure: "true" (exit 1) or "false" (return 1)
+    # Returns: 0 on success, 1 on failure (if exit_on_fail=false)
+    #
+    # Validation Levels:
+    # - L1: Existence checks (hard fail) - Required directories/files must exist
+    # - L2: Structure checks (warn, proceed) - Expected sections/format may be missing
+    # - L3: Content checks (warn, allow continue) - Content quality/completeness warnings
+    # This tiered approach allows graceful degradation while catching critical issues early.
+    
     local workflow="$1"
     local topic="$2"
     local project_dir="${3:-.}"
     local validation_level="${4:-L1}"
     local exit_on_fail="${5:-true}"
     
-    # L1: Existence checks (hard fail)
+    # L1: Existence checks (hard fail) - Block execution if prerequisites missing
     if [ "$validation_level" = "L1" ] || [ "$validation_level" = "all" ]; then
         # Check project directory exists
         if [ ! -d "$project_dir" ]; then
-            dt_print_status "ERROR" "Project directory does not exist: $project_dir"
+            dt_print_status "ERROR" "Error: Project directory does not exist: $project_dir"
             echo ""
             echo "💡 Suggestion: Check the path or use --project to specify correct directory"
             if [ "$exit_on_fail" = "true" ]; then
@@ -420,7 +449,7 @@ validate_inputs() {
                 # L1: Check if exploration exists (for --from-explore)
                 local exp_dir="$project_dir/admin/explorations/$topic"
                 if [ ! -d "$exp_dir" ]; then
-                    dt_print_status "ERROR" "Exploration directory not found: $exp_dir"
+                    dt_print_status "ERROR" "Error: Exploration directory not found: $exp_dir"
                     echo ""
                     echo "💡 Suggestion: Run '/explore $topic' first to create the exploration"
                     if [ "$exit_on_fail" = "true" ]; then
@@ -434,7 +463,7 @@ validate_inputs() {
                 # L1: Check if research exists (for --from-research)
                 local research_dir="$project_dir/admin/research/$topic"
                 if [ ! -d "$research_dir" ]; then
-                    dt_print_status "ERROR" "Research directory not found: $research_dir"
+                    dt_print_status "ERROR" "Error: Research directory not found: $research_dir"
                     echo ""
                     echo "💡 Suggestion: Run '/research $topic --from-explore $topic' first"
                     if [ "$exit_on_fail" = "true" ]; then
@@ -447,7 +476,7 @@ validate_inputs() {
         esac
     fi
     
-    # L2: Structure checks (warn, proceed)
+    # L2: Structure checks (warn, proceed) - Missing expected sections but can continue
     if [ "$validation_level" = "L2" ] || [ "$validation_level" = "all" ]; then
         case "$workflow" in
             research)
@@ -462,7 +491,7 @@ validate_inputs() {
         esac
     fi
     
-    # L3: Content checks (warn, allow continue)
+    # L3: Content checks (warn, allow continue) - Quality/completeness warnings only
     if [ "$validation_level" = "L3" ] || [ "$validation_level" = "all" ]; then
         case "$workflow" in
             research)
@@ -487,8 +516,14 @@ validate_inputs() {
 # ============================================================================
 
 estimate_tokens() {
+    # Estimate token count for text (used for context size reporting)
+    # Parameters:
+    #   $1 - Text to estimate
+    # Returns: Estimated token count (integer)
+    # Note: Uses conservative 4 chars/token ratio (actual is ~3.5-4.5 depending on content)
+    
     local text="$1"
-    # Rough estimation: ~4 characters per token (conservative)
+    # Rough estimation: ~4 characters per token (conservative estimate)
     local char_count
     char_count=$(echo -n "$text" | wc -c | tr -d ' ')
     local token_estimate
@@ -497,15 +532,29 @@ estimate_tokens() {
 }
 
 # ============================================================================
-# MAIN OUTPUT (Updated with Research Findings)
+# OUTPUT GENERATION
 # ============================================================================
 
 output_for_ai() {
+    # Generate formatted output for AI consumption with explicit context injection
+    # Parameters:
+    #   $1 - Workflow type (explore, research, decision)
+    #   $2 - Topic name
+    #   $3 - Project directory (default: current directory)
+    # Returns: Markdown-formatted output with context and task structure
+    # 
+    # Context Ordering Rationale (per ADR-002):
+    # - START: Critical rules (highest attention) - AI must follow these
+    # - MIDDLE: Background context (lower attention) - Reference material
+    # - END: Task + Instructions (high attention) - What AI should do
+    # This ordering addresses "lost in middle" problem where important info
+    # placed in middle gets less attention from LLMs.
+    
     local workflow="$1"
     local topic="$2"
     local project_dir="${3:-.}"
     
-    # Capture output for token counting
+    # Capture output for token counting (Research Finding: FR-5)
     local output_buffer
     output_buffer=$(mktemp)
     
@@ -527,6 +576,7 @@ output_for_ai() {
         
         # ====================================================================
         # START: Critical Rules (Highest Attention - Research Finding)
+        # Placed at START to ensure maximum AI attention (ADR-002)
         # ====================================================================
         echo "## 🔴 CRITICAL RULES (START - Highest Attention)"
         echo ""
@@ -632,12 +682,13 @@ show_help() {
     cat << EOF
 Usage: $SCRIPT_NAME <workflow> <topic> [OPTIONS]
 
-Unified workflow orchestration for dev-toolkit. (SPIKE VERSION)
+Unified workflow orchestration for dev-toolkit. Orchestrates the
+exploration→research→decision workflow pipeline with explicit context injection.
 
 Workflows:
     explore           Start an exploration
-    research          Conduct research (not yet implemented)
-    decision          Make a decision (not yet implemented)
+    research          Conduct research (requires --from-explore)
+    decision          Make a decision (requires --from-research)
 
 Arguments:
     workflow          Workflow type (explore, research, decision)
@@ -655,18 +706,14 @@ Options:
 Examples:
     $SCRIPT_NAME explore my-feature --interactive
     $SCRIPT_NAME explore auth-system --interactive --output context.md
-
-Phase 1 Limitations:
-    This spike implements Phase 1 (interactive mode only).
-    - AI invocation is manual (you run this, then use the output with Cursor)
-    - Model selection is manual (recommended: claude-opus-4 for explorations)
-    - Full automation (Phase 3) requires programmatic AI invocation
+    $SCRIPT_NAME research my-feature --from-explore my-feature --interactive
+    $SCRIPT_NAME explore test-topic --validate
 
 EOF
 }
 
 show_version() {
-    echo "$SCRIPT_NAME version $VERSION (spike)"
+    echo "$SCRIPT_NAME version $VERSION"
 }
 
 # ============================================================================
@@ -734,9 +781,9 @@ main() {
     
     # Validate required arguments (L1 Validation - Research Finding: REQ-IO-1)
     if [ -z "$workflow" ]; then
-        dt_print_status "ERROR" "Workflow type is required"
+        dt_print_status "ERROR" "Error: Workflow type is required"
         echo ""
-        echo "💡 Usage: $SCRIPT_NAME <workflow> <topic> --interactive"
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME <workflow> <topic> --interactive"
         echo ""
         echo "Available workflows:"
         echo "  explore   - Start an exploration"
@@ -748,9 +795,9 @@ main() {
     fi
     
     if [ -z "$topic" ]; then
-        dt_print_status "ERROR" "Topic is required"
+        dt_print_status "ERROR" "Error: Topic is required"
         echo ""
-        echo "💡 Usage: $SCRIPT_NAME $workflow <topic> --interactive"
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME $workflow <topic> --interactive"
         echo ""
         echo "Example: $SCRIPT_NAME $workflow my-feature --interactive"
         exit 1
@@ -762,9 +809,9 @@ main() {
             # Valid workflows
             ;;
         *)
-            dt_print_status "ERROR" "Unknown workflow: $workflow"
+            dt_print_status "ERROR" "Error: Unknown workflow: $workflow"
             echo ""
-            echo "💡 Available workflows: explore, research, decision"
+            echo "💡 Suggestion: Available workflows: explore, research, decision"
             echo ""
             echo "Example: $SCRIPT_NAME explore $topic --interactive"
             exit 1
@@ -802,9 +849,9 @@ main() {
     
     # Phase 1: Interactive mode required
     if [ "$interactive" != true ]; then
-        dt_print_status "ERROR" "Phase 1 requires --interactive mode"
+        dt_print_status "ERROR" "Error: Phase 1 requires --interactive mode"
         echo ""
-        echo "💡 Usage: $SCRIPT_NAME $workflow $topic --interactive"
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME $workflow $topic --interactive"
         echo ""
         echo "Phase 1 (current): Script outputs context + structure for manual AI fill"
         echo "Phase 3 (future):  Script will invoke AI directly"
@@ -820,7 +867,37 @@ main() {
     
     # Generate output
     if [ -n "$output_file" ]; then
-        output_for_ai "$workflow" "$topic" "$project_dir" > "$output_file"
+        # Validate output directory exists (handle invalid paths)
+        local output_dir
+        output_dir=$(dirname "$output_file")
+        if [ ! -d "$output_dir" ]; then
+            dt_print_status "ERROR" "Error: Output directory does not exist: $output_dir"
+            echo ""
+            echo "💡 Suggestion: Create the directory first or use a valid path"
+            exit 1
+        fi
+        
+        # Attempt to write output file (capture both stdout and stderr)
+        # Use a temp file first to catch write errors before finalizing
+        local temp_output
+        temp_output=$(mktemp)
+        if ! output_for_ai "$workflow" "$topic" "$project_dir" > "$temp_output" 2>&1; then
+            rm -f "$temp_output"
+            dt_print_status "ERROR" "Error: Failed to generate output"
+            echo ""
+            echo "💡 Suggestion: Check workflow inputs and try again"
+            exit 1
+        fi
+        
+        # Move temp file to final location (catches permission errors)
+        if ! mv "$temp_output" "$output_file" 2>/dev/null; then
+            rm -f "$temp_output"
+            dt_print_status "ERROR" "Error: Failed to write output file: $output_file"
+            echo ""
+            echo "💡 Suggestion: Check file permissions and directory access"
+            exit 1
+        fi
+        
         dt_print_status "SUCCESS" "Output saved to: $output_file"
         echo ""
         echo "💡 Next: Open $output_file in Cursor and let AI fill the structure"
@@ -829,4 +906,7 @@ main() {
     fi
 }
 
-main "$@"
+# Only execute main if script is run directly (not sourced)
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi

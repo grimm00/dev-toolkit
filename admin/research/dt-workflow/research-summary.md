@@ -139,12 +139,53 @@ From exploration analysis:
 
 ---
 
+### Finding 7: Dynamic Section Management (Topic 7) ✅
+
+**Status:** ✅ Complete
+
+**Key findings:**
+- Metadata-driven section count (YAML frontmatter) preferred over hardcoding
+- `dt-section add` command recommended for incremental additions
+- Differentiate ordered vs unordered sections for validation rules
+- Section gaps acceptable in unordered, not in ordered
+
+**Requirements discovered:** FR-19 through FR-23, NFR-5, NFR-6
+
+**Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
+
+---
+
+### Finding 8: Template Structure (Topic 8) ✅
+
+**Status:** ✅ Complete
+
+**Key findings:**
+- **Structural examples outperform vague placeholders** - AI needs to see expected formats
+- **Skeleton-of-Thought validates two-phase approach** - `<!-- AI: -->` + `<!-- EXPAND: -->` is sound
+- **MADR offers template complexity variants** - Full, minimal, bare versions per document type
+- **envsubst requires explicit variable management** - All variables must be defined in setters
+- **Spike heredocs work better** because they show structure, not just instructions
+
+**Recommendations:**
+1. Enhance templates with structural examples (tables, lists)
+2. Maintain two-phase placeholder pattern
+3. Create template complexity variants (full/minimal/bare)
+4. Add section completeness markers
+5. Document template variable contract
+
+**Requirements discovered:** FR-24 through FR-27, NFR-7
+
+**Source:** [research-template-structure.md](research-template-structure.md)
+
+---
+
 ## 💡 Key Insights
 
 - [x] Insight 1: Spike validated core architecture, reducing research scope
-- [x] Insight 2: Context gathering scalability is primary research focus
-- [x] Insight 3: Most other topics have clear answers from exploration
-- [ ] Insight 4: [From context gathering research - TBD]
+- [x] Insight 2: Full context injection is correct for our scale (~10K tokens)
+- [x] Insight 3: Two-tier pattern documentation provides best AI/human balance
+- [x] Insight 4: Structural template examples outperform vague placeholders
+- [x] Insight 5: Dynamic sections need metadata-driven approach with `dt-section` command
 
 ---
 
@@ -179,6 +220,8 @@ From exploration analysis:
 | 4 | Component Decisions | 🟠 HIGH | 🟡 Analysis Ready | Quick decision |
 | 5 | Cursor Command Role | 🟡 MEDIUM | 🟡 Analysis Ready | Validate |
 | 6 | Model Selection | 🟡 MEDIUM | 🟡 Analysis Ready | Defer |
+| 7 | Dynamic Section Management | 🔴 HIGH | ✅ Complete | Metadata-driven approach |
+| 8 | Template Structure | 🔴 HIGH | ✅ Complete | Structural examples |
 
 ---
 

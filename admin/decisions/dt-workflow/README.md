@@ -22,6 +22,7 @@
 | **[ADR-003](adr-003-component-integration.md)** | dt-doc-validate standalone, dt-doc-gen internal | ✅ Accepted |
 | **[ADR-004](adr-004-cursor-command-role.md)** | Cursor commands as orchestrators | ✅ Accepted |
 | **[ADR-005](adr-005-pattern-documentation.md)** | Two-tier pattern documentation | ✅ Accepted |
+| **[ADR-006](adr-006-template-enhancement.md)** | Enhanced templates with structural examples | ✅ Accepted |
 
 ---
 
@@ -29,7 +30,7 @@
 
 These ADRs formalize decisions made through exploration, spike validation, and research for the dt-workflow feature.
 
-**Decision Points:** 5 decisions  
+**Decision Points:** 6 decisions  
 **Status:** ✅ All Accepted
 
 ---
@@ -43,6 +44,7 @@ These ADRs formalize decisions made through exploration, spike validation, and r
 | Components | Validate=standalone, Gen=internal | High (analysis-backed) |
 | Commands | Orchestrators pattern | High (analysis-backed) |
 | Patterns | Two-tier (rules + docs/) | High (research-backed) |
+| Templates | Enhanced with structural examples | High (research-backed) |
 
 ---
 

@@ -305,6 +305,54 @@ These requirements are confirmed by spike implementation:
 
 ---
 
+#### FR-24: Template Structural Examples
+
+**Description:** Templates must include structural examples (tables, lists, section formats) not just AI placeholder instructions
+
+**Source:** [research-template-structure.md](research-template-structure.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-25: Template Complexity Variants
+
+**Description:** Provide multiple template variants (full, minimal, bare) for each document type
+
+**Source:** [research-template-structure.md](research-template-structure.md) - MADR pattern
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-26: Section Completeness Markers
+
+**Description:** Templates should include markers indicating required vs. optional sections and minimum content expectations
+
+**Source:** [research-template-structure.md](research-template-structure.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-27: Template Variable Documentation
+
+**Description:** Maintain explicit documentation of all template variables with categories, descriptions, and defaults
+
+**Source:** [research-template-structure.md](research-template-structure.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
 ### Pending Research Requirements
 
 ---
@@ -400,6 +448,18 @@ These requirements are confirmed by spike implementation:
 **Description:** Section count mismatches must produce clear errors with specific fix suggestions
 
 **Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### NFR-7: Template-Spike Alignment
+
+**Description:** Enhanced templates must produce output structurally equivalent to spike heredocs to maintain consistency during transition
+
+**Source:** [research-template-structure.md](research-template-structure.md)
 
 **Priority:** High
 

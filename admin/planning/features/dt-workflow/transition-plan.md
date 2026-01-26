@@ -31,9 +31,9 @@ Transition from exploration/research/decisions to production implementation of t
 
 - [x] Exploration complete
 - [x] Spike validated
-- [x] Research complete (Topics 1-3)
-- [x] ADRs created and accepted (5 ADRs)
-- [x] Requirements documented
+- [x] Research complete (Topics 1-3, 7-8)
+- [x] ADRs created and accepted (6 ADRs)
+- [x] Requirements documented (FR-1 through FR-27)
 - [x] Pattern library created
 - [ ] Phase scaffolding reviewed
 
@@ -72,29 +72,42 @@ Transition from exploration/research/decisions to production implementation of t
 
 ---
 
-### Phase 2: Workflow Expansion
+### Phase 2: Workflow Expansion + Template Enhancement
 
-**Goal:** Implement research and decision workflows
+**Goal:** Implement research and decision workflows with enhanced templates
 
-**Estimated Effort:** 10-14 hours
+**Estimated Effort:** 14-18 hours
 
 **Prerequisites:**
 - [ ] Phase 1 complete
 
 **Key Tasks:**
-- [ ] Implement research workflow structure generation
-- [ ] Implement research context gathering
-- [ ] Implement decision workflow structure generation
-- [ ] Implement decision context gathering
-- [ ] Add handoff file generation
-- [ ] Add --from-* flag support
+- [ ] **Template Enhancement (ADR-006):**
+  - [ ] Enhance dev-infra exploration templates with structural examples
+  - [ ] Enhance dev-infra research templates with structural examples
+  - [ ] Enhance dev-infra decision templates with structural examples
+  - [ ] Update dt-workflow to use render.sh instead of heredocs
+  - [ ] Document template variable contract
+- [ ] **Research Workflow:**
+  - [ ] Implement research workflow structure generation
+  - [ ] Implement research context gathering
+- [ ] **Decision Workflow:**
+  - [ ] Implement decision workflow structure generation
+  - [ ] Implement decision context gathering
+- [ ] **Workflow Chaining:**
+  - [ ] Add handoff file generation
+  - [ ] Add --from-* flag support
 
 **Deliverables:**
+- Enhanced templates in dev-infra (structural examples)
 - Research workflow support
 - Decision workflow support
 - Workflow chaining via handoff files
+- Template variable documentation
 
 **Definition of Done:**
+- [ ] Templates enhanced with structural examples (FR-24)
+- [ ] Templates use render.sh (NFR-7 alignment)
 - [ ] `dt-workflow research` works end-to-end
 - [ ] `dt-workflow decision` works end-to-end
 - [ ] Handoff files validated

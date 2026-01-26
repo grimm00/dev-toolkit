@@ -23,6 +23,7 @@
 | 5 | Cursor Command Role | 🟡 MEDIUM | 🔴 Not Started | [research-cursor-command-role.md](research-cursor-command-role.md) |
 | 6 | Model Selection | 🟡 MEDIUM | 🔴 Not Started | [research-model-selection.md](research-model-selection.md) |
 | 7 | Dynamic Section Management | 🔴 HIGH | ✅ Complete | [research-dynamic-sections.md](research-dynamic-sections.md) |
+| 8 | Template Structure | 🔴 HIGH | ✅ Complete | [research-template-structure.md](research-template-structure.md) |
 
 ### Spike-Validated (No Research Needed)
 
@@ -79,4 +80,4 @@ The spike (`bin/dt-workflow`) validated:
 
 ---
 
-**Last Updated:** 2026-01-23
+**Last Updated:** 2026-01-22

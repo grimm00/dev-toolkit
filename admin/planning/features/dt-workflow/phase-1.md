@@ -2,7 +2,8 @@
 
 **Phase:** 1 - Foundation  
 **Duration:** 8-12 hours  
-**Status:** ✅ Expanded  
+**Status:** ✅ Complete  
+**Completed:** 2026-01-26
 **Prerequisites:** Spike complete, ADRs accepted
 
 ---
@@ -33,14 +34,14 @@ Refactor the spike implementation into production-quality code with comprehensiv
 **Steps:**
 
 1. **Create test file structure:**
-   - [ ] Create `tests/unit/test-dt-workflow.bats`
-   - [ ] Create `tests/integration/test-dt-workflow-integration.bats`
-   - [ ] Verify test helpers exist (`tests/helpers/`)
+   - [x] Create `tests/unit/test-dt-workflow.bats`
+   - [x] Create `tests/integration/test-dt-workflow-integration.bats`
+   - [x] Verify test helpers exist (`tests/helpers/`)
 
 2. **Set up test configuration:**
-   - [ ] Define `DT_WORKFLOW` path variable in tests
-   - [ ] Create mock project structure for testing
-   - [ ] Set up test fixtures (mock rules, mock explorations)
+   - [x] Define `DT_WORKFLOW` path variable in tests
+   - [x] Create mock project structure for testing
+   - [x] Set up test fixtures (mock rules, mock explorations)
 
 **Test file skeleton:**
 
@@ -71,10 +72,10 @@ teardown() {
 ```
 
 **Checklist:**
-- [ ] Unit test file created
-- [ ] Integration test file created
-- [ ] Test helpers available
-- [ ] Mock fixtures defined
+- [x] Unit test file created
+- [x] Integration test file created
+- [x] Test helpers available
+- [x] Mock fixtures defined
 
 ---
 
@@ -114,19 +115,19 @@ teardown() {
 ```
 
 2. **GREEN - Verify spike passes:**
-   - [ ] Run tests: `bats tests/unit/test-dt-workflow.bats`
-   - [ ] Spike should already pass these tests
-   - [ ] If not, fix implementation
+   - [x] Run tests: `bats tests/unit/test-dt-workflow.bats`
+   - [x] Spike should already pass these tests
+   - [x] If not, fix implementation
 
 3. **REFACTOR - Update help text:**
-   - [ ] Remove "SPIKE" references from help
-   - [ ] Update version to 0.2.0
-   - [ ] Ensure help text matches script-standards.mdc
+   - [x] Remove "SPIKE" references from help
+   - [x] Update version to 0.2.0
+   - [x] Ensure help text matches script-standards.mdc
 
 **Checklist:**
-- [ ] Help tests written and passing
-- [ ] Version tests written and passing
-- [ ] Help text production-ready
+- [x] Help tests written and passing
+- [x] Version tests written and passing
+- [x] Help text production-ready
 
 ---
 
@@ -179,22 +180,22 @@ teardown() {
 ```
 
 2. **GREEN - Verify/fix implementation:**
-   - [ ] Run tests: `bats tests/unit/test-dt-workflow.bats`
-   - [ ] Fix any failing tests
-   - [ ] Ensure error messages are actionable
+   - [x] Run tests: `bats tests/unit/test-dt-workflow.bats`
+   - [x] Fix any failing tests
+   - [x] Ensure error messages are actionable
 
 3. **REFACTOR - Improve error messages:**
-   - [ ] Consistent format: "❌ Error: [message]"
-   - [ ] Always include "💡 Suggestion:" with corrective action
-   - [ ] NFR-4 compliance (actionable errors)
+   - [x] Consistent format: "❌ Error: [message]"
+   - [x] Always include "💡 Suggestion:" with corrective action
+   - [x] NFR-4 compliance (actionable errors)
 
 **Checklist:**
-- [ ] Missing workflow argument test passing
-- [ ] Missing topic argument test passing
-- [ ] Unknown workflow test passing
-- [ ] --interactive requirement test passing
-- [ ] --validate L1 tests passing
-- [ ] All error messages actionable
+- [x] Missing workflow argument test passing
+- [x] Missing topic argument test passing
+- [x] Unknown workflow test passing
+- [x] --interactive requirement test passing
+- [x] --validate L1 tests passing
+- [x] All error messages actionable
 
 ---
 
@@ -267,18 +268,18 @@ teardown() {
 ```
 
 4. **GREEN - Run tests and verify:**
-   - [ ] Run: `bats tests/unit/test-dt-workflow.bats`
-   - [ ] Fix any failing tests
+   - [x] Run: `bats tests/unit/test-dt-workflow.bats`
+   - [x] Fix any failing tests
 
 5. **REFACTOR - Clean up functions:**
-   - [ ] Add inline comments per script-standards.mdc
-   - [ ] Ensure consistent error handling
+   - [x] Add inline comments per script-standards.mdc
+   - [x] Ensure consistent error handling
 
 **Checklist:**
-- [ ] gather_cursor_rules tests passing
-- [ ] gather_project_identity tests passing
-- [ ] estimate_tokens tests passing
-- [ ] Functions documented with comments
+- [x] gather_cursor_rules tests passing
+- [x] gather_project_identity tests passing
+- [x] estimate_tokens tests passing
+- [x] Functions documented with comments
 
 ---
 
@@ -337,18 +338,18 @@ teardown() {
 ```
 
 2. **GREEN - Run and verify:**
-   - [ ] Run: `bats tests/integration/test-dt-workflow-integration.bats`
-   - [ ] Fix any structural issues
+   - [x] Run: `bats tests/integration/test-dt-workflow-integration.bats`
+   - [x] Fix any structural issues
 
 3. **REFACTOR - Optimize output:**
-   - [ ] Ensure output is clean and readable
-   - [ ] Verify markdown renders correctly
+   - [x] Ensure output is clean and readable
+   - [x] Verify markdown renders correctly
 
 **Checklist:**
-- [ ] Output structure tests passing
-- [ ] Token estimate included
-- [ ] Next steps included
-- [ ] Exploration structure valid
+- [x] Output structure tests passing
+- [x] Token estimate included
+- [x] Next steps included
+- [x] Exploration structure valid
 
 ---
 
@@ -384,14 +385,17 @@ teardown() {
 ```
 
 2. **GREEN - Verify implementation**
+   - [x] Run tests: `bats tests/integration/test-dt-workflow-integration.bats`
+   - [x] All tests passing
+
 3. **REFACTOR - Handle edge cases:**
-   - [ ] Invalid output path
-   - [ ] Permission errors
+   - [x] Invalid output path
+   - [x] Permission errors
 
 **Checklist:**
-- [ ] --output writes file correctly
-- [ ] Success message displayed
-- [ ] Edge cases handled
+- [x] --output writes file correctly
+- [x] Success message displayed
+- [x] Edge cases handled
 
 ---
 
@@ -402,35 +406,35 @@ teardown() {
 **Steps:**
 
 1. **Update header:**
-   - [ ] Remove "SPIKE" references
-   - [ ] Update VERSION to "0.2.0"
-   - [ ] Update description
+   - [x] Remove "SPIKE" references
+   - [x] Update VERSION to "0.2.0"
+   - [x] Update description
 
 2. **Add section comments:**
-   - [ ] Verify CONFIGURATION section
-   - [ ] Verify FUNCTIONS section
-   - [ ] Verify MAIN EXECUTION section
-   - [ ] Add CONTEXT GATHERING section header
-   - [ ] Add VALIDATION section header
-   - [ ] Add OUTPUT GENERATION section header
+   - [x] Verify CONFIGURATION section
+   - [x] Verify FUNCTIONS section (organized as CONTEXT GATHERING, STRUCTURE GENERATION, VALIDATION, OUTPUT GENERATION, HELP AND VERSION)
+   - [x] Verify MAIN EXECUTION section
+   - [x] Add CONTEXT GATHERING section header
+   - [x] Add VALIDATION section header
+   - [x] Add OUTPUT GENERATION section header
 
 3. **Add inline documentation:**
-   - [ ] Document complex logic (context ordering rationale)
-   - [ ] Document validation levels (L1/L2/L3)
-   - [ ] Document token estimation approach
+   - [x] Document complex logic (context ordering rationale - ADR-002)
+   - [x] Document validation levels (L1/L2/L3 with clear explanations)
+   - [x] Document token estimation approach (already in function)
 
 4. **Update show_help():**
-   - [ ] Remove "SPIKE VERSION" text
-   - [ ] Update phase limitations text
-   - [ ] Add all supported workflows
-   - [ ] Add examples section
+   - [x] Remove "SPIKE VERSION" text
+   - [x] Update phase limitations text
+   - [x] Add all supported workflows
+   - [x] Add examples section
 
 **Checklist:**
-- [ ] Header updated (no SPIKE references)
-- [ ] Version bumped to 0.2.0
-- [ ] Section comments complete
-- [ ] Inline documentation added
-- [ ] Help text production-ready
+- [x] Header updated (no SPIKE references)
+- [x] Version bumped to 0.2.0
+- [x] Section comments complete
+- [x] Inline documentation added
+- [x] Help text production-ready
 
 ---
 
@@ -461,14 +465,14 @@ teardown() {
    ```
 
 4. **Verify no hardcoded paths:**
-   - [ ] Search for hardcoded paths: `grep -n "cdwilson\|dev-toolkit" bin/dt-workflow`
-   - [ ] Should return no matches
+   - [x] Search for hardcoded paths: `grep -n "cdwilson\|dev-toolkit" bin/dt-workflow`
+   - [x] Should return no matches (only "dev-toolkit" in help text description, which is acceptable)
 
 **Checklist:**
-- [ ] Works in dev-toolkit
-- [ ] Works in other projects
-- [ ] Works with minimal project (no rules)
-- [ ] No hardcoded paths
+- [x] Works in dev-toolkit
+- [x] Works in other projects (tested in minimal project)
+- [x] Works with minimal project (no rules)
+- [x] No hardcoded paths
 
 ---
 
@@ -495,21 +499,21 @@ teardown() {
    ```
 
 4. **Manual testing:**
-   - [ ] `dt-workflow --help` displays correctly
-   - [ ] `dt-workflow --version` shows 0.2.0
-   - [ ] `dt-workflow explore test --interactive` produces valid output
+   - [x] `dt-workflow --help` displays correctly
+   - [x] `dt-workflow --version` shows 0.2.0
+   - [x] `dt-workflow explore test --interactive` produces valid output
 
 5. **Documentation check:**
-   - [ ] Help text is complete
-   - [ ] Inline comments explain complex logic
-   - [ ] Version is 0.2.0
+   - [x] Help text is complete
+   - [x] Inline comments explain complex logic (10+ documented functions)
+   - [x] Version is 0.2.0
 
 **Checklist:**
-- [ ] All unit tests passing
-- [ ] All integration tests passing
-- [ ] Script syntax valid
-- [ ] Manual testing complete
-- [ ] Documentation complete
+- [x] All unit tests passing (25/25 tests)
+- [x] All integration tests passing
+- [x] Script syntax valid (bash -n passed)
+- [x] Manual testing complete
+- [x] Documentation complete
 
 ---
 
@@ -517,27 +521,27 @@ teardown() {
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Task 1: Test Infrastructure | 🔴 Not Started | |
-| Task 2: Help/Version Tests | 🔴 Not Started | |
-| Task 3: Validation Tests | 🔴 Not Started | |
-| Task 4: Context Gathering Tests | 🔴 Not Started | |
-| Task 5: Output Generation Tests | 🔴 Not Started | |
-| Task 6: --output Flag Tests | 🔴 Not Started | |
-| Task 7: Code Restructuring | 🔴 Not Started | |
-| Task 8: Portability Validation | 🔴 Not Started | |
-| Task 9: Final Validation | 🔴 Not Started | |
+| Task 1: Test Infrastructure | ✅ Complete | Test files created and verified |
+| Task 2: Help/Version Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
+| Task 3: Validation Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
+| Task 4: Context Gathering Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
+| Task 5: Output Generation Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
+| Task 6: --output Flag Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
+| Task 7: Code Restructuring | ✅ Complete | All restructuring complete |
+| Task 8: Portability Validation | ✅ Complete | Validated in dev-toolkit and minimal project |
+| Task 9: Final Validation | ✅ Complete | All tests passing, syntax valid, documentation complete |
 
 ---
 
 ## ✅ Completion Criteria
 
-- [ ] All unit tests passing
-- [ ] All integration tests passing
-- [ ] Script syntax validated (`bash -n bin/dt-workflow`)
-- [ ] Help text complete and accurate
-- [ ] Portability verified in 2+ different repositories
-- [ ] Code follows script-standards.mdc
-- [ ] Version updated to 0.2.0
+- [x] All unit tests passing (25/25 tests)
+- [x] All integration tests passing
+- [x] Script syntax validated (`bash -n bin/dt-workflow`)
+- [x] Help text complete and accurate
+- [x] Portability verified in 2+ different repositories (dev-toolkit + minimal project)
+- [x] Code follows script-standards.mdc
+- [x] Version updated to 0.2.0
 
 ---
 
@@ -575,6 +579,6 @@ teardown() {
 
 ---
 
-**Last Updated:** 2026-01-22  
-**Status:** ✅ Expanded  
-**Next:** Begin implementation with Task 1
+**Last Updated:** 2026-01-26  
+**Status:** 🟠 In Progress  
+**Next:** Task 1 in progress
