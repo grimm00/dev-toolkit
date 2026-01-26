@@ -127,9 +127,45 @@ Cursor Command (orchestrator):
 
 ## Step-by-Step Process
 
+### 0. Run dt-workflow
+
+**Before creating decisions, gather context:**
+
+```bash
+# Verify research exists and get context
+dt-workflow decision <topic> --from-research --interactive
+
+# Or with explicit research path
+dt-workflow decision <topic> --from-research /path/to/research --interactive
+```
+
+**What dt-workflow provides:**
+- Validates research prerequisites (research-summary.md exists)
+- Provides chained context from research
+- Provides ADR template structure
+- Outputs injected context (rules, project identity)
+
+**Error Handling:**
+
+If research doesn't exist, dt-workflow will report:
+```
+Error: Research not found for topic '<topic>'
+Expected: admin/research/<topic>/research-summary.md
+```
+
+**Decision Process Checklist:**
+
+- [ ] dt-workflow context gathered (`dt-workflow decision <topic> --from-research --interactive`)
+- [ ] Prerequisites validated (research exists)
+- [ ] Chained context available (research-summary.md read)
+
+---
+
 ### 1. Identify Research Source
 
 **Read research documents:**
+
+**Note:** dt-workflow already validated research exists in Step 0.
 
 1. **Read research summary:**
    - **Dev-Infra:** `admin/research/[topic]/research-summary.md`
@@ -265,6 +301,20 @@ decisions/[topic]/
 ---
 
 ### 4. Create ADR Documents
+
+**Context Usage:**
+
+ADR creation uses the structure from dt-workflow (Step 0):
+- ADR template structure (from dt-workflow template)
+- Injected context (rules, project identity) already available
+- AI fills in decision content based on research findings
+
+**Multiple ADRs:**
+
+One ADR per decision point. A single topic may result in multiple ADRs:
+- `adr-001-database-choice.md` - Primary database decision
+- `adr-002-caching-strategy.md` - Related caching decision
+- etc.
 
 **For each decision point:**
 

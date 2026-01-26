@@ -369,19 +369,19 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 **Steps:**
 
 1. **Add dt-workflow as first step:**
-   - [ ] Document invocation before decision process
-   - [ ] Show how to verify research exists first
-   - [ ] Note auto-detection behavior
+   - [x] Document invocation before decision process
+   - [x] Show how to verify research exists first
+   - [x] Note auto-detection behavior
 
 2. **Update ADR creation:**
-   - [ ] dt-workflow provides ADR structure
-   - [ ] AI fills in decision content
-   - [ ] Multiple ADRs may be created per topic
+   - [x] dt-workflow provides ADR structure
+   - [x] AI fills in decision content
+   - [x] Multiple ADRs may be created per topic
 
 **Checklist:**
-- [ ] Decision steps updated
-- [ ] ADR workflow documented
-- [ ] Multiple ADR handling noted
+- [x] Decision steps updated
+- [x] ADR workflow documented
+- [x] Multiple ADR handling noted
 
 ---
 
@@ -630,7 +630,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 5: research.md Setup Mode | ✅ Complete | Step 0 with checklist and error handling |
 | Task 6: research.md Conduct Mode | ✅ Complete | Context usage and handoff documented |
 | Task 7: decision.md integration section | ✅ Complete | dt-workflow section with chaining docs |
-| Task 8: decision.md process steps | 🔴 Not Started | |
+| Task 8: decision.md process steps | ✅ Complete | Step 0 + ADR context usage docs |
 | Task 9: Integration test scenarios | 🔴 Not Started | |
 | Task 10: Error handling documentation | 🔴 Not Started | |
 | Task 11: Cross-references | 🔴 Not Started | |
