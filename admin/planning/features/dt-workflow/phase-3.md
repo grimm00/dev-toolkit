@@ -151,18 +151,18 @@ dt-workflow explore <topic> --interactive
 **Steps:**
 
 1. **Read Conduct Mode section:**
-   - [ ] Identify where context is gathered
-   - [ ] Check if scaffolding expansion needs dt-workflow
+   - [x] Identify where context is gathered
+   - [x] Check if scaffolding expansion needs dt-workflow
 
 2. **Add context refresh option:**
-   - [ ] Document: Can re-run dt-workflow for fresh context
-   - [ ] Note: Useful when project context has changed
-   - [ ] Keep Conduct Mode focused on expansion, not regeneration
+   - [x] Document: Can re-run dt-workflow for fresh context
+   - [x] Note: Useful when project context has changed
+   - [x] Keep Conduct Mode focused on expansion, not regeneration
 
 **Checklist:**
-- [ ] Conduct Mode reviewed
-- [ ] Context refresh documented
-- [ ] Expansion workflow preserved
+- [x] Conduct Mode reviewed
+- [x] Context refresh documented
+- [x] Expansion workflow preserved
 
 ---
 
@@ -625,7 +625,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 |------|--------|-------|
 | Task 1: explore.md integration section | ✅ Complete | dt-workflow Integration section added |
 | Task 2: explore.md Setup Mode | ✅ Complete | Checklist and output section updated |
-| Task 3: explore.md Conduct Mode | 🔴 Not Started | |
+| Task 3: explore.md Conduct Mode | ✅ Complete | Checklist updated with context refresh |
 | Task 4: research.md integration section | 🔴 Not Started | |
 | Task 5: research.md Setup Mode | 🔴 Not Started | |
 | Task 6: research.md Conduct Mode | 🔴 Not Started | |

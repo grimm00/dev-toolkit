@@ -966,6 +966,7 @@ This provides fresh injected context (rules, project identity) for the expansion
 **Conduct Mode Checklist:**
 
 - [ ] Existing scaffolding read and understood
+- [ ] Context refresh considered (optional: re-run `dt-workflow explore <topic> --interactive` if project context changed)
 - [ ] Themes expanded with detailed analysis
 - [ ] Questions expanded with context and sub-questions
 - [ ] Initial thoughts documented with evidence
