@@ -30,9 +30,15 @@ dt_setup_colors
 # ============================================================================
 
 gather_cursor_rules() {
+    # Gather Cursor rules from .cursor/rules directory for context injection
+    # Parameters:
+    #   $1 - Project directory (default: current directory)
+    # Returns: Markdown-formatted rules output, or empty if no rules found
+    
     local project_dir="${1:-.}"
     local rules_dir="$project_dir/.cursor/rules"
     
+    # Check if rules directory exists (graceful degradation)
     if [ ! -d "$rules_dir" ]; then
         dt_print_debug "No .cursor/rules directory found"
         return 0
@@ -43,7 +49,7 @@ gather_cursor_rules() {
     echo "These rules define project standards and must always be followed."
     echo ""
     
-    # Find all .mdc files and output their contents
+    # Find all .mdc files and output their contents (sorted for consistency)
     local rule_files
     rule_files=$(find "$rules_dir" -name "*.mdc" -type f 2>/dev/null | sort)
     
@@ -52,6 +58,7 @@ gather_cursor_rules() {
         return 0
     fi
     
+    # Output each rule file in markdown code blocks for clarity
     for rule_file in $rule_files; do
         local filename
         filename=$(basename "$rule_file")
@@ -65,12 +72,18 @@ gather_cursor_rules() {
 }
 
 gather_project_identity() {
+    # Gather project identity context (roadmap, admin structure) for context injection
+    # Parameters:
+    #   $1 - Project directory (default: current directory)
+    # Returns: Markdown-formatted project identity output
+    # Note: Checks multiple common locations for roadmap files
+    
     local project_dir="${1:-.}"
     
     echo "## Project Identity (Universal Context)"
     echo ""
     
-    # Check for roadmap
+    # Check for roadmap in common locations (priority order)
     local roadmap_paths=(
         "$project_dir/admin/planning/roadmap.md"
         "$project_dir/docs/roadmap.md"
@@ -84,7 +97,7 @@ gather_project_identity() {
             echo "From: \`$roadmap\`"
             echo ""
             echo '```markdown'
-            # Output first 100 lines to keep context manageable
+            # Output first 100 lines to keep context manageable (per ADR-002)
             head -100 "$roadmap"
             echo '```'
             echo ""
@@ -92,7 +105,7 @@ gather_project_identity() {
         fi
     done
     
-    # Check for admin README
+    # Check for admin README (provides project structure context)
     local admin_readme="$project_dir/admin/README.md"
     if [ -f "$admin_readme" ]; then
         echo "### Admin Structure"
@@ -100,6 +113,7 @@ gather_project_identity() {
         echo "From: \`$admin_readme\`"
         echo ""
         echo '```markdown'
+        # Output first 80 lines (slightly less than roadmap)
         head -80 "$admin_readme"
         echo '```'
         echo ""
@@ -487,8 +501,14 @@ validate_inputs() {
 # ============================================================================
 
 estimate_tokens() {
+    # Estimate token count for text (used for context size reporting)
+    # Parameters:
+    #   $1 - Text to estimate
+    # Returns: Estimated token count (integer)
+    # Note: Uses conservative 4 chars/token ratio (actual is ~3.5-4.5 depending on content)
+    
     local text="$1"
-    # Rough estimation: ~4 characters per token (conservative)
+    # Rough estimation: ~4 characters per token (conservative estimate)
     local char_count
     char_count=$(echo -n "$text" | wc -c | tr -d ' ')
     local token_estimate
@@ -826,4 +846,7 @@ main() {
     fi
 }
 
-main "$@"
+# Only execute main if script is run directly (not sourced)
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
