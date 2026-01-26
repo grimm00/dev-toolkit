@@ -191,14 +191,14 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
    ```
 
 3. **REFACTOR:**
-   - [ ] Align with MADR format where applicable
-   - [ ] Ensure consistent ADR numbering support
-   - [ ] Document template variables
+   - [x] Align with MADR format where applicable (verified: Context, Decision, Consequences, Alternatives, Rationale sections present)
+   - [x] Ensure consistent ADR numbering support (${ADR_NUMBER} variable used, supports sequential numbering)
+   - [x] Document template variables (completed in dev-infra PR #64)
 
 **Checklist:**
 - [x] Test written and passing (RED phase complete - templates already enhanced)
 - [x] Decision templates enhanced (GREEN phase complete - dev-infra PR #64)
-- [ ] MADR alignment maintained (REFACTOR phase)
+- [x] MADR alignment maintained (REFACTOR phase complete)
 - [x] Test passing (all 5 tests passing)
 
 ---
