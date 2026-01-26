@@ -583,17 +583,17 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 **Steps:**
 
 1. **Update workflow.mdc rule:**
-   - [ ] Add note about dt-workflow integration
-   - [ ] Reference ADR-004 pattern
+   - [x] Add note about dt-workflow integration
+   - [x] Reference ADR-004 pattern
 
 2. **Update README files:**
-   - [ ] `.cursor/commands/README.md` (if exists)
-   - [ ] Note dt-workflow integration
+   - [x] `.cursor/commands/README.md` (if exists) - N/A, no README exists
+   - [x] Note dt-workflow integration - Added to workflow.mdc
 
 **Checklist:**
-- [ ] workflow.mdc updated
-- [ ] README files consistent
-- [ ] Integration documented
+- [x] workflow.mdc updated
+- [x] README files consistent (N/A - no README exists)
+- [x] Integration documented
 
 ---
 
@@ -634,7 +634,7 @@ dt-workflow decision <topic> --from-research /path/to/research --interactive
 | Task 9: Integration test scenarios | ✅ Complete | 5 scenarios (3.1-3.5) added |
 | Task 10: Error handling documentation | ✅ Complete | All commands have Error Handling docs |
 | Task 11: Cross-references | ✅ Complete | All commands have Related sections |
-| Task 12: Related documents | 🔴 Not Started | |
+| Task 12: Related documents | ✅ Complete | workflow.mdc updated |
 
 ---
 

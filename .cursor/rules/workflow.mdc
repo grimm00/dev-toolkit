@@ -137,6 +137,25 @@ Use this workflow for:
 - **Decisions:** `admin/decisions/[topic]/` (when created)
 - **Features:** `admin/planning/features/[feature-name]/`
 
+### dt-workflow Integration
+
+**Per ADR-004:** Cursor commands (`/explore`, `/research`, `/decision`) act as orchestrators that call `dt-workflow` for core logic.
+
+**How it works:**
+1. Cursor command receives user request
+2. Command calls `dt-workflow <workflow> <topic> --interactive`
+3. dt-workflow provides context injection, structure templates, and handoff guidance
+4. AI uses the output to guide the workflow
+
+**Command examples:**
+```bash
+dt-workflow explore my-topic --interactive
+dt-workflow research my-topic --from-explore --interactive
+dt-workflow decision my-topic --from-research --interactive
+```
+
+**Reference:** [ADR-004: Cursor Command Role](../admin/decisions/dt-workflow/adr-004-cursor-command-role.md)
+
 ---
 
 ## 🧪 Spike Workflow (Planned)
