@@ -250,17 +250,17 @@ apply_context_profile() {
 **Steps:**
 
 1. **Consider config file support:**
-   - [ ] Design config format for custom profiles
-   - [ ] Document extension points
+   - [x] Design config format for custom profiles (documented in comments)
+   - [x] Document extension points (config file location, format notes)
 
 2. **Update help text:**
-   - [ ] Add --profile to --help output
-   - [ ] List available profiles
+   - [x] Add --profile to --help output (already done in Task 3)
+   - [x] List available profiles (improved description)
 
 **Checklist:**
-- [ ] Code reviewed for improvements
-- [ ] Tests still pass
-- [ ] Help text updated
+- [x] Code reviewed for improvements
+- [x] Tests still pass
+- [x] Help text updated
 
 ---
 
@@ -528,7 +528,7 @@ fi
 | Task 3: Model recommendation refactor | ✅ Complete | Documentation improved |
 | Task 4: Context profile tests (RED) | ✅ Complete | All tests pass |
 | Task 5: Context profile impl (GREEN) | ✅ Complete | Feature implemented |
-| Task 6: Context profile refactor | 🔴 Not Started | |
+| Task 6: Context profile refactor | ✅ Complete | Documentation improved |
 | Task 7: Dry run tests (RED) | 🔴 Not Started | |
 | Task 8: Dry run impl (GREEN) | 🔴 Not Started | |
 | Task 9: Performance tests (RED) | 🔴 Not Started | |
