@@ -18,9 +18,26 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 - Ensure error messages are helpful and actionable
 
 **Prerequisites:**
-- dev-toolkit installed (or access to `bin/dt-workflow`)
+- Access to `bin/dt-workflow` in the dev-toolkit repository
 - A git repository to test in
 - Terminal access
+
+**Running the command:**
+
+During development, run from the dev-toolkit worktree/repo:
+```bash
+# From dev-toolkit directory
+./bin/dt-workflow [arguments]
+
+# Or add to PATH temporarily
+export PATH="$PWD/bin:$PATH"
+dt-workflow [arguments]
+
+# Or use absolute path
+/path/to/dev-toolkit/bin/dt-workflow [arguments]
+```
+
+**Note:** If you have a global installation at `/usr/local/bin/dt-workflow`, it may be outdated. Use the local `./bin/dt-workflow` for testing development changes.
 
 ---
 
@@ -32,9 +49,9 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 **Steps:**
 
-1. Run the help command:
+1. Run the help command (from dev-toolkit directory):
    ```bash
-   dt-workflow --help
+   ./bin/dt-workflow --help
    ```
 
 2. Verify the output includes:
@@ -55,12 +72,12 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 1. Run the version command:
    ```bash
-   dt-workflow --version
+   ./bin/dt-workflow --version
    ```
 
 2. Also test short form:
    ```bash
-   dt-workflow -v
+   ./bin/dt-workflow -v
    ```
 
 **Expected Result:** ✅ Both commands show `dt-workflow version 0.2.0`
@@ -75,7 +92,7 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 1. Run without arguments:
    ```bash
-   dt-workflow
+   ./bin/dt-workflow
    ```
 
 2. Verify the error includes:
@@ -96,7 +113,7 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 1. Run with only workflow:
    ```bash
-   dt-workflow explore
+   ./bin/dt-workflow explore
    ```
 
 2. Verify the error includes:
@@ -116,7 +133,7 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 1. Run with invalid workflow:
    ```bash
-   dt-workflow invalid-workflow my-topic --interactive
+   ./bin/dt-workflow invalid-workflow my-topic --interactive
    ```
 
 2. Verify the error includes:
@@ -134,14 +151,14 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 **Steps:**
 
-1. Navigate to a git repository with `.cursor/rules/`:
+1. From the dev-toolkit directory (which has `.cursor/rules/`):
    ```bash
-   cd ~/Projects/dev-toolkit  # or any repo with rules
+   cd ~/Projects/dev-toolkit/worktrees/feat-dt-workflow  # or main dev-toolkit
    ```
 
 2. Run explore workflow:
    ```bash
-   dt-workflow explore test-feature --interactive
+   ./bin/dt-workflow explore test-feature --interactive
    ```
 
 3. Verify the output includes:
@@ -175,9 +192,9 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
    git add README.md && git commit -m "Initial"
    ```
 
-2. Run explore workflow:
+2. Run explore workflow (use absolute path since we're in /tmp):
    ```bash
-   dt-workflow explore test-feature --interactive
+   ~/Projects/dev-toolkit/worktrees/feat-dt-workflow/bin/dt-workflow explore test-feature --interactive
    ```
 
 3. Verify:
@@ -201,14 +218,14 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 **Steps:**
 
-1. Navigate to a git repository:
+1. From the dev-toolkit directory:
    ```bash
-   cd ~/Projects/dev-toolkit
+   cd ~/Projects/dev-toolkit/worktrees/feat-dt-workflow
    ```
 
 2. Run with --output flag:
    ```bash
-   dt-workflow explore test-feature --interactive --output /tmp/test-output.md
+   ./bin/dt-workflow explore test-feature --interactive --output /tmp/test-output.md
    ```
 
 3. Verify:
@@ -238,7 +255,7 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 1. Run with non-existent directory:
    ```bash
-   dt-workflow explore test-feature --interactive --output /nonexistent/path/output.md
+   ./bin/dt-workflow explore test-feature --interactive --output /nonexistent/path/output.md
    ```
 
 2. Verify:
@@ -257,7 +274,7 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 1. Run validation for explore workflow:
    ```bash
-   dt-workflow explore test-feature --validate
+   ./bin/dt-workflow explore test-feature --validate
    ```
 
 2. Verify output shows:
@@ -275,14 +292,14 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 **Steps:**
 
-1. Navigate to dev-toolkit (has .cursor/rules):
+1. From dev-toolkit directory (has .cursor/rules):
    ```bash
-   cd ~/Projects/dev-toolkit
+   cd ~/Projects/dev-toolkit/worktrees/feat-dt-workflow
    ```
 
 2. Run explore workflow and check for rules:
    ```bash
-   dt-workflow explore test-feature --interactive | grep -A 5 "CRITICAL RULES"
+   ./bin/dt-workflow explore test-feature --interactive | grep -A 5 "CRITICAL RULES"
    ```
 
 3. Verify:
@@ -302,7 +319,7 @@ This guide provides step-by-step instructions for manually verifying the `dt-wor
 
 1. Run explore workflow:
    ```bash
-   dt-workflow explore test-feature --interactive | tail -5
+   ./bin/dt-workflow explore test-feature --interactive | tail -5
    ```
 
 2. Verify:
