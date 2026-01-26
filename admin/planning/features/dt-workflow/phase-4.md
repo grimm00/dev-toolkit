@@ -533,8 +533,8 @@ fi
 | Task 8: Dry run impl (GREEN) | ✅ Complete | Feature implemented |
 | Task 9: Performance tests (RED) | ✅ Complete | All tests pass, baseline documented |
 | Task 10: Performance optimization (GREEN) | ✅ Complete | No optimization needed - requirements met |
-| Task 11: Evolution documentation | 🔴 Not Started | |
-| Task 12: Manual testing scenarios | 🔴 Not Started | |
+| Task 11: Evolution documentation | ✅ Complete | Evolution path documented |
+| Task 12: Manual testing scenarios | ✅ Complete | Phase 4 scenarios added |
 
 ---
 
