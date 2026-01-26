@@ -211,10 +211,16 @@ generate_exploration_structure() {
     # Find templates directory
     local templates_root
     templates_root=$(dt_find_templates) || {
-        dt_print_status "WARNING" "Templates not found, falling back to heredoc structure"
-        dt_print_debug "Template search failed, using fallback heredoc function"
-        generate_exploration_structure_heredoc "$topic"
-        return 0
+        dt_print_status "ERROR" "Templates not found - templates are required for structure generation"
+        dt_print_debug "Template search failed - templates must be available"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are installed or DT_TEMPLATES_PATH is set"
+        echo ""
+        echo "Expected locations:"
+        echo "  - \$HOME/Projects/dev-infra/scripts/doc-gen/templates"
+        echo "  - \$HOME/dev-infra/scripts/doc-gen/templates"
+        echo "  - Or set DT_TEMPLATES_PATH environment variable"
+        return 1
     }
     
     dt_print_debug "Using templates from: $templates_root"
@@ -245,21 +251,21 @@ generate_exploration_structure() {
             cat "$temp_output"
             dt_print_debug "Successfully rendered exploration template"
         else
-            # Fallback to heredoc if rendering fails
-            dt_print_status "WARNING" "Template rendering failed, using fallback"
-            dt_print_debug "Template rendering failed for: $exploration_template"
-            generate_exploration_structure_heredoc "$topic"
+            # Template rendering failed - templates are required
+            dt_print_status "ERROR" "Template rendering failed for: $exploration_template"
+            dt_print_debug "Template rendering failed - check template file and variables"
             rm -f "$temp_output"
-            return 0
+            return 1
         fi
         rm -f "$temp_output"
         echo '```'
         echo ""
     else
-        dt_print_status "WARNING" "Exploration template not found: $exploration_template"
+        dt_print_status "ERROR" "Exploration template not found: $exploration_template"
         dt_print_debug "Template file missing: $exploration_template"
-        generate_exploration_structure_heredoc "$topic"
-        return 0
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are properly installed"
+        return 1
     fi
     
     # Render research-topics.md template
@@ -316,59 +322,6 @@ generate_exploration_structure() {
     fi
 }
 
-# Fallback function for when templates are unavailable
-generate_exploration_structure_heredoc() {
-    local topic="$1"
-    local date
-    date=$(date +%Y-%m-%d)
-    
-    echo "#### exploration.md (Main Analysis)"
-    echo ""
-    echo '```markdown'
-    cat << EOF
-# Exploration: $topic
-
-**Status:** 🔴 Exploration  
-**Created:** $date  
-**Last Updated:** $date
-
----
-
-## 🎯 What We're Exploring
-
-[Detailed description of the problem/opportunity]
-
----
-
-## 🔍 Themes
-
-[Analysis of themes]
-
----
-
-## ❓ Key Questions
-
-[Key questions to investigate]
-
----
-
-## 💡 Initial Thoughts
-
-[Preliminary analysis]
-
----
-
-## 🚀 Next Steps
-
-[Next actions]
-
----
-
-**Last Updated:** $date
-EOF
-    echo '```'
-    echo ""
-}
 
 # ============================================================================
 # VALIDATION (L1/L2/L3 Levels)

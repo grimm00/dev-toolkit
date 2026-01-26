@@ -248,3 +248,127 @@ teardown() {
     
     rm -f "$TEST_OUTPUT"
 }
+
+# ============================================================================
+# Task 6: Template-Spike Alignment Tests (RED)
+# ============================================================================
+
+@test "dt-workflow explore template output matches spike structure (Themes Analyzed)" {
+    TEST_OUTPUT=$(mktemp)
+    
+    run "$DT_WORKFLOW" explore test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Spike structure includes "Themes Analyzed" table
+    grep -q "### Themes Analyzed" "$TEST_OUTPUT" || {
+        echo "FAIL: Themes Analyzed section not found (required by spike structure)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Spike structure includes table header
+    grep -q "| Theme | Key Finding |" "$TEST_OUTPUT" || {
+        echo "FAIL: Themes table header not found (required by spike structure)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow explore template output matches spike structure (Initial Recommendations)" {
+    TEST_OUTPUT=$(mktemp)
+    
+    run "$DT_WORKFLOW" explore test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Spike structure includes "Initial Recommendations" numbered list
+    grep -q "### Initial Recommendations" "$TEST_OUTPUT" || {
+        echo "FAIL: Initial Recommendations section not found (required by spike structure)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for numbered list structure (spike uses numbered list)
+    grep -qE "^[0-9]+\\. " "$TEST_OUTPUT" || grep -qE "^[0-9]+\\. <!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: Numbered list structure not found (required by spike structure)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow explore template output includes all spike sections" {
+    TEST_OUTPUT=$(mktemp)
+    
+    run "$DT_WORKFLOW" explore test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Spike structure includes these core sections
+    local required_sections=(
+        "## 🎯 What We're Exploring"
+        "## 🔍 Themes"
+        "## ❓ Key Questions"
+        "## 💡 Initial Thoughts"
+        "## 🚀 Next Steps"
+    )
+    
+    for section in "${required_sections[@]}"; do
+        grep -q "$section" "$TEST_OUTPUT" || {
+            echo "FAIL: Required section not found: $section"
+            rm -f "$TEST_OUTPUT"
+            return 1
+        }
+    done
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow explore template output structure equivalent to spike" {
+    TEST_OUTPUT=$(mktemp)
+    
+    run "$DT_WORKFLOW" explore test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Verify structural elements from spike are present in the full output
+    # (Themes Analyzed and Initial Recommendations are already tested separately,
+    # but this test ensures overall structural equivalence)
+    
+    # 1. Title with topic (should appear in exploration.md section)
+    grep -q "# Exploration:" "$TEST_OUTPUT" || {
+        echo "FAIL: Exploration title not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # 2. Status and date metadata
+    grep -qE "\*\*Status:\*\*" "$TEST_OUTPUT" || {
+        echo "FAIL: Status metadata not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # 3. Themes Analyzed table (spike structure) - already verified in separate test
+    grep -q "### Themes Analyzed" "$TEST_OUTPUT" || {
+        echo "FAIL: Themes Analyzed section missing (spike structure requirement)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # 4. Initial Recommendations list (spike structure) - already verified in separate test
+    grep -q "### Initial Recommendations" "$TEST_OUTPUT" || {
+        echo "FAIL: Initial Recommendations section missing (spike structure requirement)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # 5. Core sections from spike structure
+    grep -q "## 🎯 What We're Exploring" "$TEST_OUTPUT" || {
+        echo "FAIL: What We're Exploring section missing"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
