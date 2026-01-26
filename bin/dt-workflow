@@ -139,6 +139,50 @@ apply_context_profile() {
 }
 
 # ============================================================================
+# DRY RUN PREVIEW
+# ============================================================================
+
+show_dry_run_preview() {
+    # Show preview of what would be included without generating full output
+    # Parameters:
+    #   $1 - Workflow type
+    #   $2 - Topic name
+    #   $3 - Project directory
+    
+    local workflow="$1"
+    local topic="$2"
+    local project_dir="${3:-.}"
+    
+    # Apply profile to determine what would be included
+    apply_context_profile "${profile:-default}"
+    
+    # Estimate output size (rough calculation)
+    local estimated_tokens=5000  # Base estimate
+    if [ "$INCLUDE_PROJECT_IDENTITY" = true ]; then
+        estimated_tokens=$((estimated_tokens + 2000))
+    fi
+    
+    cat << EOF
+🔍 Dry Run Preview
+==================
+
+Workflow: $workflow
+Topic: $topic
+
+Would include:
+- Cursor rules: $([ -d "$project_dir/.cursor/rules" ] && echo "Yes ($(find "$project_dir/.cursor/rules" -name "*.mdc" 2>/dev/null | wc -l | tr -d ' ') files)" || echo "No")
+- Project identity: $([ "$INCLUDE_PROJECT_IDENTITY" = true ] && ([ -f "$project_dir/admin/planning/roadmap.md" ] && echo "Yes" || echo "No (not found)") || echo "No (skipped by profile)")
+- Workflow template: Yes
+- Git context: $([ -d "$project_dir/.git" ] && echo "Yes" || echo "No")
+
+Profile: ${profile:-default}
+Estimated output: ~${estimated_tokens} tokens
+
+Run without --dry-run to generate full output.
+EOF
+}
+
+# ============================================================================
 # CONTEXT GATHERING
 # ============================================================================
 
@@ -1198,7 +1242,8 @@ Arguments:
 Options:
     --interactive     Output context + structure for interactive AI fill (Phase 1)
     --validate        Validate inputs without generating output (L1/L2/L3 checks)
-    --output FILE     Save output to file instead of stdout
+    --dry-run          Show preview of what would be included without full generation
+    --output FILE      Save output to file instead of stdout
     --project PATH    Project directory (default: current directory)
     --profile NAME    Context profile: default (all), minimal (rules only), full (all + future)
     --help            Show this help message
@@ -1250,6 +1295,7 @@ main() {
     local topic=""
     local interactive=false
     local validate_only=false
+    local dry_run=false
     local output_file=""
     local project_dir="."
     local from_explore_path=""
@@ -1277,6 +1323,10 @@ main() {
                 ;;
             --validate)
                 validate_only=true
+                shift
+                ;;
+            --dry-run)
+                dry_run=true
                 shift
                 ;;
             --output|-o)
@@ -1371,6 +1421,12 @@ main() {
             exit 1
             ;;
     esac
+    
+    # --dry-run mode: Show preview without generating full output
+    if [ "$dry_run" = true ]; then
+        show_dry_run_preview "$workflow" "$topic" "$project_dir"
+        exit 0
+    fi
     
     # Apply context profile
     apply_context_profile "$profile"
