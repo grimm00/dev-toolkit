@@ -2,7 +2,7 @@
 
 **Phase:** 1 - Foundation  
 **Duration:** 8-12 hours  
-**Status:** 🔴 Scaffolding (needs expansion)  
+**Status:** ✅ Expanded  
 **Prerequisites:** Spike complete, ADRs accepted
 
 ---
@@ -26,14 +26,506 @@ Refactor the spike implementation into production-quality code with comprehensiv
 
 ## 📝 Tasks
 
-> **Scaffolding:** Run `/transition-plan dt-workflow --expand --phase 1` to add detailed TDD tasks.
+### Task 1: Create Test Infrastructure
 
-### Task Categories
+**Purpose:** Set up bats test files and helpers before writing tests (TDD foundation)
 
-- [ ] **Code Restructuring** - Refactor spike to production structure
-- [ ] **Unit Tests** - Test individual functions (context gathering, validation, output)
-- [ ] **Integration Tests** - Test end-to-end explore workflow
-- [ ] **Documentation** - Help text, inline comments, user guide
+**Steps:**
+
+1. **Create test file structure:**
+   - [ ] Create `tests/unit/test-dt-workflow.bats`
+   - [ ] Create `tests/integration/test-dt-workflow-integration.bats`
+   - [ ] Verify test helpers exist (`tests/helpers/`)
+
+2. **Set up test configuration:**
+   - [ ] Define `DT_WORKFLOW` path variable in tests
+   - [ ] Create mock project structure for testing
+   - [ ] Set up test fixtures (mock rules, mock explorations)
+
+**Test file skeleton:**
+
+```bash
+#!/usr/bin/env bats
+
+# Test file for dt-workflow
+# Location: tests/unit/test-dt-workflow.bats
+
+load '../helpers/setup'
+load '../helpers/assertions'
+load '../helpers/mocks'
+
+# Path to command under test
+DT_WORKFLOW="$BATS_TEST_DIRNAME/../../bin/dt-workflow"
+
+setup() {
+    # Create temp directory for test project
+    TEST_PROJECT=$(mktemp -d)
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    mkdir -p "$TEST_PROJECT/admin/explorations"
+}
+
+teardown() {
+    # Clean up temp directory
+    rm -rf "$TEST_PROJECT"
+}
+```
+
+**Checklist:**
+- [ ] Unit test file created
+- [ ] Integration test file created
+- [ ] Test helpers available
+- [ ] Mock fixtures defined
+
+---
+
+### Task 2: Test Help and Version (TDD)
+
+**Purpose:** Ensure --help and --version work correctly
+
+**TDD Flow:**
+
+1. **RED - Write failing tests:**
+
+```bash
+@test "dt-workflow shows help with --help" {
+    run "$DT_WORKFLOW" --help
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Usage:" ]]
+    [[ "$output" =~ "dt-workflow" ]]
+}
+
+@test "dt-workflow shows help with -h" {
+    run "$DT_WORKFLOW" -h
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Usage:" ]]
+}
+
+@test "dt-workflow shows version with --version" {
+    run "$DT_WORKFLOW" --version
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "dt-workflow version" ]]
+}
+
+@test "dt-workflow shows version with -v" {
+    run "$DT_WORKFLOW" -v
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "version" ]]
+}
+```
+
+2. **GREEN - Verify spike passes:**
+   - [ ] Run tests: `bats tests/unit/test-dt-workflow.bats`
+   - [ ] Spike should already pass these tests
+   - [ ] If not, fix implementation
+
+3. **REFACTOR - Update help text:**
+   - [ ] Remove "SPIKE" references from help
+   - [ ] Update version to 0.2.0
+   - [ ] Ensure help text matches script-standards.mdc
+
+**Checklist:**
+- [ ] Help tests written and passing
+- [ ] Version tests written and passing
+- [ ] Help text production-ready
+
+---
+
+### Task 3: Test Input Validation (TDD)
+
+**Purpose:** Test L1/L2/L3 validation with actionable error messages
+
+**TDD Flow:**
+
+1. **RED - Write failing tests:**
+
+```bash
+@test "dt-workflow requires workflow argument" {
+    run "$DT_WORKFLOW"
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Workflow type is required" ]]
+    [[ "$output" =~ "💡" ]]  # Actionable suggestion
+}
+
+@test "dt-workflow requires topic argument" {
+    run "$DT_WORKFLOW" explore
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Topic is required" ]]
+    [[ "$output" =~ "💡" ]]
+}
+
+@test "dt-workflow rejects unknown workflow" {
+    run "$DT_WORKFLOW" unknown-workflow test-topic --interactive
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Unknown workflow" ]]
+}
+
+@test "dt-workflow requires --interactive in Phase 1" {
+    run "$DT_WORKFLOW" explore test-topic
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Phase 1 requires --interactive" ]]
+}
+
+@test "dt-workflow --validate checks L1 existence" {
+    run "$DT_WORKFLOW" research nonexistent-topic --validate --project "$TEST_PROJECT"
+    [ "$status" -eq 1 ]
+    [[ "$output" =~ "Exploration directory not found" ]]
+}
+
+@test "dt-workflow --validate passes for explore (no prereqs)" {
+    run "$DT_WORKFLOW" explore test-topic --validate --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "L1 checks passed" ]]
+}
+```
+
+2. **GREEN - Verify/fix implementation:**
+   - [ ] Run tests: `bats tests/unit/test-dt-workflow.bats`
+   - [ ] Fix any failing tests
+   - [ ] Ensure error messages are actionable
+
+3. **REFACTOR - Improve error messages:**
+   - [ ] Consistent format: "❌ Error: [message]"
+   - [ ] Always include "💡 Suggestion:" with corrective action
+   - [ ] NFR-4 compliance (actionable errors)
+
+**Checklist:**
+- [ ] Missing workflow argument test passing
+- [ ] Missing topic argument test passing
+- [ ] Unknown workflow test passing
+- [ ] --interactive requirement test passing
+- [ ] --validate L1 tests passing
+- [ ] All error messages actionable
+
+---
+
+### Task 4: Test Context Gathering Functions (TDD)
+
+**Purpose:** Test individual context gathering functions
+
+**TDD Flow:**
+
+1. **RED - Write failing tests for gather_cursor_rules:**
+
+```bash
+@test "gather_cursor_rules outputs rules when present" {
+    # Setup: Create mock rules
+    echo "# Test Rule" > "$TEST_PROJECT/.cursor/rules/test.mdc"
+    
+    # Source the script to access functions
+    source "$DT_WORKFLOW"
+    
+    run gather_cursor_rules "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Cursor Rules" ]]
+    [[ "$output" =~ "test.mdc" ]]
+    [[ "$output" =~ "# Test Rule" ]]
+}
+
+@test "gather_cursor_rules handles missing rules directory" {
+    # Setup: No .cursor/rules directory
+    rm -rf "$TEST_PROJECT/.cursor/rules"
+    
+    source "$DT_WORKFLOW"
+    run gather_cursor_rules "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    # Should not error, just no output or debug message
+}
+```
+
+2. **RED - Write failing tests for gather_project_identity:**
+
+```bash
+@test "gather_project_identity finds roadmap" {
+    mkdir -p "$TEST_PROJECT/admin/planning"
+    echo "# Roadmap" > "$TEST_PROJECT/admin/planning/roadmap.md"
+    
+    source "$DT_WORKFLOW"
+    run gather_project_identity "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Project Roadmap" ]]
+}
+
+@test "gather_project_identity handles missing files gracefully" {
+    source "$DT_WORKFLOW"
+    run gather_project_identity "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    # Should not error
+}
+```
+
+3. **RED - Write failing tests for estimate_tokens:**
+
+```bash
+@test "estimate_tokens returns approximate count" {
+    source "$DT_WORKFLOW"
+    
+    # ~100 chars = ~25 tokens
+    result=$(estimate_tokens "This is a test string with approximately one hundred characters in it for testing purposes here.")
+    [ "$result" -gt 20 ]
+    [ "$result" -lt 30 ]
+}
+```
+
+4. **GREEN - Run tests and verify:**
+   - [ ] Run: `bats tests/unit/test-dt-workflow.bats`
+   - [ ] Fix any failing tests
+
+5. **REFACTOR - Clean up functions:**
+   - [ ] Add inline comments per script-standards.mdc
+   - [ ] Ensure consistent error handling
+
+**Checklist:**
+- [ ] gather_cursor_rules tests passing
+- [ ] gather_project_identity tests passing
+- [ ] estimate_tokens tests passing
+- [ ] Functions documented with comments
+
+---
+
+### Task 5: Test Output Generation (TDD)
+
+**Purpose:** Test explore workflow output structure
+
+**TDD Flow:**
+
+1. **RED - Write integration tests:**
+
+```bash
+@test "explore workflow generates valid markdown structure" {
+    # Create minimal test project
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    echo "# Test Rule" > "$TEST_PROJECT/.cursor/rules/main.mdc"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check output structure per ADR-002 (context ordering)
+    [[ "$output" =~ "# dt-workflow Output:" ]]
+    [[ "$output" =~ "CRITICAL RULES (START" ]]
+    [[ "$output" =~ "BACKGROUND CONTEXT (MIDDLE" ]]
+    [[ "$output" =~ "TASK (END" ]]
+}
+
+@test "explore workflow includes token estimate" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Token Estimate:" ]]
+}
+
+@test "explore workflow includes next steps" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "NEXT STEPS" ]]
+    [[ "$output" =~ "/research" ]]
+}
+
+@test "explore workflow generates valid exploration structure" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    
+    run "$DT_WORKFLOW" explore my-feature --interactive --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check generated structure templates
+    [[ "$output" =~ "README.md" ]]
+    [[ "$output" =~ "exploration.md" ]]
+    [[ "$output" =~ "research-topics.md" ]]
+}
+```
+
+2. **GREEN - Run and verify:**
+   - [ ] Run: `bats tests/integration/test-dt-workflow-integration.bats`
+   - [ ] Fix any structural issues
+
+3. **REFACTOR - Optimize output:**
+   - [ ] Ensure output is clean and readable
+   - [ ] Verify markdown renders correctly
+
+**Checklist:**
+- [ ] Output structure tests passing
+- [ ] Token estimate included
+- [ ] Next steps included
+- [ ] Exploration structure valid
+
+---
+
+### Task 6: Test --output Flag (TDD)
+
+**Purpose:** Test file output functionality
+
+**TDD Flow:**
+
+1. **RED - Write tests:**
+
+```bash
+@test "dt-workflow --output saves to file" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    local output_file="$TEST_PROJECT/output.md"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT" --output "$output_file"
+    [ "$status" -eq 0 ]
+    [ -f "$output_file" ]
+    
+    # Check file contains expected content
+    grep -q "dt-workflow Output:" "$output_file"
+}
+
+@test "dt-workflow --output shows success message" {
+    mkdir -p "$TEST_PROJECT/.cursor/rules"
+    local output_file="$TEST_PROJECT/output.md"
+    
+    run "$DT_WORKFLOW" explore test-feature --interactive --project "$TEST_PROJECT" --output "$output_file"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Output saved to:" ]]
+}
+```
+
+2. **GREEN - Verify implementation**
+3. **REFACTOR - Handle edge cases:**
+   - [ ] Invalid output path
+   - [ ] Permission errors
+
+**Checklist:**
+- [ ] --output writes file correctly
+- [ ] Success message displayed
+- [ ] Edge cases handled
+
+---
+
+### Task 7: Code Restructuring
+
+**Purpose:** Refactor spike to production structure per script-standards.mdc
+
+**Steps:**
+
+1. **Update header:**
+   - [ ] Remove "SPIKE" references
+   - [ ] Update VERSION to "0.2.0"
+   - [ ] Update description
+
+2. **Add section comments:**
+   - [ ] Verify CONFIGURATION section
+   - [ ] Verify FUNCTIONS section
+   - [ ] Verify MAIN EXECUTION section
+   - [ ] Add CONTEXT GATHERING section header
+   - [ ] Add VALIDATION section header
+   - [ ] Add OUTPUT GENERATION section header
+
+3. **Add inline documentation:**
+   - [ ] Document complex logic (context ordering rationale)
+   - [ ] Document validation levels (L1/L2/L3)
+   - [ ] Document token estimation approach
+
+4. **Update show_help():**
+   - [ ] Remove "SPIKE VERSION" text
+   - [ ] Update phase limitations text
+   - [ ] Add all supported workflows
+   - [ ] Add examples section
+
+**Checklist:**
+- [ ] Header updated (no SPIKE references)
+- [ ] Version bumped to 0.2.0
+- [ ] Section comments complete
+- [ ] Inline documentation added
+- [ ] Help text production-ready
+
+---
+
+### Task 8: Portability Validation
+
+**Purpose:** Verify dt-workflow works in different repository contexts (NFR-2)
+
+**Steps:**
+
+1. **Test in dev-toolkit:**
+   ```bash
+   cd ~/Projects/dev-toolkit
+   ./bin/dt-workflow explore test-portability --interactive | head -50
+   ```
+
+2. **Test in another project:**
+   ```bash
+   cd ~/Projects/[other-project]
+   ~/.dev-toolkit/bin/dt-workflow explore test-portability --interactive | head -50
+   ```
+
+3. **Test with no .cursor/rules:**
+   ```bash
+   cd /tmp
+   mkdir test-project && cd test-project
+   git init
+   ~/.dev-toolkit/bin/dt-workflow explore test-feature --interactive | head -50
+   ```
+
+4. **Verify no hardcoded paths:**
+   - [ ] Search for hardcoded paths: `grep -n "cdwilson\|dev-toolkit" bin/dt-workflow`
+   - [ ] Should return no matches
+
+**Checklist:**
+- [ ] Works in dev-toolkit
+- [ ] Works in other projects
+- [ ] Works with minimal project (no rules)
+- [ ] No hardcoded paths
+
+---
+
+### Task 9: Final Validation
+
+**Purpose:** Complete validation before marking phase complete
+
+**Steps:**
+
+1. **Run full test suite:**
+   ```bash
+   bats tests/unit/test-dt-workflow.bats
+   bats tests/integration/test-dt-workflow-integration.bats
+   ```
+
+2. **Validate script syntax:**
+   ```bash
+   bash -n bin/dt-workflow
+   ```
+
+3. **Run linter (if available):**
+   ```bash
+   shellcheck bin/dt-workflow
+   ```
+
+4. **Manual testing:**
+   - [ ] `dt-workflow --help` displays correctly
+   - [ ] `dt-workflow --version` shows 0.2.0
+   - [ ] `dt-workflow explore test --interactive` produces valid output
+
+5. **Documentation check:**
+   - [ ] Help text is complete
+   - [ ] Inline comments explain complex logic
+   - [ ] Version is 0.2.0
+
+**Checklist:**
+- [ ] All unit tests passing
+- [ ] All integration tests passing
+- [ ] Script syntax valid
+- [ ] Manual testing complete
+- [ ] Documentation complete
+
+---
+
+## 📊 Progress Tracking
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Task 1: Test Infrastructure | 🔴 Not Started | |
+| Task 2: Help/Version Tests | 🔴 Not Started | |
+| Task 3: Validation Tests | 🔴 Not Started | |
+| Task 4: Context Gathering Tests | 🔴 Not Started | |
+| Task 5: Output Generation Tests | 🔴 Not Started | |
+| Task 6: --output Flag Tests | 🔴 Not Started | |
+| Task 7: Code Restructuring | 🔴 Not Started | |
+| Task 8: Portability Validation | 🔴 Not Started | |
+| Task 9: Final Validation | 🔴 Not Started | |
 
 ---
 
@@ -45,6 +537,7 @@ Refactor the spike implementation into production-quality code with comprehensiv
 - [ ] Help text complete and accurate
 - [ ] Portability verified in 2+ different repositories
 - [ ] Code follows script-standards.mdc
+- [ ] Version updated to 0.2.0
 
 ---
 
@@ -77,9 +570,11 @@ Refactor the spike implementation into production-quality code with comprehensiv
 - [Feature Plan](feature-plan.md)
 - [Next Phase: Phase 2](phase-2.md)
 - [Script Standards](../../../../.cursor/rules/script-standards.mdc)
+- [ADR-002: Context Injection](../../decisions/dt-workflow/adr-002-context-injection.md)
+- [Pattern Library](../../../../docs/patterns/workflow-patterns.md)
 
 ---
 
 **Last Updated:** 2026-01-22  
-**Status:** 🔴 Scaffolding  
-**Next:** Expand with `/transition-plan dt-workflow --expand --phase 1`
+**Status:** ✅ Expanded  
+**Next:** Begin implementation with Task 1

@@ -27,10 +27,10 @@
 
 | Phase | Status | Progress | Notes |
 |-------|--------|----------|-------|
-| Phase 1: Foundation | 🔴 Scaffolding | 0% | Needs expansion |
-| Phase 2: Workflow Expansion | 🔴 Scaffolding | 0% | Blocked |
-| Phase 3: Cursor Integration | 🔴 Scaffolding | 0% | Blocked |
-| Phase 4: Enhancement | 🔴 Scaffolding | 0% | Blocked |
+| Phase 1: Foundation | ✅ Expanded | 0% impl | 9 TDD tasks ready |
+| Phase 2: Workflow Expansion | 🔴 Scaffolding | 0% | Blocked by Phase 1 |
+| Phase 3: Cursor Integration | 🔴 Scaffolding | 0% | Blocked by Phase 2 |
+| Phase 4: Enhancement | 🔴 Scaffolding | 0% | Blocked by Phase 3 |
 
 ---
 
@@ -56,14 +56,14 @@
 
 ### This Session
 
-1. [ ] Review phase scaffolding documents
-2. [ ] Optionally expand Phase 1 with detailed TDD tasks
+1. [x] Expanded Phase 1 with 9 detailed TDD tasks
+2. [ ] Begin Phase 1 implementation (optional)
 
 ### Next Session
 
-1. [ ] Begin Phase 1 implementation
-2. [ ] Create unit test scaffolding
-3. [ ] Refactor spike code structure
+1. [ ] Task 1: Create test infrastructure
+2. [ ] Task 2: Test help/version (TDD)
+3. [ ] Task 3: Test input validation (TDD)
 
 ---
 
