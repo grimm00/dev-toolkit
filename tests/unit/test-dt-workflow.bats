@@ -250,6 +250,102 @@ teardown() {
 }
 
 # ============================================================================
+# Task 7: Research Structure Generation Tests (RED)
+# ============================================================================
+
+@test "dt-workflow research generates structure via template" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Create exploration directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    
+    run "$DT_WORKFLOW" research test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Research structure sections
+    grep -q "## 🎯 Research Question" "$TEST_OUTPUT" || {
+        echo "FAIL: Research Question section not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "## 🔍 Research Goals" "$TEST_OUTPUT" || {
+        echo "FAIL: Research Goals section not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "## 📊 Findings" "$TEST_OUTPUT" || {
+        echo "FAIL: Findings section not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    grep -q "## 💡 Recommendations" "$TEST_OUTPUT" || {
+        echo "FAIL: Recommendations section not found"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow research uses template rendering" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Create exploration directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/explorations/test-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/test-topic/exploration.md"
+    
+    run "$DT_WORKFLOW" research test-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check for template-rendered content (AI placeholders)
+    grep -q "<!-- AI:" "$TEST_OUTPUT" || {
+        echo "FAIL: AI placeholders not found (should be from template)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for REQUIRED markers (from enhanced templates)
+    grep -q "<!-- REQUIRED:" "$TEST_OUTPUT" || {
+        echo "FAIL: REQUIRED markers not found (should be from enhanced template)"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "dt-workflow research substitutes template variables correctly" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Create exploration directory for L1 validation
+    mkdir -p "$TEST_PROJECT/admin/explorations/my-research-topic"
+    echo "# Exploration" > "$TEST_PROJECT/admin/explorations/my-research-topic/exploration.md"
+    
+    run "$DT_WORKFLOW" research my-research-topic --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Check that topic name is substituted in output
+    grep -q "my-research-topic" "$TEST_OUTPUT" || grep -q "My Research Topic" "$TEST_OUTPUT" || {
+        echo "FAIL: Topic name not substituted in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    # Check for date substitution (should be current date format)
+    grep -qE "[0-9]{4}-[0-9]{2}-[0-9]{2}" "$TEST_OUTPUT" || {
+        echo "FAIL: Date not substituted in output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 

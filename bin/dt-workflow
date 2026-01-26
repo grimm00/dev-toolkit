@@ -322,6 +322,69 @@ generate_exploration_structure() {
     fi
 }
 
+generate_research_structure() {
+    local topic="$1"
+    
+    # Find templates directory
+    local templates_root
+    templates_root=$(dt_find_templates) || {
+        dt_print_status "ERROR" "Templates not found - templates are required for structure generation"
+        dt_print_debug "Template search failed - templates must be available"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are installed or DT_TEMPLATES_PATH is set"
+        echo ""
+        echo "Expected locations:"
+        echo "  - \$HOME/Projects/dev-infra/scripts/doc-gen/templates"
+        echo "  - \$HOME/dev-infra/scripts/doc-gen/templates"
+        echo "  - Or set DT_TEMPLATES_PATH environment variable"
+        return 1
+    }
+    
+    dt_print_debug "Using templates from: $templates_root"
+    
+    # Set template variables
+    dt_set_research_vars "$topic" "" "Research for $topic"
+    dt_print_debug "Set research variables for topic: $topic"
+    
+    echo "## Generated Structure"
+    echo ""
+    echo "### Files to Create"
+    echo ""
+    echo "The following files should be created in \`admin/research/$topic/\`:"
+    echo ""
+    
+    # Render research-topic.md template
+    local research_template
+    research_template=$(dt_get_template_path "research_topic" "research_topic" "$templates_root")
+    dt_print_debug "Research template path: $research_template"
+    
+    if [ -f "$research_template" ]; then
+        echo "#### research-topic.md (Main Research Document)"
+        echo ""
+        echo '```markdown'
+        local temp_output
+        temp_output=$(mktemp)
+        if dt_render_template "$research_template" "$temp_output" "research_topic" 2>/dev/null; then
+            cat "$temp_output"
+            dt_print_debug "Successfully rendered research template"
+        else
+            # Template rendering failed - templates are required
+            dt_print_status "ERROR" "Template rendering failed for: $research_template"
+            dt_print_debug "Template rendering failed - check template file and variables"
+            rm -f "$temp_output"
+            return 1
+        fi
+        rm -f "$temp_output"
+        echo '```'
+        echo ""
+    else
+        dt_print_status "ERROR" "Research template not found: $research_template"
+        dt_print_debug "Template file missing: $research_template"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are properly installed"
+        return 1
+    fi
+}
 
 # ============================================================================
 # VALIDATION (L1/L2/L3 Levels)
@@ -532,6 +595,13 @@ output_for_ai() {
                 echo "Fill in the placeholders with thoughtful analysis based on the context provided."
                 echo ""
                 generate_exploration_structure "$topic"
+                ;;
+            research)
+                echo "Create a research document for **$topic** using the structure below."
+                echo ""
+                echo "Fill in the placeholders with thoughtful analysis based on the context provided."
+                echo ""
+                generate_research_structure "$topic"
                 ;;
             *)
                 echo "Workflow '$workflow' structure generation not yet implemented."
