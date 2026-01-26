@@ -111,3 +111,58 @@ teardown() {
     [ "$status" -eq 0 ]
     [[ "$output" =~ "L1 checks passed" ]]
 }
+
+# ============================================================================
+# Task 4: Context Gathering Functions Tests (TDD)
+# ============================================================================
+
+@test "gather_cursor_rules outputs rules when present" {
+    # Setup: Create mock rules
+    echo "# Test Rule" > "$TEST_PROJECT/.cursor/rules/test.mdc"
+    
+    # Source the script to access functions
+    # Script checks if sourced vs executed, so main won't run
+    source "$DT_WORKFLOW"
+    
+    run gather_cursor_rules "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Cursor Rules" ]]
+    [[ "$output" =~ "test.mdc" ]]
+    [[ "$output" =~ "# Test Rule" ]]
+}
+
+@test "gather_cursor_rules handles missing rules directory" {
+    # Setup: No .cursor/rules directory
+    rm -rf "$TEST_PROJECT/.cursor/rules"
+    
+    source "$DT_WORKFLOW"
+    run gather_cursor_rules "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    # Should not error, just no output or debug message
+}
+
+@test "gather_project_identity finds roadmap" {
+    mkdir -p "$TEST_PROJECT/admin/planning"
+    echo "# Roadmap" > "$TEST_PROJECT/admin/planning/roadmap.md"
+    
+    source "$DT_WORKFLOW"
+    run gather_project_identity "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ "Project Roadmap" ]]
+}
+
+@test "gather_project_identity handles missing files gracefully" {
+    source "$DT_WORKFLOW"
+    run gather_project_identity "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    # Should not error
+}
+
+@test "estimate_tokens returns approximate count" {
+    source "$DT_WORKFLOW"
+    
+    # ~100 chars = ~25 tokens (4 chars per token)
+    result=$(estimate_tokens "This is a test string with approximately one hundred characters in it for testing purposes here.")
+    [ "$result" -gt 20 ]
+    [ "$result" -lt 30 ]
+}
