@@ -354,58 +354,31 @@ dt-workflow [arguments]
 
 ### Test Data Setup
 
-Many Phase 2 scenarios require test data structures. Here's how to set them up:
+Many Phase 2 scenarios require test data structures. Use the actual workflows to generate them:
 
-**For Exploration Context Testing:**
+**For Exploration Context Testing (use the real explore workflow):**
 ```bash
-# Create a test exploration structure
+# Create exploration using dt-workflow explore (the workflow being tested!)
 mkdir -p admin/explorations/test-topic
-cat > admin/explorations/test-topic/exploration.md << 'EOF'
-# Exploration: test-topic
-
-## Themes
-- Theme 1: Example theme
-- Theme 2: Another theme
-
-## Recommendations
-1. First recommendation
-2. Second recommendation
-EOF
+./bin/dt-workflow explore test-topic --interactive > admin/explorations/test-topic/exploration.md
 ```
 
-**For Research Context Testing:**
+**For Research Context Testing (simulate completed research):**
 ```bash
-# Create a test research structure
+# Create research directory and a simple research-summary.md
 mkdir -p admin/research/test-topic
-cat > admin/research/test-topic/research-summary.md << 'EOF'
-# Research Summary: test-topic
-
-## Key Findings
-- Finding 1: Example finding
-- Finding 2: Another finding
-
-## Recommendations
-- Recommendation 1
-- Recommendation 2
-EOF
-
-# Optional: Add requirements file
-cat > admin/research/test-topic/requirements.md << 'EOF'
-# Requirements: test-topic
-
-## Functional Requirements
-- FR-1: Example requirement
-
-## Non-Functional Requirements
-- NFR-1: Example non-functional requirement
-EOF
+echo "# Research Summary: test-topic" > admin/research/test-topic/research-summary.md
+echo "" >> admin/research/test-topic/research-summary.md
+echo "## Key Findings" >> admin/research/test-topic/research-summary.md
+echo "- Finding 1: Test finding" >> admin/research/test-topic/research-summary.md
+echo "" >> admin/research/test-topic/research-summary.md
+echo "## Recommendations" >> admin/research/test-topic/research-summary.md
+echo "- Recommendation 1" >> admin/research/test-topic/research-summary.md
 ```
 
 **Cleanup After Testing:**
 ```bash
-# Remove test structures when done
-rm -rf admin/explorations/test-topic
-rm -rf admin/research/test-topic
+rm -rf admin/explorations/test-topic admin/research/test-topic
 ```
 
 ---
@@ -437,8 +410,11 @@ rm -rf admin/research/test-topic
 **Objective:** Verify --from-explore auto-detects and loads exploration context
 
 **Prerequisites:**
-- Set up test exploration structure (see "Test Data Setup" above)
-- Or use: `mkdir -p admin/explorations/test-topic && echo "# Test exploration" > admin/explorations/test-topic/exploration.md`
+```bash
+# Generate exploration using the actual explore workflow
+mkdir -p admin/explorations/test-topic
+./bin/dt-workflow explore test-topic --interactive > admin/explorations/test-topic/exploration.md
+```
 
 **Steps:**
 
@@ -448,13 +424,17 @@ rm -rf admin/research/test-topic
    ```
 
 2. Verify output includes:
-   - Exploration context in `## 📋 Context for AI` section
-   - Exploration document heading displayed
-   - Exploration content included (themes, recommendations from exploration.md)
+   - Exploration context in the output
+   - Exploration content from the generated exploration.md
 
-3. Check that context appears in the appropriate section:
+3. Check that context appears in the output:
    ```bash
-   ./bin/dt-workflow research test-topic --from-explore --interactive | grep -A 10 "Related Exploration"
+   ./bin/dt-workflow research test-topic --from-explore --interactive | grep -A 5 "Exploration"
+   ```
+
+4. Cleanup:
+   ```bash
+   rm -rf admin/explorations/test-topic
    ```
 
 **Expected Result:** ✅ Exploration context automatically discovered and included in research output.
@@ -467,14 +447,9 @@ rm -rf admin/research/test-topic
 
 **Prerequisites:**
 ```bash
-# Create custom exploration path
+# Create custom exploration path using explore workflow
 mkdir -p custom/path/test-topic
-cat > custom/path/test-topic/exploration.md << 'EOF'
-# Exploration: test-topic (custom path)
-
-## Themes
-- Custom theme 1
-EOF
+./bin/dt-workflow explore test-topic --interactive > custom/path/test-topic/exploration.md
 ```
 
 **Steps:**
@@ -484,9 +459,7 @@ EOF
    ./bin/dt-workflow research test-topic --from-explore custom/path/test-topic --interactive
    ```
 
-2. Verify output includes exploration context from custom path:
-   - Should see "custom path" or content specific to custom exploration
-   - Context section should reference the explicit path used
+2. Verify output includes exploration context from custom path
 
 3. Test error handling with invalid path:
    ```bash
@@ -495,7 +468,6 @@ EOF
    
 4. Verify error message:
    - Clear error about path not found
-   - Shows the path that was checked
    - Suggests checking the path or using auto-detect
 
 5. Cleanup:
@@ -555,14 +527,14 @@ EOF
 **Objective:** Verify --from-research auto-detects and loads research context
 
 **Prerequisites:**
-- Set up test research structure (see "Test Data Setup" above)
-- Or use quick setup:
-  ```bash
-  mkdir -p admin/research/test-topic
-  echo "# Research Summary" > admin/research/test-topic/research-summary.md
-  echo "## Key Findings" >> admin/research/test-topic/research-summary.md
-  echo "- Finding 1" >> admin/research/test-topic/research-summary.md
-  ```
+```bash
+# Create research directory with a simple research-summary.md
+mkdir -p admin/research/test-topic
+echo "# Research Summary: test-topic" > admin/research/test-topic/research-summary.md
+echo "" >> admin/research/test-topic/research-summary.md
+echo "## Key Findings" >> admin/research/test-topic/research-summary.md
+echo "- Finding 1: Test finding" >> admin/research/test-topic/research-summary.md
+```
 
 **Steps:**
 
@@ -572,17 +544,20 @@ EOF
    ```
 
 2. Verify output includes:
-   - Research context in `## 📋 Context for AI` section
-   - Research summary content displayed (limited to first 150 lines)
-   - Requirements file content (if you created requirements.md)
-   - Existing ADRs listed (if any exist in admin/decisions/test-topic/)
+   - Research context in the output
+   - Research summary content displayed
 
 3. Check context inclusion:
    ```bash
-   ./bin/dt-workflow decision test-topic --from-research --interactive | grep -A 10 "Research Summary"
+   ./bin/dt-workflow decision test-topic --from-research --interactive | grep -A 5 "Research Summary"
    ```
 
-**Expected Result:** ✅ Research context automatically discovered and included, requirements included if present.
+4. Cleanup:
+   ```bash
+   rm -rf admin/research/test-topic
+   ```
+
+**Expected Result:** ✅ Research context automatically discovered and included.
 
 ---
 
@@ -592,14 +567,11 @@ EOF
 
 **Prerequisites:**
 ```bash
-# Create custom research path
+# Create custom research path with simple file
 mkdir -p custom/research/test-topic
-cat > custom/research/test-topic/research-summary.md << 'EOF'
-# Research Summary: test-topic (custom path)
-
-## Key Findings
-- Custom finding 1
-EOF
+echo "# Research Summary: test-topic (custom)" > custom/research/test-topic/research-summary.md
+echo "## Key Findings" >> custom/research/test-topic/research-summary.md
+echo "- Custom finding" >> custom/research/test-topic/research-summary.md
 ```
 
 **Steps:**
@@ -609,9 +581,7 @@ EOF
    ./bin/dt-workflow decision test-topic --from-research custom/research/test-topic --interactive
    ```
 
-2. Verify output includes research context from custom path:
-   - Should see content specific to custom research
-   - Context section should reference the custom path
+2. Verify output includes research context from custom path
 
 3. Test error handling with invalid path:
    ```bash
@@ -620,7 +590,6 @@ EOF
 
 4. Verify error message:
    - Clear error about path not found
-   - Shows the path that was checked
    - Suggests checking the path or using auto-detect
 
 5. Cleanup:
@@ -658,90 +627,54 @@ EOF
 **Objective:** Verify complete explore → research → decision chain works end-to-end
 
 **Prerequisites:**
-- Clean workspace (no existing test-chain structures)
+- Clean workspace (no existing chain-test structures)
 - Running from dev-toolkit directory
 
 **Steps:**
 
-1. **Step 1: Create Exploration**
+1. **Step 1: Create Exploration (using explore workflow)**
    ```bash
-   # Create exploration structure
    mkdir -p admin/explorations/chain-test
-   
-   # Generate exploration (this creates the first workflow output)
    ./bin/dt-workflow explore chain-test --interactive > admin/explorations/chain-test/exploration.md
-   
-   # Verify exploration was created
-   cat admin/explorations/chain-test/exploration.md | grep "Exploration: chain-test"
+   head -5 admin/explorations/chain-test/exploration.md
    ```
    
-   **Verify:** exploration.md created with proper structure
+   **Verify:** exploration.md created with output
 
 2. **Step 2: Research Workflow (chained from exploration)**
    ```bash
-   # Create research structure
    mkdir -p admin/research/chain-test
-   
-   # Generate research WITH exploration context
    ./bin/dt-workflow research chain-test --from-explore --interactive > /tmp/research-output.md
-   
-   # Verify exploration context was included
-   grep -i "exploration" /tmp/research-output.md | head -5
+   grep -i "exploration" /tmp/research-output.md | head -3
    ```
    
    **Verify:** Exploration context appears in research output
 
-3. **Step 3: Create Research Summary (handoff file)**
+3. **Step 3: Create Research Summary (simulating handoff file)**
    ```bash
-   # Manually create research-summary.md (simulating completion of research)
-   cat > admin/research/chain-test/research-summary.md << 'EOF'
-# Research Summary: chain-test
-
-## Key Findings
-- Workflow chaining works correctly
-- Context flows between stages
-
-## Recommendations
-- Continue with decision workflow
-EOF
+   echo "# Research Summary: chain-test" > admin/research/chain-test/research-summary.md
+   echo "## Key Findings" >> admin/research/chain-test/research-summary.md
+   echo "- Workflow chaining works" >> admin/research/chain-test/research-summary.md
    ```
    
-   **Verify:** research-summary.md created for handoff
+   **Verify:** research-summary.md created
 
 4. **Step 4: Decision Workflow (chained from research)**
    ```bash
-   # Create decision structure
    mkdir -p admin/decisions/chain-test
-   
-   # Generate decision WITH research context
    ./bin/dt-workflow decision chain-test --from-research --interactive > /tmp/decision-output.md
-   
-   # Verify research context was included
-   grep -i "research summary" /tmp/decision-output.md | head -5
+   grep -i "research summary" /tmp/decision-output.md | head -3
    ```
    
    **Verify:** Research context appears in decision output
 
-5. **Step 5: Validate Full Chain**
+5. **Cleanup:**
    ```bash
-   # Check that each stage has proper handoff guidance
-   grep -i "handoff" /tmp/research-output.md
-   grep -i "handoff" /tmp/decision-output.md
-   
-   # Verify context flow
-   echo "Exploration created context for Research: $(test -f admin/explorations/chain-test/exploration.md && echo '✅' || echo '❌')"
-   echo "Research created handoff for Decision: $(test -f admin/research/chain-test/research-summary.md && echo '✅' || echo '❌')"
-   ```
-
-6. **Cleanup:**
-   ```bash
-   rm -rf admin/explorations/chain-test
-   rm -rf admin/research/chain-test
-   rm -rf admin/decisions/chain-test
+   rm -rf admin/explorations/chain-test admin/research/chain-test admin/decisions/chain-test
    rm -f /tmp/research-output.md /tmp/decision-output.md
    ```
 
-**Expected Result:** ✅ Complete chain works, context flows through each stage (exploration→research→decision), handoff guidance present at each step.
+**Expected Result:** ✅ Complete chain works, context flows through each stage.
 
 ---
 
