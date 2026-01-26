@@ -333,6 +333,293 @@ dt-workflow [arguments]
 
 ---
 
+## 🧪 Phase 2: Workflow Expansion + Template Enhancement
+
+### Scenario 2.1: Research Workflow - Basic Usage
+
+**Objective:** Verify research workflow generates valid structure
+
+**Steps:**
+
+1. Run research workflow for a test topic:
+   ```bash
+   ./bin/dt-workflow research test-topic --interactive
+   ```
+
+2. Verify output structure includes:
+   - `## 📋 Context for AI` section
+   - Research template structure with goals, findings, methodology
+   - Structural examples (findings sections, insights lists)
+   - Required markers (`<!-- REQUIRED: -->`)
+   - No heredoc artifacts (should use templates, not embedded text)
+
+**Expected Result:** ✅ Research structure generated with template-based content, includes required sections.
+
+---
+
+### Scenario 2.2: Research Workflow - Context from Exploration (Auto-detect)
+
+**Objective:** Verify --from-explore auto-detects and loads exploration context
+
+**Prerequisites:**
+- Create exploration structure: `mkdir -p admin/explorations/test-topic`
+- Add exploration file: `admin/explorations/test-topic/exploration.md` with test content
+
+**Steps:**
+
+1. Run research workflow with auto-detect:
+   ```bash
+   ./bin/dt-workflow research test-topic --from-explore --interactive
+   ```
+
+2. Verify output includes:
+   - Exploration context in `## 📋 Context for AI` section
+   - Message indicating exploration was found
+   - Exploration content included (themes, recommendations)
+
+**Expected Result:** ✅ Exploration context automatically discovered and included in research output.
+
+---
+
+### Scenario 2.3: Research Workflow - Context from Exploration (Explicit Path)
+
+**Objective:** Verify --from-explore accepts explicit paths
+
+**Prerequisites:**
+- Create custom exploration path: `mkdir -p custom/path/test-topic`
+- Add exploration file with test content
+
+**Steps:**
+
+1. Run research workflow with explicit path:
+   ```bash
+   ./bin/dt-workflow research test-topic --from-explore custom/path/test-topic --interactive
+   ```
+
+2. Verify output includes exploration context from custom path
+
+3. Test error handling with invalid path:
+   ```bash
+   ./bin/dt-workflow research test-topic --from-explore invalid/path --interactive
+   ```
+
+**Expected Result:** ✅ Explicit path works, invalid path shows helpful error with suggestions.
+
+---
+
+### Scenario 2.4: Research Workflow - Handoff File Guidance
+
+**Objective:** Verify research workflow includes handoff file generation guidance
+
+**Steps:**
+
+1. Run research workflow:
+   ```bash
+   ./bin/dt-workflow research test-topic --interactive
+   ```
+
+2. Verify output includes:
+   - `## 📋 Handoff: research-summary.md` section
+   - Required sections listed (## Key Findings, ## Recommendations)
+   - Link to Pattern 4 (Handoff File Contract)
+   - Guidance on what to include in each section
+
+**Expected Result:** ✅ Handoff file guidance included with clear instructions and pattern reference.
+
+---
+
+### Scenario 2.5: Decision Workflow - Basic Usage
+
+**Objective:** Verify decision workflow generates valid ADR structure
+
+**Steps:**
+
+1. Run decision workflow for a test topic:
+   ```bash
+   ./bin/dt-workflow decision test-topic --interactive
+   ```
+
+2. Verify output structure includes:
+   - `## 📋 Context for AI` section
+   - ADR template with auto-numbered format (adr-NNN-topic.md)
+   - Structural examples (alternatives table, consequences lists)
+   - Required markers
+   - MADR-compatible structure
+
+**Expected Result:** ✅ Decision structure generated with ADR template, proper numbering, structural examples.
+
+---
+
+### Scenario 2.6: Decision Workflow - Context from Research (Auto-detect)
+
+**Objective:** Verify --from-research auto-detects and loads research context
+
+**Prerequisites:**
+- Create research structure: `mkdir -p admin/research/test-topic`
+- Add research summary: `admin/research/test-topic/research-summary.md` with findings
+- Add requirements: `admin/research/test-topic/requirements.md` (optional)
+
+**Steps:**
+
+1. Run decision workflow with auto-detect:
+   ```bash
+   ./bin/dt-workflow decision test-topic --from-research --interactive
+   ```
+
+2. Verify output includes:
+   - Research context in `## 📋 Context for AI` section
+   - Research summary content (limited to first 150 lines)
+   - Requirements file content (if present)
+   - Existing ADRs discovered (if any)
+
+**Expected Result:** ✅ Research context automatically discovered and included, requirements included if present.
+
+---
+
+### Scenario 2.7: Decision Workflow - Context from Research (Explicit Path)
+
+**Objective:** Verify --from-research accepts explicit paths
+
+**Prerequisites:**
+- Create custom research path: `mkdir -p custom/research/test-topic`
+- Add research summary with test content
+
+**Steps:**
+
+1. Run decision workflow with explicit path:
+   ```bash
+   ./bin/dt-workflow decision test-topic --from-research custom/research/test-topic --interactive
+   ```
+
+2. Verify output includes research context from custom path
+
+3. Test error handling with invalid path:
+   ```bash
+   ./bin/dt-workflow decision test-topic --from-research invalid/path --interactive
+   ```
+
+**Expected Result:** ✅ Explicit path works, invalid path shows helpful error with suggestions.
+
+---
+
+### Scenario 2.8: Decision Workflow - Handoff File Guidance
+
+**Objective:** Verify decision workflow includes handoff file generation guidance
+
+**Steps:**
+
+1. Run decision workflow:
+   ```bash
+   ./bin/dt-workflow decision test-topic --interactive
+   ```
+
+2. Verify output includes:
+   - `## 📋 Handoff: decisions-summary.md` section
+   - Required sections listed (## Decisions table, ## Impact Summary)
+   - Link to Pattern 4 (Handoff File Contract)
+   - Guidance to run `/transition-plan --from-adr`
+
+**Expected Result:** ✅ Handoff file guidance included with transition plan reference.
+
+---
+
+### Scenario 2.9: Full Workflow Chain Integration
+
+**Objective:** Verify complete explore → research → decision chain works
+
+**Steps:**
+
+1. **Step 1: Exploration**
+   ```bash
+   mkdir -p admin/explorations/chain-test
+   ./bin/dt-workflow explore chain-test --interactive > admin/explorations/chain-test/exploration.md
+   ```
+   - Verify exploration.md created with themes
+
+2. **Step 2: Research (chained)**
+   ```bash
+   mkdir -p admin/research/chain-test
+   ./bin/dt-workflow research chain-test --from-explore --interactive > /tmp/research-output.md
+   ```
+   - Verify exploration context included
+   - Create research-summary.md with findings
+
+3. **Step 3: Decision (chained)**
+   ```bash
+   mkdir -p admin/decisions/chain-test
+   ./bin/dt-workflow decision chain-test --from-research --interactive > /tmp/decision-output.md
+   ```
+   - Verify research context included
+   - Verify ADR structure generated
+
+**Expected Result:** ✅ Complete chain works, context flows through each stage, handoff guidance at each step.
+
+---
+
+### Scenario 2.10: Template Rendering Validation
+
+**Objective:** Verify templates are rendered correctly (no heredocs)
+
+**Steps:**
+
+1. Run each workflow and check for template artifacts:
+   ```bash
+   ./bin/dt-workflow explore test-template --interactive | grep -i "heredoc\|EOF\|cat"
+   ./bin/dt-workflow research test-template --interactive | grep -i "heredoc\|EOF\|cat"
+   ./bin/dt-workflow decision test-template --interactive | grep -i "heredoc\|EOF\|cat"
+   ```
+
+2. Verify structural examples are present:
+   - Exploration: Themes table, recommendations list
+   - Research: Findings sections, insights list, goals checklist
+   - Decision: Alternatives table, consequences lists
+
+**Expected Result:** ✅ No heredoc artifacts found, all structural examples present, templates rendered correctly.
+
+---
+
+### Scenario 2.11: Error Handling - Missing Exploration
+
+**Objective:** Verify helpful error when exploration directory not found
+
+**Steps:**
+
+1. Try to run research with --from-explore for non-existent topic:
+   ```bash
+   ./bin/dt-workflow research nonexistent-topic --from-explore --interactive
+   ```
+
+2. Verify error message:
+   - Clearly states exploration not found
+   - Shows paths checked (admin/explorations/nonexistent-topic)
+   - Suggests creating exploration first
+   - Suggests using explicit path if in different location
+
+**Expected Result:** ✅ Clear, actionable error message with suggestions.
+
+---
+
+### Scenario 2.12: Error Handling - Missing Research
+
+**Objective:** Verify helpful error when research directory not found
+
+**Steps:**
+
+1. Try to run decision with --from-research for non-existent topic:
+   ```bash
+   ./bin/dt-workflow decision nonexistent-topic --from-research --interactive
+   ```
+
+2. Verify error message:
+   - Clearly states research not found
+   - Shows paths checked (admin/research/nonexistent-topic)
+   - Suggests creating research first
+   - Suggests using explicit path if in different location
+
+**Expected Result:** ✅ Clear, actionable error message with suggestions.
+
+---
+
 ## 🧹 Cleanup
 
 After completing manual testing:
