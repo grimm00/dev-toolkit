@@ -145,11 +145,12 @@ The enhanced templates must produce output structurally equivalent to spike here
 ## Next Steps
 
 1. ✅ **dev-toolkit:** Tests created (RED phase complete)
-2. 🟡 **dev-infra:** Enhance `exploration/exploration.md.tmpl` per this spec
-3. 🟡 **dev-infra:** Run dev-toolkit tests to validate changes
-4. 🟡 **dev-toolkit:** Verify tests pass (GREEN phase)
-5. 🟡 **dev-infra:** Create PR with template changes
-6. 🟡 **dev-toolkit:** Update dt-workflow to use enhanced templates
+2. ✅ **dev-infra:** Issue created: [#62](https://github.com/grimm00/dev-infra/issues/62)
+3. 🟡 **dev-infra:** Enhance `exploration/exploration.md.tmpl` per this spec
+4. 🟡 **dev-infra:** Run dev-toolkit tests to validate changes
+5. 🟡 **dev-toolkit:** Verify tests pass (GREEN phase)
+6. 🟡 **dev-infra:** Create PR with template changes
+7. 🟡 **dev-toolkit:** Update dt-workflow to use enhanced templates
 
 ---
 
