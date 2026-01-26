@@ -127,17 +127,17 @@ get_recommended_model() {
 **Steps:**
 
 1. **Extract configuration:**
-   - [ ] Consider making recommendations configurable
-   - [ ] Add comments explaining rationale
+   - [x] Consider making recommendations configurable (noted in comments for future)
+   - [x] Add comments explaining rationale
 
 2. **Update documentation:**
-   - [ ] Add to dt-workflow --help output
-   - [ ] Document in TEMPLATE-VARIABLES.md
+   - [x] Add to dt-workflow --help output
+   - [x] Document in TEMPLATE-VARIABLES.md
 
 **Checklist:**
-- [ ] Code reviewed for improvements
-- [ ] Tests still pass
-- [ ] Documentation updated
+- [x] Code reviewed for improvements
+- [x] Tests still pass
+- [x] Documentation updated
 
 ---
 
@@ -525,7 +525,7 @@ fi
 |------|--------|-------|
 | Task 1: Model recommendation tests (RED) | ✅ Complete | All tests pass |
 | Task 2: Model recommendation impl (GREEN) | ✅ Complete | Feature implemented |
-| Task 3: Model recommendation refactor | 🔴 Not Started | |
+| Task 3: Model recommendation refactor | ✅ Complete | Documentation improved |
 | Task 4: Context profile tests (RED) | ✅ Complete | All tests pass |
 | Task 5: Context profile impl (GREEN) | ✅ Complete | Feature implemented |
 | Task 6: Context profile refactor | 🔴 Not Started | |
