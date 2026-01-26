@@ -57,19 +57,57 @@ These requirements are confirmed by spike implementation:
 
 ---
 
-### Pending Research Requirements
+### Context Gathering Requirements (Research Complete)
 
-These requirements are pending research completion:
+#### FR-4: Context Ordering
 
-#### FR-4: Context Scalability
-
-**Description:** dt-workflow must handle context injection at scale (numerous rules, large projects)
+**Description:** Context must be ordered with critical rules at START of output, task instructions at END (addresses "lost in the middle" problem)
 
 **Source:** [research-context-gathering.md](research-context-gathering.md)
 
 **Priority:** High
 
-**Status:** 🔴 Pending research
+**Status:** ✅ Research complete
+
+---
+
+#### FR-5: Token Count Reporting
+
+**Description:** dt-workflow should report approximate token count in output for transparency
+
+**Source:** [research-context-gathering.md](research-context-gathering.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-6: Universal Context Inclusion
+
+**Description:** Universal context (Cursor rules, project identity) must always be included in output
+
+**Source:** [research-context-gathering.md](research-context-gathering.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-7: Configurable Workflow Context
+
+**Description:** Workflow-specific context should be configurable per workflow type
+
+**Source:** [research-context-gathering.md](research-context-gathering.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+### Pending Research Requirements
 
 ---
 
@@ -99,15 +137,27 @@ These requirements are pending research completion:
 
 ## 🎯 Non-Functional Requirements
 
-#### NFR-1: Token Efficiency
+#### NFR-1: Token Budget
 
-**Description:** Context injection should be token-efficient (target: 80-90% savings per dev-infra research)
+**Description:** Total context should stay under 50K tokens for optimal LLM performance (current: ~10K, well within limits)
 
 **Source:** [research-context-gathering.md](research-context-gathering.md)
 
 **Priority:** High
 
-**Status:** 🔴 Pending research
+**Status:** ✅ Research complete (current output validated as safe)
+
+---
+
+#### NFR-2: Context Injection Speed
+
+**Description:** Context injection should complete in under 1 second
+
+**Source:** [research-context-gathering.md](research-context-gathering.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
 
 ---
 
@@ -150,6 +200,22 @@ These requirements are pending research completion:
 **Description:** dt-workflow must be implemented in Bash (dev-toolkit standard)
 
 **Source:** dev-toolkit script standards
+
+---
+
+#### C-3: Full Content Preferred
+
+**Description:** Full content injection is preferred over pointers for rules (rules need full fidelity, not summarization)
+
+**Source:** [research-context-gathering.md](research-context-gathering.md)
+
+---
+
+#### C-4: Hybrid Escape Hatch
+
+**Description:** Switch to hybrid approach (summaries + pointers) ONLY if hitting: performance degradation, token limits, or cost blockers
+
+**Source:** [research-context-gathering.md](research-context-gathering.md)
 
 ---
 

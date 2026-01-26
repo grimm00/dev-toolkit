@@ -32,16 +32,20 @@ These topics were validated by spike and don't require formal research:
 
 ## 🔍 Key Findings
 
-### Finding 1: Context Gathering Scalability (Topic 10)
+### Finding 1: Context Gathering Scalability (Topic 1) ✅
 
-**Status:** 🔴 Research needed
+**Status:** ✅ Complete
 
-Spike revealed scalability question: What happens when rules are numerous?
+**Key findings:**
+- Current spike output is ~10K tokens - well within modern LLM limits (100K+)
+- **Full context injection is correct** for our scale - RAG complexity not justified
+- "Lost in the middle" problem: Place critical rules at START, task at END
+- Escape hatch: Switch to hybrid only if hitting performance/limit/cost blockers
 
-**Key questions:**
-- Content vs pointers for context injection
-- Token budget for context
-- Context prioritization strategy
+**Recommendations:**
+- Keep full context injection (our scale doesn't need RAG)
+- Implement context ordering for optimal attention
+- Add token count reporting for transparency
 
 **Source:** [research-context-gathering.md](research-context-gathering.md)
 
@@ -146,7 +150,7 @@ From exploration analysis:
 
 | # | Research Topic | Priority | Status | Primary Focus |
 |---|----------------|----------|--------|---------------|
-| 1 | Context Gathering | 🔴 HIGH | 🔴 Not Started | **YES** - scalability |
+| 1 | Context Gathering | 🔴 HIGH | ✅ Complete | Full injection validated |
 | 2 | Workflow I/O Specs | 🔴 HIGH | 🔴 Not Started | **YES** - handoffs |
 | 3 | Decision Propagation | 🔴 HIGH | 🔴 Not Started | **YES** - patterns |
 | 4 | Component Decisions | 🟠 HIGH | 🟡 Analysis Ready | Quick decision |
