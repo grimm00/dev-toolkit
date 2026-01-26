@@ -243,6 +243,68 @@ These requirements are confirmed by spike implementation:
 
 ---
 
+### Dynamic Section Management Requirements (Research Complete)
+
+#### FR-19: Frontmatter Section Count Declaration
+
+**Description:** Documents with variable sections (phases, topics, fixes) must declare expected count in frontmatter (e.g., `phases: 4`)
+
+**Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-20: Section Count Validation
+
+**Description:** dt-doc-validate must check that actual section count matches frontmatter declaration
+
+**Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-21: Section Add Command
+
+**Description:** Provide `dt-section add` command for incremental section additions with auto-numbering
+
+**Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-22: Ordered vs Unordered Section Types
+
+**Description:** Differentiate ordered sections (phases - no gaps, no renumber) from unordered sections (topics - gaps OK, renumber OK)
+
+**Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### FR-23: Section Renumber Command
+
+**Description:** Provide `dt-section renumber` command for unordered sections to fix numbering gaps
+
+**Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
+
+**Priority:** Low
+
+**Status:** ✅ Research complete
+
+---
+
 ### Pending Research Requirements
 
 ---
@@ -314,6 +376,30 @@ These requirements are confirmed by spike implementation:
 **Description:** All error messages must suggest corrective action (e.g., "Missing X. Run Y first.")
 
 **Source:** [research-workflow-io-specs.md](research-workflow-io-specs.md)
+
+**Priority:** High
+
+**Status:** ✅ Research complete
+
+---
+
+#### NFR-5: Section Operation Speed
+
+**Description:** Section add/remove/renumber operations must complete in under 1 second
+
+**Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
+
+**Priority:** Medium
+
+**Status:** ✅ Research complete
+
+---
+
+#### NFR-6: Section Mismatch Errors
+
+**Description:** Section count mismatches must produce clear errors with specific fix suggestions
+
+**Source:** [research-dynamic-sections.md](research-dynamic-sections.md)
 
 **Priority:** High
 

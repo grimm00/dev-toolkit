@@ -2,8 +2,9 @@
 
 **Topic:** 7 - Dynamic Section Management  
 **Priority:** 🔴 HIGH  
-**Status:** 🔴 Not Started  
+**Status:** ✅ Complete  
 **Created:** 2026-01-22  
+**Completed:** 2026-01-22  
 **Last Updated:** 2026-01-22
 
 ---
@@ -27,157 +28,353 @@ Multiple workflows generate documents with variable numbers of sections:
 4. Validation can't verify counts/sequences
 5. Different workflows handle this differently (no pattern)
 
-**Why This Matters for dt-workflow:**
-- dt-workflow will set the foundational pattern
-- Other workflows will follow this pattern
-- Poor design here propagates to all future workflows
+---
+
+## 📊 Findings
+
+### Finding 1: Current State Analysis
+
+**Source:** Analysis of `.cursor/commands/` and generated documents
+
+Examined 23 Cursor commands. Key patterns found:
+
+**Hardcoded Section Templates:**
+- Commands include literal "Phase 1", "Phase 2", "Phase 3" templates
+- `transition-plan.md` explicitly warns: "Extract **ALL phases** (Phase 1, Phase 2, Phase 3, Phase 4, etc.). Do not stop at Phase 2."
+- This warning exists because AI frequently truncates
+
+**Inconsistent Numbering:**
+- Some use "Topic 1:", others use "### Topic 1:"
+- Some use explicit `#` column in tables, others rely on order
+- Research hub uses `| # | Topic |` table format (explicit)
+
+**Hub-and-Spoke Pattern:**
+- README.md lists sections with links
+- Individual `phase-N.md` or `research-topic.md` files
+- Count must be maintained in hub when sections added
+
+**Relevance:** Current approach is template-heavy with manual numbering. No programmatic section management exists.
 
 ---
 
-## 🔍 Research Areas
+### Finding 2: ADR Sequential Numbering Pattern
 
-### Area 1: Current State Analysis
+**Source:** [adr.github.io](https://adr.github.io/), Google Cloud Architecture Decision Records
 
-**Questions:**
-- How do existing workflows handle variable sections?
-- What inconsistencies exist?
-- What patterns work well? What doesn't?
+ADR tools use **global sequential numbering**:
+- Format: `[sequence]-[topic]` (e.g., `0001-SeparateConfigurationInterface`)
+- Sequence is global across all ADRs, not per-category
+- New ADR gets `max(existing) + 1`
 
-**Files to examine:**
-- Cursor commands: `.cursor/commands/`
-- Existing generated docs: `admin/explorations/`, `admin/research/`
-- Templates if any
+**Key insight:** ADRs don't renumber on deletion. Gaps are acceptable.
 
----
+```
+0001-authentication-approach.md
+0002-database-selection.md      # Later deleted
+0003-api-versioning.md          # Number 0002 stays unused
+```
 
-### Area 2: Approaches to Investigate
-
-| Approach | Description | Pros | Cons |
-|----------|-------------|------|------|
-| **Section Commands** | `dt-section add phase [doc]` | Explicit, testable | Additional command |
-| **Template Markers** | `<!-- ADD_PHASE_HERE -->` markers | Simple | AI might ignore |
-| **YAML + Render** | Store as YAML, render to markdown | Structured, validatable | Complex |
-| **Cursor Commands** | `/add-phase`, `/add-topic` | IDE native | Not portable |
-| **Hybrid** | Template slots + validation | Best of both | More complex |
-
-**Key questions:**
-- Should sections be added via CLI (`dt-section`) or IDE (`/add-phase`)?
-- Per ADR-004, Cursor commands are orchestrators - does section management fit this pattern?
-- How does this affect validation (`dt-doc-validate`)?
+**Relevance:** For phases (ordered), we could allow gaps. For topics (unordered), renumbering may be acceptable.
 
 ---
 
-### Area 3: Numbering and Sequencing
+### Finding 3: Changelog Generation Pattern
 
-**Questions:**
-- How to auto-number sections (Phase 1, Phase 2...)?
-- How to handle re-ordering (insert Phase 1.5 between 1 and 2)?
-- How to validate sequence integrity?
-- How to update cross-references when sections change?
+**Source:** [Conventional Commits](https://www.conventionalcommits.org/), standard-version
 
-**Considerations:**
-- Some sections are ordered (phases must be sequential)
-- Some sections are unordered (research topics can be reordered)
-- Cross-references need updating when sections change
+Changelog generators are **data-driven**, not template-driven:
+- Sections derived from commit types (`feat:`, `fix:`, `BREAKING CHANGE:`)
+- Number of sections determined by data, not template
+- Tool groups commits into sections dynamically
 
----
+**Pattern:**
+```
+Commits: [fix, fix, feat, feat, fix]
+Output:  ### Features (2)
+         ### Bug Fixes (3)
+```
 
-### Area 4: Validation Implications
-
-**Questions:**
-- How does `dt-doc-validate` know how many sections to expect?
-- How to validate numbering is correct?
-- How to validate no gaps (Phase 1, Phase 3 but no Phase 2)?
-
-**Current validation approach:**
-- L1: File exists
-- L2: Structure (sections present)
-- L3: Content (fields populated)
-
-**New validation needs:**
-- Section count validation
-- Sequence integrity validation
-- Cross-reference validation
+**Relevance:** dt-workflow could derive section count from input (e.g., "how many research questions did exploration identify?") rather than hardcoding.
 
 ---
 
-### Area 5: User Experience
+### Finding 4: Notion Blocks API Pattern
 
-**Scenarios to consider:**
+**Source:** [Notion API Documentation](https://developers.notion.com/reference/patch-block-children)
 
-1. **AI generates initial document with N sections**
-   - How does AI know how many to generate?
-   - How to signal "more sections may be added"?
+Notion uses **append-only** for block management:
+- `PATCH /v1/blocks/{block_id}/children` - appends to end
+- **Cannot insert at specific position**
+- To insert in middle: retrieve all → delete all → rebuild → re-append
 
-2. **User wants to add one more section**
-   - Command? Manual edit? AI assistant?
-   - How to maintain consistency?
+**Workaround pattern:**
+```
+1. Get all children
+2. Delete all children  
+3. Insert new block at desired position in list
+4. Re-append all blocks
+```
 
-3. **User wants to reorder sections**
-   - Renumber automatically?
-   - Update cross-references?
-
-4. **User wants to remove a section**
-   - Renumber remaining?
-   - Handle orphaned references?
-
----
-
-## 🔬 Research Approach
-
-### Phase A: Current State (Analysis)
-
-1. Examine existing Cursor commands for section handling
-2. Review generated documents for patterns
-3. Identify inconsistencies and pain points
-
-### Phase B: External Research
-
-1. How do other documentation systems handle this?
-2. Static site generators (sections in frontmatter?)
-3. Note-taking apps (blocks/sections?)
-4. Design system documentation
-
-### Phase C: Prototype Options
-
-1. Spike: `dt-section add` command
-2. Spike: Template marker approach
-3. Spike: YAML-based approach
-
-### Phase D: Recommendations
-
-1. Recommended approach
-2. Validation updates needed
-3. Migration path for existing workflows
+**Relevance:** Append-only is simpler but limits flexibility. For phases (sequential), append-only works. For topics (reorderable), need different approach.
 
 ---
 
-## 📊 Expected Outputs
+### Finding 5: Template Generator Patterns (Hygen)
 
-1. **Recommended Pattern** - How dt-workflow should handle dynamic sections
-2. **Command Design** - If command-based, what commands are needed
-3. **Validation Updates** - How `dt-doc-validate` should change
-4. **Migration Guide** - How to apply pattern to existing workflows
+**Source:** [Hygen Documentation](https://www.hygen.io/docs/templates/)
+
+Hygen separates **metadata (frontmatter) from content (body)**:
+
+```markdown
+---
+to: app/<%=section%>/emails.js
+inject: true
+after: "// INJECT_POINT"
+---
+<content here>
+```
+
+**Key features:**
+- `inject: true` - Add to existing file instead of creating new
+- `after: "marker"` - Insert after specific marker
+- Variables in frontmatter for dynamic paths
+
+**Relevance:** Marker-based injection could work for adding sections to existing documents.
 
 ---
 
-## 🔗 Related
+### Finding 6: Markdown Builder Libraries
 
-- [ADR-004: Cursor Command Role](../../decisions/dt-workflow/adr-004-cursor-command-role.md) - Orchestrator pattern
-- [Research: Workflow I/O Specs](research-workflow-io-specs.md) - Handoff file contracts
-- [Pattern Library](../../../../docs/patterns/workflow-patterns.md) - Existing patterns
+**Source:** [Tempo](https://github.com/joggrdocs/tempo), [mdsh](https://zimbatm.github.io/mdsh/)
+
+**Builder pattern approach:**
+```javascript
+doc.heading(2, "Phase 1")
+   .paragraph("Description")
+   .heading(2, "Phase 2")
+   .paragraph("Description")
+```
+
+**Script interpolation approach (mdsh):**
+```markdown
+<!-- `$ cat phases.txt | while read p; do echo "## $p"; done` -->
+## Phase 1
+## Phase 2
+<!-- /$ -->
+```
+
+**Relevance:** Builder pattern is powerful but requires code. Script interpolation is Bash-friendly but complex for users.
 
 ---
 
-## 📝 Findings
+## 🔍 Analysis
 
-*To be filled during research*
+### Section Types
+
+| Type | Example | Ordered? | Gaps OK? | Renumber OK? |
+|------|---------|----------|----------|--------------|
+| **Phases** | Phase 1, 2, 3 | ✅ Yes | ❌ No | ❌ No |
+| **Topics** | Topic 1, 2, 3 | ❓ Maybe | ✅ Yes | ✅ Yes |
+| **Fixes** | Fix 1, 2, 3 | ❓ Maybe | ✅ Yes | ✅ Yes |
+| **Themes** | Theme A, B, C | ❌ No | N/A | N/A |
+
+**Key insight:** Different section types have different constraints.
+
+### Two-Phase Problem
+
+1. **Generation Time:** How many sections to create initially?
+   - Data-driven: Derive from input (exploration → N topics)
+   - User-specified: `--phases 4` flag
+   - AI-determined: Let AI decide (current, inconsistent)
+
+2. **Evolution Time:** How to add/remove/reorder later?
+   - Append-only: Simple, works for phases
+   - Insert-anywhere: Complex, needed for topics
+   - Immutable: Don't allow changes (ADR pattern)
+
+### Approach Comparison
+
+| Approach | Generation | Evolution | Validation | Complexity |
+|----------|------------|-----------|------------|------------|
+| **Metadata-driven** | From frontmatter | Update metadata | Count from meta | Low |
+| **Section command** | From flags | CLI command | CLI validates | Medium |
+| **Marker injection** | Template | Insert at marker | Marker presence | Medium |
+| **YAML+Render** | From YAML | Edit YAML | Schema validation | High |
 
 ---
 
 ## 💡 Recommendations
 
-*To be filled after research*
+### Recommendation 1: Metadata-Driven Section Count
+
+**Use frontmatter to declare section count, render body dynamically.**
+
+```markdown
+---
+type: transition-plan
+phases: 4
+---
+
+# Transition Plan
+
+## Phases
+
+<!-- Sections below are validated against phases: 4 -->
+
+### Phase 1: Foundation
+...
+
+### Phase 2: Implementation
+...
+```
+
+**Benefits:**
+- Single source of truth for count
+- Validation can check `phases: 4` matches actual sections
+- AI sees expected count, generates accordingly
+- Easy to update: change frontmatter, add section
+
+**Implementation:**
+- dt-workflow reads frontmatter, injects into AI context
+- dt-doc-validate checks section count matches frontmatter
+- `dt-section add phase [doc]` increments frontmatter and appends template
+
+---
+
+### Recommendation 2: Section Add Command
+
+**Create `dt-section add` command for incremental additions.**
+
+```bash
+# Add a new phase to transition plan
+dt-section add phase admin/planning/features/dt-workflow/transition-plan.md
+
+# Add a new topic to research
+dt-section add topic admin/research/dt-workflow/README.md
+
+# Add with specific number (for gaps)
+dt-section add phase --number 3 transition-plan.md
+```
+
+**Behavior:**
+1. Read current section count from frontmatter (or parse document)
+2. Increment count
+3. Append section template at appropriate location
+4. Update hub/summary if exists
+
+**Per ADR-004:** This is a CLI command (portable), not a Cursor command. Cursor commands can orchestrate it.
+
+---
+
+### Recommendation 3: Differentiate Ordered vs Unordered
+
+**Phases (ordered):**
+- Append-only by default
+- No renumbering
+- Gaps not allowed (validation error)
+- Sequential dependencies
+
+**Topics/Fixes (unordered):**
+- Add anywhere
+- Auto-renumber on request (`--renumber`)
+- Gaps allowed
+- No dependencies
+
+```bash
+# Ordered (phases) - append only
+dt-section add phase [doc]  # Always appends at end
+
+# Unordered (topics) - insert anywhere
+dt-section add topic [doc]              # Appends at end
+dt-section add topic [doc] --after 2    # Insert after Topic 2
+dt-section renumber topics [doc]        # Renumber all topics 1, 2, 3...
+```
+
+---
+
+### Recommendation 4: Validation Updates
+
+**Extend L2 validation for section integrity:**
+
+```
+L2 Validation (Structure):
+- Section count matches frontmatter declaration
+- No gaps in ordered sections (phases)
+- All sections have required subsections
+- Cross-references resolve
+
+L2 Warnings:
+- Gaps in unordered sections (topics) - warn, don't fail
+- Section count mismatch - fail with specific error
+```
+
+**Error messages:**
+```
+❌ Error: transition-plan.md declares 4 phases but only 3 found
+   Missing: Phase 4
+
+💡 Suggestion: Add missing phase with:
+   dt-section add phase transition-plan.md
+```
+
+---
+
+### Recommendation 5: Phase 1 Implementation (Minimal)
+
+**Start simple, iterate based on usage:**
+
+**Phase 1 (MVP):**
+- Frontmatter `sections:` or `phases:` count declaration
+- dt-doc-validate checks count matches
+- Manual section addition (copy template)
+
+**Phase 2 (Enhancement):**
+- `dt-section add` command
+- Auto-increment frontmatter
+- Template injection
+
+**Phase 3 (Full):**
+- Hub auto-update
+- Cross-reference management
+- Renumbering for unordered sections
+
+---
+
+## 📋 Requirements Discovered
+
+### Functional Requirements
+
+| ID | Requirement | Priority |
+|----|-------------|----------|
+| FR-19 | Frontmatter section count declaration | High |
+| FR-20 | Validation checks section count vs actual | High |
+| FR-21 | `dt-section add` command for incremental additions | Medium |
+| FR-22 | Differentiate ordered vs unordered section types | Medium |
+| FR-23 | Auto-renumber command for unordered sections | Low |
+
+### Non-Functional Requirements
+
+| ID | Requirement | Priority |
+|----|-------------|----------|
+| NFR-5 | Section operations complete in <1 second | Medium |
+| NFR-6 | Clear error messages for section mismatches | High |
+
+---
+
+## 🚀 Next Steps
+
+1. **Update requirements.md** with FR-19 through FR-23
+2. **Decide on implementation phase** (include in Phase 1 vs defer)
+3. **Create ADR** if this is a significant architectural decision
+4. **Update Pattern Library** with "Section Management" pattern
+
+---
+
+## 🔗 Related
+
+- [ADR-004: Cursor Command Role](../../decisions/dt-workflow/adr-004-cursor-command-role.md) - CLI vs Cursor
+- [Research: Workflow I/O Specs](research-workflow-io-specs.md) - Handoff file contracts
+- [Pattern Library](../../../../docs/patterns/workflow-patterns.md) - Add section management pattern
 
 ---
 
