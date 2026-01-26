@@ -174,7 +174,15 @@ gather_workflow_context() {
             gather_research_context "$topic" "$project_dir" "$exploration_path"
             ;;
         decision)
-            gather_decision_context "$topic" "$project_dir"
+            # Resolve research path if --from-research was used
+            local research_path=""
+            if [ -n "$from_research_path" ]; then
+                research_path=$(parse_from_research "$topic" "$from_research_path" "$project_dir")
+                if [ $? -ne 0 ]; then
+                    exit 1
+                fi
+            fi
+            gather_decision_context "$topic" "$project_dir" "$research_path"
             ;;
         *)
             echo "*No workflow-specific context defined for: $workflow*"
@@ -219,6 +227,49 @@ parse_from_explore() {
             dt_print_status "ERROR" "Exploration not found: $explicit_path" >&2
             echo "" >&2
             echo "💡 Suggestion: Check the path or run '/explore $topic' first" >&2
+            return 1
+        fi
+        echo "$explicit_path"
+        return 0
+    fi
+}
+
+parse_from_research() {
+    # Parse and resolve --from-research path
+    # Parameters:
+    #   $1 - Topic name
+    #   $2 - Explicit path or "AUTO" for auto-detection
+    #   $3 - Project directory
+    # Returns: Research directory path (or empty if not found)
+    
+    local topic="$1"
+    local explicit_path="${2:-}"
+    local project_dir="${3:-.}"
+    
+    if [ -z "$explicit_path" ]; then
+        # No --from-research flag used
+        echo ""
+        return 0
+    fi
+    
+    if [ "$explicit_path" = "AUTO" ]; then
+        # Auto-detect: check standard location
+        local auto_path="$project_dir/admin/research/$topic"
+        if [ ! -d "$auto_path" ]; then
+            dt_print_status "ERROR" "Research not found: $auto_path" >&2
+            echo "" >&2
+            echo "💡 Suggestion: Run '/research $topic --from-explore $topic' first to create the research" >&2
+            echo "   Or use: $SCRIPT_NAME decision $topic --from-research <path>" >&2
+            return 1
+        fi
+        echo "$auto_path"
+        return 0
+    else
+        # Explicit path provided
+        if [ ! -d "$explicit_path" ]; then
+            dt_print_status "ERROR" "Research not found: $explicit_path" >&2
+            echo "" >&2
+            echo "💡 Suggestion: Check the path or run '/research $topic --from-explore $topic' first" >&2
             return 1
         fi
         echo "$explicit_path"
@@ -308,12 +359,19 @@ gather_research_context() {
 gather_decision_context() {
     local topic="$1"
     local project_dir="${2:-.}"
+    local research_path="${3:-}"
     
     echo "### Decision Context"
     echo ""
     
-    # Check for research (upstream)
-    local research_dir="$project_dir/admin/research/$topic"
+    # Check for research (upstream) - use provided path or auto-detect
+    local research_dir
+    if [ -n "$research_path" ]; then
+        research_dir="$research_path"
+    else
+        research_dir="$project_dir/admin/research/$topic"
+    fi
+    
     if [ -d "$research_dir" ]; then
         echo "#### Research Summary (from research workflow)"
         echo ""
@@ -775,18 +833,8 @@ validate_inputs() {
             # Note: Validation for --from-explore is handled separately in parse_from_explore
             ;;
             decision)
-                # L1: Check if research exists (for --from-research)
-                local research_dir="$project_dir/admin/research/$topic"
-                if [ ! -d "$research_dir" ]; then
-                    dt_print_status "ERROR" "Error: Research directory not found: $research_dir"
-                    echo ""
-                    echo "💡 Suggestion: Run '/research $topic --from-explore $topic' first"
-                    if [ "$exit_on_fail" = "true" ]; then
-                        exit 1
-                    else
-                        return 1
-                    fi
-                fi
+                # L1: Check if research exists (only if --from-research is used)
+                # Note: Validation for --from-research is handled separately in parse_from_research
                 ;;
         esac
     fi
@@ -1060,6 +1108,7 @@ main() {
     local output_file=""
     local project_dir="."
     local from_explore_path=""
+    local from_research_path=""
     
     # Parse arguments
     while [[ $# -gt 0 ]]; do
@@ -1100,6 +1149,17 @@ main() {
                 else
                     # Auto-detect: will be resolved later using topic
                     from_explore_path="AUTO"
+                    shift
+                fi
+                ;;
+            --from-research)
+                # Check if next argument is a path (doesn't start with -)
+                if [ $# -gt 1 ] && [[ ! "$2" =~ ^- ]]; then
+                    from_research_path="$2"
+                    shift 2
+                else
+                    # Auto-detect: will be resolved later using topic
+                    from_research_path="AUTO"
                     shift
                 fi
                 ;;
@@ -1206,6 +1266,15 @@ main() {
     if [ "$workflow" = "research" ] && [ -n "$from_explore_path" ]; then
         local exploration_path
         exploration_path=$(parse_from_explore "$topic" "$from_explore_path" "$project_dir")
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    fi
+    
+    # Validate --from-research flag if used (before other validation)
+    if [ "$workflow" = "decision" ] && [ -n "$from_research_path" ]; then
+        local research_path
+        research_path=$(parse_from_research "$topic" "$from_research_path" "$project_dir")
         if [ $? -ne 0 ]; then
             exit 1
         fi

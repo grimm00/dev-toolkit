@@ -770,6 +770,69 @@ teardown() {
 }
 
 # ============================================================================
+# Task 14: --from-research Flag Implementation Tests (RED)
+# ============================================================================
+
+@test "--from-research auto-detects research directory" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create research
+    mkdir -p "$TEST_PROJECT/admin/research/test-topic"
+    echo "# Research Summary" > "$TEST_PROJECT/admin/research/test-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --from-research --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should have loaded research context
+    grep -q "Research Summary" "$TEST_OUTPUT" || grep -q "research-summary.md" "$TEST_OUTPUT" || {
+        echo "FAIL: Research context not loaded"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "--from-research with explicit path uses that path" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # Setup: create custom research location
+    mkdir -p "$TEST_PROJECT/custom/research/my-topic"
+    echo "# Custom Research Summary" > "$TEST_PROJECT/custom/research/my-topic/research-summary.md"
+    
+    run "$DT_WORKFLOW" decision test-topic --from-research "$TEST_PROJECT/custom/research/my-topic" --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -eq 0 ]
+    
+    # Should have loaded custom research context
+    grep -q "Custom Research Summary" "$TEST_OUTPUT" || {
+        echo "FAIL: Custom research context not loaded"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+@test "--from-research fails gracefully when research not found" {
+    TEST_OUTPUT=$(mktemp)
+    
+    # No research directory exists
+    
+    run "$DT_WORKFLOW" decision test-topic --from-research --interactive --output "$TEST_OUTPUT" --project "$TEST_PROJECT"
+    [ "$status" -ne 0 ]
+    
+    # Should show error message (check both output variable and file)
+    grep -q "Research not found" <<< "$output" || grep -q "ERROR" <<< "$output" || grep -q "Research not found" "$TEST_OUTPUT" || grep -q "ERROR" "$TEST_OUTPUT" || {
+        echo "FAIL: Error message not shown for missing research"
+        echo "Output: $output"
+        rm -f "$TEST_OUTPUT"
+        return 1
+    }
+    
+    rm -f "$TEST_OUTPUT"
+}
+
+# ============================================================================
 # Task 6: Template-Spike Alignment Tests (RED)
 # ============================================================================
 
