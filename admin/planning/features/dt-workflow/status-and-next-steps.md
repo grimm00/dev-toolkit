@@ -18,8 +18,8 @@
 | ADRs | ✅ Complete | 5 ADRs accepted |
 | Pattern Library | ✅ Complete | 5 patterns documented |
 | Transition Plan | ✅ Complete | 4 phases scaffolded |
-| Phase 1 | 🔴 Scaffolding | Ready for expansion |
-| Phase 2 | 🔴 Scaffolding | Blocked by Phase 1 |
+| Phase 1 | ✅ Complete | PR #32 merged (2026-01-26) |
+| Phase 2 | ✅ Expanded | Ready for implementation (15 tasks) |
 | Phase 3 | 🔴 Scaffolding | Blocked by Phase 2 |
 | Phase 4 | 🔴 Scaffolding | Blocked by Phase 3 |
 
@@ -28,7 +28,7 @@
 | Phase | Status | Progress | Notes |
 |-------|--------|----------|-------|
 | Phase 1: Foundation | ✅ Complete | 100% | All 9 tasks complete (2026-01-26) |
-| Phase 2: Workflow Expansion | 🔴 Scaffolding | 0% | Blocked by Phase 1 |
+| Phase 2: Workflow Expansion | ✅ Expanded | 0% impl | Ready for implementation (15 tasks) |
 | Phase 3: Cursor Integration | 🔴 Scaffolding | 0% | Blocked by Phase 2 |
 | Phase 4: Enhancement | 🔴 Scaffolding | 0% | Blocked by Phase 3 |
 
@@ -111,7 +111,7 @@ None - ready to proceed with Phase 2
 - [Feature Plan](feature-plan.md)
 - [Transition Plan](transition-plan.md)
 - [Phase 1](phase-1.md) - ✅ Complete
-- [Phase 2](phase-2.md) - **Next to implement**
+- [Phase 2](phase-2.md) - ✅ Expanded (15 tasks) - **Next to implement**
 - [ADRs](../../decisions/dt-workflow/)
 - [Research](../../research/dt-workflow/)
 
