@@ -114,19 +114,19 @@ teardown() {
 ```
 
 2. **GREEN - Verify spike passes:**
-   - [ ] Run tests: `bats tests/unit/test-dt-workflow.bats`
-   - [ ] Spike should already pass these tests
-   - [ ] If not, fix implementation
+   - [x] Run tests: `bats tests/unit/test-dt-workflow.bats`
+   - [x] Spike should already pass these tests
+   - [x] If not, fix implementation
 
 3. **REFACTOR - Update help text:**
-   - [ ] Remove "SPIKE" references from help
-   - [ ] Update version to 0.2.0
-   - [ ] Ensure help text matches script-standards.mdc
+   - [x] Remove "SPIKE" references from help
+   - [x] Update version to 0.2.0
+   - [x] Ensure help text matches script-standards.mdc
 
 **Checklist:**
-- [ ] Help tests written and passing
-- [ ] Version tests written and passing
-- [ ] Help text production-ready
+- [x] Help tests written and passing
+- [x] Version tests written and passing
+- [x] Help text production-ready
 
 ---
 
@@ -518,7 +518,7 @@ teardown() {
 | Task | Status | Notes |
 |------|--------|-------|
 | Task 1: Test Infrastructure | ✅ Complete | Test files created and verified |
-| Task 2: Help/Version Tests | 🔴 Not Started | |
+| Task 2: Help/Version Tests | ✅ Complete | RED/GREEN/REFACTOR complete |
 | Task 3: Validation Tests | 🔴 Not Started | |
 | Task 4: Context Gathering Tests | 🔴 Not Started | |
 | Task 5: Output Generation Tests | 🔴 Not Started | |

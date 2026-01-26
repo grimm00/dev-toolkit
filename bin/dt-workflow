@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # ============================================================================
-# DT-WORKFLOW - Unified Workflow Orchestration (SPIKE)
+# DT-WORKFLOW - Unified Workflow Orchestration
 # Usage: dt-workflow <workflow> <topic> [OPTIONS]
 # 
-# SPIKE PURPOSE: Validate unified architecture + Phase 1 interactive UX
-# This is time-boxed exploration code, not production quality.
+# Unified command for orchestrating exploration→research→decision workflows.
+# Provides explicit context injection and standardized output formats.
 # ============================================================================
 
 set -euo pipefail
@@ -14,7 +14,7 @@ set -euo pipefail
 # CONFIGURATION
 # ============================================================================
 
-VERSION="0.1.0-spike"
+VERSION="0.2.0"
 SCRIPT_NAME=$(basename "$0")
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
@@ -632,12 +632,13 @@ show_help() {
     cat << EOF
 Usage: $SCRIPT_NAME <workflow> <topic> [OPTIONS]
 
-Unified workflow orchestration for dev-toolkit. (SPIKE VERSION)
+Unified workflow orchestration for dev-toolkit. Orchestrates the
+exploration→research→decision workflow pipeline with explicit context injection.
 
 Workflows:
     explore           Start an exploration
-    research          Conduct research (not yet implemented)
-    decision          Make a decision (not yet implemented)
+    research          Conduct research (requires --from-explore)
+    decision          Make a decision (requires --from-research)
 
 Arguments:
     workflow          Workflow type (explore, research, decision)
@@ -655,18 +656,14 @@ Options:
 Examples:
     $SCRIPT_NAME explore my-feature --interactive
     $SCRIPT_NAME explore auth-system --interactive --output context.md
-
-Phase 1 Limitations:
-    This spike implements Phase 1 (interactive mode only).
-    - AI invocation is manual (you run this, then use the output with Cursor)
-    - Model selection is manual (recommended: claude-opus-4 for explorations)
-    - Full automation (Phase 3) requires programmatic AI invocation
+    $SCRIPT_NAME research my-feature --from-explore my-feature --interactive
+    $SCRIPT_NAME explore test-topic --validate
 
 EOF
 }
 
 show_version() {
-    echo "$SCRIPT_NAME version $VERSION (spike)"
+    echo "$SCRIPT_NAME version $VERSION"
 }
 
 # ============================================================================
