@@ -210,16 +210,16 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
 **TDD Flow:**
 
 1. **RED - Write test for variable documentation:**
-   - [ ] Test checks that `lib/doc-gen/TEMPLATE-VARIABLES.md` exists
-   - [ ] Test validates all variables in render.sh are documented
-   - [ ] Verify test fails (documentation doesn't exist)
+   - [x] Test checks that `lib/doc-gen/TEMPLATE-VARIABLES.md` exists
+   - [x] Test validates all variables in render.sh are documented
+   - [x] Verify test fails (documentation doesn't exist - tests written, now passing)
 
 2. **GREEN - Create variable documentation:**
-   - [ ] Create `lib/doc-gen/TEMPLATE-VARIABLES.md`
-   - [ ] Document all variables per category (exploration, research, decision, planning)
-   - [ ] Include description, default value, and example for each
-   - [ ] Document setter function usage
-   - [ ] Verify test passes
+   - [x] Create `lib/doc-gen/TEMPLATE-VARIABLES.md`
+   - [x] Document all variables per category (exploration, research, decision, planning)
+   - [x] Include description, default value, and example for each
+   - [x] Document setter function usage
+   - [x] Verify test passes (all 9 tests passing)
 
    **Documentation structure:**
    ```markdown
@@ -242,15 +242,15 @@ These tasks enhance dev-infra templates. Note: Changes are in the **dev-infra** 
    ```
 
 3. **REFACTOR:**
-   - [ ] Add usage examples
-   - [ ] Cross-reference from render.sh comments
-   - [ ] Add validation guidance
+   - [x] Add usage examples (included in documentation)
+   - [x] Cross-reference from render.sh comments (added comment referencing TEMPLATE-VARIABLES.md)
+   - [x] Add validation guidance (validation section included)
 
 **Checklist:**
-- [ ] Documentation file created
-- [ ] All variables documented
-- [ ] Setter functions referenced
-- [ ] Test passing
+- [x] Documentation file created
+- [x] All variables documented
+- [x] Setter functions referenced
+- [x] Test passing (all 9 tests passing)
 
 ---
 
