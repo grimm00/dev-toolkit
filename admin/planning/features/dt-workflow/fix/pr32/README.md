@@ -3,7 +3,72 @@
 **PR:** #32 - feat: dt-workflow Phase 1 - Foundation (Production Quality)  
 **Merged:** 2026-01-26  
 **Phase:** Phase 1  
-**Review:** [Sourcery Review](../../../../feedback/sourcery/pr32.md)
+**Status:** 🟡 Planned  
+**Review:** [Sourcery Review](../../../../feedback/sourcery/pr32.md)  
+**Last Updated:** 2026-01-27
+
+---
+
+## 📋 Quick Links
+
+### Fix Batches
+
+- **[batch-medium-medium-01.md](batch-medium-medium-01.md)** - Consolidate test setup/teardown (🟡 MEDIUM, 🟡 MEDIUM, 1 issue)
+- **[batch-low-medium-01.md](batch-low-medium-01.md)** - Centralize kebab-to-Title Case (🟢 LOW, 🟡 MEDIUM, 1 issue)
+
+---
+
+## 📊 Summary
+
+**Total Issues:** 3  
+**Fixed in PR:** 1 (Comment #2)  
+**Batches:** 2  
+**Status:** 🟡 Planned
+
+**Priority Breakdown:**
+- 🟡 MEDIUM: 1 issue (MEDIUM effort)
+- 🟢 LOW: 1 issue (MEDIUM effort)
+
+**Estimated Total Time:** 3-5 hours
+
+---
+
+## 🎯 Batch Overview
+
+### Batch 1: Test Setup Consolidation (medium-medium-01)
+
+**Priority:** 🟡 MEDIUM | **Effort:** 🟡 MEDIUM | **Time:** ~2-3 hours
+
+Consolidate duplicated test setup/teardown logic into a shared helper.
+
+**Issues:**
+- PR32-Overall: Create `tests/helpers/project-setup.bash`
+
+**Files:** `tests/unit/*.bats`, `tests/integration/*.bats`, `tests/helpers/`
+
+---
+
+### Batch 2: Render.sh Helper (low-medium-01)
+
+**Priority:** 🟢 LOW | **Effort:** 🟡 MEDIUM | **Time:** ~1-2 hours
+
+Extract kebab-to-Title Case transformation into reusable helper function.
+
+**Issues:**
+- PR32-#1: Create `dt_to_title_case()` helper
+
+**Files:** `lib/doc-gen/render.sh`
+
+**Note:** Deferred to Phase 2 (render.sh scope)
+
+---
+
+## 📈 Implementation Order
+
+**Recommended order:**
+
+1. **Batch 1** (medium-medium-01) - Higher priority, improves test maintainability
+2. **Batch 2** (low-medium-01) - Can wait until working on render.sh (Phase 2)
 
 ---
 
