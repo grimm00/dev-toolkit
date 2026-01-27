@@ -38,22 +38,22 @@ teardown() {
 # Task 1: Model Recommendation Tests (TDD - RED)
 # ============================================================================
 
-@test "explore workflow recommends model in output" {
+@test "explore workflow recommends claude-3-5-sonnet" {
     run "$DT_WORKFLOW" explore test-topic --interactive
     [ "$status" -eq 0 ]
-    [[ "$output" =~ "Recommended Model:" ]]
+    [[ "$output" =~ "**Recommended Model:** claude-3-5-sonnet" ]]
 }
 
-@test "research workflow recommends model in output" {
+@test "research workflow recommends claude-3-5-sonnet" {
     run "$DT_WORKFLOW" research test-topic --interactive
     [ "$status" -eq 0 ]
-    [[ "$output" =~ "Recommended Model:" ]]
+    [[ "$output" =~ "**Recommended Model:** claude-3-5-sonnet" ]]
 }
 
-@test "decision workflow recommends model in output" {
+@test "decision workflow recommends claude-3-opus" {
     run "$DT_WORKFLOW" decision test-topic --interactive
     [ "$status" -eq 0 ]
-    [[ "$output" =~ "Recommended Model:" ]]
+    [[ "$output" =~ "**Recommended Model:** claude-3-opus" ]]
 }
 
 @test "model recommendation appears in output header" {
@@ -61,14 +61,14 @@ teardown() {
     [ "$status" -eq 0 ]
     # Check that recommendation appears early in output (header section)
     header=$(echo "$output" | head -20)
-    [[ "$header" =~ "Recommended Model:" ]]
+    [[ "$header" =~ "**Recommended Model:** claude-3-5-sonnet" ]]
 }
 
 @test "model recommendation includes rationale" {
     run "$DT_WORKFLOW" explore test-topic --interactive
     [ "$status" -eq 0 ]
     # Check that recommendation includes brief explanation
-    [[ "$output" =~ "Recommended Model:" ]]
-    # Rationale should be on same or next line
-    [[ "$output" =~ "claude" ]] || [[ "$output" =~ "fast" ]] || [[ "$output" =~ "iteration" ]]
+    [[ "$output" =~ "**Recommended Model:** claude-3-5-sonnet" ]]
+    # Rationale should be included in the recommendation output
+    [[ "$output" =~ "fast iteration" ]] || [[ "$output" =~ "brainstorming" ]]
 }
