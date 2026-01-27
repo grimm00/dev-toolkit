@@ -148,6 +148,8 @@ Build a unified `dt-workflow` command that orchestrates the exploration→resear
 - Add --dry-run flag
 - Document Phase 2/3 evolution path
 
+**Evolution Path:** See [dt-workflow Evolution](../../../../docs/dt-workflow-evolution.md) for Phase 2 (Config-Assisted) and Phase 3 (Automated) vision.
+
 **Deliverables:**
 - Model recommendation in output
 - Context profile support
@@ -180,6 +182,7 @@ Build a unified `dt-workflow` command that orchestrates the exploration→resear
 ## 🔗 Related
 
 - [Transition Plan](transition-plan.md)
+- [Evolution Path](../../../../docs/dt-workflow-evolution.md) - Phase 2/3 vision
 - [ADRs](../../decisions/dt-workflow/)
 - [Requirements](../../research/dt-workflow/requirements.md)
 - [Pattern Library](../../../../docs/patterns/workflow-patterns.md)

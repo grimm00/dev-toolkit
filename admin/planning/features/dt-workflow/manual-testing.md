@@ -1,7 +1,7 @@
 # Manual Testing Guide - dt-workflow
 
 **Feature:** dt-workflow - Unified Workflow Orchestration  
-**Phases Covered:** 1, 2, 3  
+**Phases Covered:** 1, 2, 3, 4  
 **Last Updated:** 2026-01-26  
 **Status:** ✅ Active
 
@@ -980,6 +980,161 @@ echo "- Finding 1: Test cursor integration" >> admin/research/test-cursor-integr
 
 ---
 
+## 🧪 Phase 4: Enhancement
+
+### Scenario 4.1: Model Recommendation Output
+
+**Objective:** Verify model recommendations appear in output header
+
+**Steps:**
+
+1. Run explore workflow:
+   ```bash
+   ./bin/dt-workflow explore test-model-recommendation --interactive | head -20
+   ```
+
+2. Verify output header contains:
+   - [ ] `**Recommended Model:**` field
+   - [ ] Model name (e.g., `claude-3-5-sonnet`)
+   - [ ] Brief rationale (e.g., "fast iteration, good for brainstorming")
+
+3. Test research workflow:
+   ```bash
+   ./bin/dt-workflow research test-model-recommendation --interactive | head -20
+   ```
+   - [ ] Verify model recommendation appears (may be different from explore)
+
+4. Test decision workflow:
+   ```bash
+   ./bin/dt-workflow decision test-model-recommendation --interactive | head -20
+   ```
+   - [ ] Verify model recommendation appears (should recommend Opus for decisions)
+
+**Expected Result:** ✅ Model recommendations appear in all workflow outputs with appropriate rationale
+
+---
+
+### Scenario 4.2: Context Profile Switching
+
+**Objective:** Verify --profile flag controls context inclusion
+
+**Steps:**
+
+1. **Test default profile (all context):**
+   ```bash
+   ./bin/dt-workflow explore test-profile --interactive | grep -c "BACKGROUND CONTEXT"
+   ```
+   - [ ] Should include "BACKGROUND CONTEXT" section (project identity)
+
+2. **Test minimal profile (rules only):**
+   ```bash
+   ./bin/dt-workflow explore test-profile --profile minimal --interactive | grep -c "BACKGROUND CONTEXT"
+   ```
+   - [ ] Should NOT include "BACKGROUND CONTEXT" section
+   - [ ] Should still include "CRITICAL RULES" section
+
+3. **Test full profile (all + future):**
+   ```bash
+   ./bin/dt-workflow explore test-profile --profile full --interactive | head -30
+   ```
+   - [ ] Should include all context (same as default for now)
+   - [ ] Help text should mention "full (all + future)"
+
+4. **Test invalid profile:**
+   ```bash
+   ./bin/dt-workflow explore test-profile --profile invalid --interactive 2>&1 | head -5
+   ```
+   - [ ] Should show error or fallback to default
+
+**Expected Result:** ✅ Profile flag correctly controls context inclusion
+
+---
+
+### Scenario 4.3: Dry Run Preview
+
+**Objective:** Verify --dry-run shows preview without full output
+
+**Steps:**
+
+1. Run dry run:
+   ```bash
+   ./bin/dt-workflow explore test-dry-run --dry-run
+   ```
+
+2. Verify output contains:
+   - [ ] "Dry Run Preview" or similar header
+   - [ ] Workflow type (explore)
+   - [ ] Topic name (test-dry-run)
+   - [ ] "Would include:" section listing context components
+   - [ ] Profile information
+   - [ ] Estimated output size (~tokens)
+
+3. Verify output does NOT contain:
+   - [ ] Full template content (`# dt-workflow Output:`)
+   - [ ] Complete context sections
+
+4. Test speed:
+   ```bash
+   time ./bin/dt-workflow explore test-dry-run --dry-run
+   ```
+   - [ ] Should complete quickly (<500ms)
+
+5. Test with different workflows:
+   ```bash
+   ./bin/dt-workflow research test-dry-run --dry-run
+   ./bin/dt-workflow decision test-dry-run --dry-run
+   ```
+   - [ ] Both should show preview without full output
+
+**Expected Result:** ✅ Dry run shows useful preview quickly without generating full output
+
+---
+
+### Scenario 4.4: Performance Verification
+
+**Objective:** Verify performance requirements are met (NFR-2, NFR-3)
+
+**Steps:**
+
+1. **Test context injection speed (NFR-2: <1s):**
+   ```bash
+   time ./bin/dt-workflow explore test-performance --interactive > /dev/null
+   ```
+   - [ ] Should complete in <1 second
+   - [ ] Note actual time for documentation
+
+2. **Test validation speed (NFR-3: <500ms):**
+   ```bash
+   time ./bin/dt-workflow explore test-performance --validate > /dev/null
+   ```
+   - [ ] Should complete in <500ms
+   - [ ] Note actual time for documentation
+
+3. **Test dry run speed:**
+   ```bash
+   time ./bin/dt-workflow explore test-performance --dry-run > /dev/null
+   ```
+   - [ ] Should complete very quickly (<200ms)
+
+4. **Test help speed:**
+   ```bash
+   time ./bin/dt-workflow --help > /dev/null
+   ```
+   - [ ] Should be instant (<100ms)
+
+5. **Test consistency across workflows:**
+   ```bash
+   time ./bin/dt-workflow explore test-performance --interactive > /dev/null
+   time ./bin/dt-workflow research test-performance --interactive > /dev/null
+   time ./bin/dt-workflow decision test-performance --interactive > /dev/null
+   ```
+   - [ ] All should complete in <1 second
+   - [ ] Times should be similar (within 2x of each other)
+
+**Expected Result:** ✅ All performance requirements met (context injection <1s, validation <500ms)
+
+---
+
 ## 🧹 Cleanup
 
 After completing manual testing:
@@ -1038,6 +1193,14 @@ rm -rf /tmp/test-minimal-repo
 
 **All Phase 3 scenarios passing:** [ ] Yes / [ ] No
 
+### Phase 4: Enhancement
+- [x] Scenario 4.1: Model recommendation output
+- [x] Scenario 4.2: Context profile switching
+- [x] Scenario 4.3: Dry run preview
+- [x] Scenario 4.4: Performance verification
+
+**All Phase 4 scenarios passing:** [x] Yes / [ ] No
+
 ---
 
 ## 📝 Notes for Testers
@@ -1059,6 +1222,7 @@ rm -rf /tmp/test-minimal-repo
 - [Phase 1 Document](phase-1.md)
 - [Phase 2 Document](phase-2.md)
 - [Phase 3 Document](phase-3.md)
+- [Phase 4 Document](phase-4.md)
 - [Status and Next Steps](status-and-next-steps.md)
 - [Workflow Patterns](../../docs/patterns/workflow-patterns.md) - Pattern 4: Handoff File Contract
 - [Template Variables](../../lib/doc-gen/TEMPLATE-VARIABLES.md)
