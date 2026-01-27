@@ -1,6 +1,6 @@
 # Phase 2 Template Enhancement Requirements
 
-**Purpose:** Document template changes needed in dev-infra for Phase 2, Tasks 1-3  
+**Purpose:** Document template changes needed in dev-infra for Phase 2, Tasks 1-2 (Exploration and Research templates)  
 **Status:** 🟡 Pending (dev-infra changes required)  
 **Created:** 2026-01-26  
 **Related:** ADR-006, FR-24, FR-26, NFR-7
@@ -215,7 +215,7 @@ After enhancement, template should produce output like:
 3. <!-- AI: Third key insight -->
 ```
 
-### Validation
+### Research Template Validation
 
 **Test File:** `dev-toolkit/tests/unit/test-template-enhancement.bats`
 
@@ -232,7 +232,7 @@ Tests validate:
 
 ---
 
-## Validation
+## Exploration Template Validation
 
 **Test File:** `dev-toolkit/tests/unit/test-template-enhancement.bats`
 
