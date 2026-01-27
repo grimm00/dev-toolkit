@@ -443,6 +443,10 @@ teardown() {
     }
 }
 
+# Note: This test validates that the templating system *can* render template
+# variable documentation (proving templating capabilities), not that it *must*
+# appear in final user-facing ADRs. Template variables documentation is already
+# properly validated via TEMPLATE-VARIABLES.md in test-template-variables-doc.bats.
 @test "decision template includes template variable documentation" {
     skip_if_no_templates
     
