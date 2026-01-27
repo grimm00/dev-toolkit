@@ -212,6 +212,142 @@ Options:
 
 ---
 
+### 3a. Verify Installation Script (NEW)
+
+**Purpose:** Ensure the installation script (`install.sh`) works correctly with any new commands added in this release. This prevents releasing code that users cannot install properly.
+
+**When to run:**
+
+- During release preparation
+- Especially important when release includes new commands (e.g., `dt-workflow`)
+- After readiness check passes
+
+**Verification Process:**
+
+1. **Identify new commands in release:**
+
+   ```bash
+   # List all dt-* commands in bin/
+   ls -la bin/dt-*
+   
+   # Compare with installed commands (if any)
+   ls -la /usr/local/bin/dt-* 2>/dev/null || echo "No global installation"
+   ```
+
+2. **Test installation script (dry-run):**
+
+   ```bash
+   # Check what install.sh will do
+   ./install.sh --help
+   
+   # Review the script's actions
+   head -100 install.sh
+   ```
+
+3. **Verify install.sh includes all bin/* commands:**
+
+   ```bash
+   # List commands that will be installed
+   # The install.sh should symlink or copy all dt-* from bin/
+   for cmd in bin/dt-*; do
+       echo "Command: $(basename $cmd)"
+   done
+   
+   # Verify these match what install.sh handles
+   grep -E "dt-[a-z-]+" install.sh | head -20
+   ```
+
+4. **Test local installation (optional):**
+
+   ```bash
+   # Run installation (creates symlinks to /usr/local/bin)
+   ./install.sh
+   
+   # Verify new commands are accessible
+   which dt-workflow
+   dt-workflow --version
+   
+   # Verify all commands work
+   for cmd in bin/dt-*; do
+       cmdname=$(basename $cmd)
+       echo -n "$cmdname: "
+       $cmdname --version 2>/dev/null || echo "N/A"
+   done
+   ```
+
+5. **Test dev-setup.sh (alternative):**
+
+   ```bash
+   # Source development setup
+   source dev-setup.sh
+   
+   # Verify PATH includes bin/
+   echo $PATH | tr ':' '\n' | grep -q "$(pwd)/bin" && echo "✅ bin/ in PATH"
+   
+   # Verify commands accessible
+   which dt-workflow
+   ```
+
+**Installation Verification Checklist:**
+
+- [ ] All new commands identified
+  ```bash
+  # List new commands added in this release
+  # Check git diff for new bin/dt-* files
+  git diff $(git describe --tags --abbrev=0)..HEAD --name-only -- bin/
+  ```
+
+- [ ] install.sh handles new commands
+  - Verify script symlinks/copies all bin/dt-* commands
+  - Check for any hardcoded command lists that need updating
+
+- [ ] Installation tested (at least one method)
+  - [ ] `./install.sh` (global installation)
+  - [ ] `source dev-setup.sh` (development setup)
+  - [ ] Direct path verification (`./bin/dt-workflow --version`)
+
+- [ ] All commands report correct version
+  ```bash
+  # Expected: version matches release version
+  ./bin/dt-workflow --version  # Should show vX.Y.Z
+  ```
+
+**Common Installation Issues:**
+
+| Issue | Symptom | Solution |
+|-------|---------|----------|
+| Missing symlink | `command not found` after install | Check install.sh includes new command |
+| Wrong version | Old version displayed | Verify new binary is being executed |
+| Permission denied | Cannot execute command | Check file permissions (`chmod +x bin/dt-*`) |
+| PATH not updated | Command not found | Re-run install.sh or source dev-setup.sh |
+
+**If issues found:**
+
+```markdown
+⚠️ **Installation Issues Detected**
+
+Issues Found:
+- [ ] Command [name] not included in install.sh
+- [ ] Version mismatch: expected vX.Y.Z, got vA.B.C
+- [ ] Missing executable permissions
+
+Action Required:
+1. Fix install.sh to include new commands
+2. Update version numbers in commands
+3. Fix permissions with: chmod +x bin/dt-*
+4. Re-run /release-prep after fixes
+```
+
+**Checklist:**
+
+- [ ] New commands identified
+- [ ] install.sh verified
+- [ ] Installation tested
+- [ ] Version numbers correct
+- [ ] Ready to proceed with assessment
+
+---
+
 ### 4. Generate Assessment Document
 
 **Generate assessment:**

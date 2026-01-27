@@ -526,6 +526,119 @@ gh pr view [pr-number] --json state,title,headRefName
 
 ---
 
+### 1f. Development Environment Setup (NEW)
+
+**Purpose:** Ensure development code is accessible before manual testing. This prevents issues where manual testing runs against an outdated global installation instead of the development code.
+
+**When to run:**
+
+- Before starting manual testing
+- After manual testing determination (Step 1e) shows testing is required
+- Especially important for new command implementations (e.g., `dt-workflow`)
+
+**Skip this step if:**
+
+- Manual testing is not required (Step 1e determination)
+- `--skip-manual-testing` flag is provided
+
+**Setup Options:**
+
+**Option A: Direct Path (Recommended for Testing)**
+
+Run commands directly from the repository:
+
+```bash
+# From dev-toolkit directory
+./bin/dt-workflow [arguments]
+
+# Or use absolute path
+/path/to/dev-toolkit/bin/dt-workflow [arguments]
+```
+
+**Option B: Temporary PATH Addition**
+
+Add bin/ to PATH for the current session:
+
+```bash
+# Source the development setup script
+source dev-setup.sh
+
+# Or manually add to PATH
+export PATH="$PWD/bin:$PATH"
+
+# Verify correct binary is being used
+which dt-workflow
+# Should show: /path/to/dev-toolkit/bin/dt-workflow
+```
+
+**Option C: Global Installation (For Release Testing)**
+
+Install globally to test the installation process:
+
+```bash
+# Run installation script
+./install.sh
+
+# Verify installation
+which dt-workflow
+dt-workflow --version
+```
+
+**Environment Verification Checklist:**
+
+- [ ] Confirm which binary will be executed
+  ```bash
+  # Check if command exists in PATH
+  which dt-workflow 2>/dev/null || echo "Not in PATH - use ./bin/dt-workflow"
+  
+  # If in PATH, verify it's the development version
+  ls -la $(which dt-workflow 2>/dev/null)
+  ```
+
+- [ ] Verify development code is being tested
+  ```bash
+  # Check version matches expected
+  ./bin/dt-workflow --version
+  
+  # Compare with any global installation
+  /usr/local/bin/dt-workflow --version 2>/dev/null || echo "No global installation"
+  ```
+
+- [ ] Note which method is being used for testing
+  - [ ] Direct path (`./bin/dt-workflow`)
+  - [ ] Temporary PATH (`source dev-setup.sh`)
+  - [ ] Global installation (`install.sh`)
+
+**Common Issues:**
+
+| Issue | Symptom | Solution |
+|-------|---------|----------|
+| Outdated global installation | Wrong version output | Use `./bin/dt-workflow` directly |
+| Command not found | `command not found` error | Use direct path or `source dev-setup.sh` |
+| Wrong binary executed | Unexpected behavior | Check `which dt-workflow` and use absolute path |
+| PATH conflict | Global version shadows dev version | Use absolute path `./bin/dt-workflow` |
+
+**Manual Testing Prerequisite Check:**
+
+Before proceeding to manual testing, confirm:
+
+```bash
+# Quick verification (for any new command being tested)
+COMMAND="dt-workflow"  # Replace with the command being tested
+
+echo "Testing: $(./bin/$COMMAND --version 2>/dev/null || echo 'N/A')"
+echo "Global:  $(/usr/local/bin/$COMMAND --version 2>/dev/null || echo 'Not installed')"
+```
+
+**Checklist:**
+
+- [ ] Development environment is configured
+- [ ] Correct binary will be used for testing
+- [ ] Setup method documented (direct path / temp PATH / global)
+- [ ] Ready to proceed with manual testing
+
+---
+
 ### 2. Update Manual Testing Guide (CONDITIONAL)
 
 **Applicability:** This step is **conditional** based on Step 1e determination.
