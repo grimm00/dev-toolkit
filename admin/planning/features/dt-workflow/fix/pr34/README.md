@@ -2,7 +2,7 @@
 
 **PR:** 34 - feat: dt-workflow Enhancement - Model Recommendations, Profiles, Dry Run (Phase 4)  
 **Date:** 2026-01-27  
-**Status:** 🟡 Planned  
+**Status:** 🟠 In Progress  
 **Last Updated:** 2026-01-27
 
 ---
@@ -11,7 +11,7 @@
 
 ### Fix Batches
 
-- **[batch-medium-low-01.md](batch-medium-low-01.md)** - Strengthen model recommendation tests (🟡 MEDIUM, 🟢 LOW, 1 issue)
+- **[batch-medium-low-01.md](batch-medium-low-01.md)** - Strengthen model recommendation tests (✅ Complete via PR #36)
 - **[batch-medium-medium-01.md](batch-medium-medium-01.md)** - Performance test reliability (🟡 MEDIUM, 🟡 MEDIUM, 2 issues)
 - **[batch-low-medium-01.md](batch-low-medium-01.md)** - `date +%s%N` portability (🟢 LOW, 🟡 MEDIUM, 1 issue)
 
@@ -20,8 +20,8 @@
 ## 📊 Summary
 
 **Total Issues:** 4  
-**Batches:** 3  
-**Status:** 🟡 Planned
+**Batches:** 3 (1 complete, 2 pending)  
+**Status:** 🟠 In Progress
 
 **Priority Breakdown:**
 - 🟡 MEDIUM: 3 issues (1 LOW effort, 2 MEDIUM effort)
@@ -37,14 +37,15 @@
 
 ## 🎯 Batch Overview
 
-### Batch 1: Test Specificity (medium-low-01)
+### Batch 1: Test Specificity (medium-low-01) ✅ Complete
 
-**Priority:** 🟡 MEDIUM | **Effort:** 🟢 LOW | **Time:** ~1 hour
+**Priority:** 🟡 MEDIUM | **Effort:** 🟢 LOW | **Time:** ~1 hour  
+**Status:** ✅ Complete via PR #36 (2026-01-27)
 
 Strengthen model recommendation tests to assert specific model names per workflow type, not just that recommendations exist.
 
 **Issues:**
-- PR34-#1: Update test assertions to check specific models (claude-3-5-sonnet, claude-3-opus)
+- PR34-#1: Update test assertions to check specific models (claude-3-5-sonnet, claude-3-opus) ✅
 
 **Files:** `tests/unit/test-model-recommendations.bats`
 
@@ -81,7 +82,7 @@ Assess and potentially improve portability of `date +%s%N` timing approach acros
 
 **Recommended order:**
 
-1. **Batch 1** (medium-low-01) - Quickest win, improves test quality
+1. ~~**Batch 1** (medium-low-01) - Quickest win, improves test quality~~ ✅ Complete (PR #36)
 2. **Batch 2** (medium-medium-01) - Addresses primary robustness concern
 3. **Batch 3** (low-medium-01) - Lowest priority, only if broader platform support needed
 
@@ -121,4 +122,4 @@ All issues in this PR were deferred because:
 ---
 
 **Last Updated:** 2026-01-27  
-**Next Step:** Use `/fix-implement` to begin work on batch-medium-low-01
+**Next Step:** Use `/fix-implement` to begin work on batch-medium-medium-01 (performance test reliability)
