@@ -9,7 +9,11 @@
 
 ## 📋 Quick Links
 
-### Learnings Documents
+### Phase Learnings
+
+- **[Phase 4 Learnings](phase-4-learnings.md)** - Enhancement phase: Model recommendations, profiles, dry-run mode
+
+### General Learnings
 
 - **[Exploration-to-Planning Learnings](exploration-to-planning-learnings.md)** - Full workflow from exploration to transition plan
 
@@ -28,9 +32,11 @@ This directory contains learnings from the dt-workflow feature development that 
 
 ## 📊 Summary
 
-**Total Learning Documents:** 1  
+**Total Learning Documents:** 2  
+**Phase Learnings:** 1 (Phase 4)  
+**General Learnings:** 1  
 **Status:** ✅ Active
 
 ---
 
-**Last Updated:** 2026-01-22
+**Last Updated:** 2026-01-27
