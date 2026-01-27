@@ -1100,11 +1100,32 @@ Add priority assessment after the comment:
 
 ---
 
-### 6. Address Critical Issues (If Any)
+### 6. Address Issues Based on Priority/Effort Matrix
+
+**Threshold-Based Approach:**
+
+Use this matrix to determine whether to fix issues in-line or defer:
+
+| Priority | Effort | Action | Rationale |
+|----------|--------|--------|-----------|
+| CRITICAL 🔴 | Any | **Fix before merge** | Must be addressed |
+| HIGH 🟠 | Any | **Fix before merge** | Should be addressed |
+| MEDIUM 🟡 | LOW 🟢 | **Fix in-line** | Quick wins, < 15 min |
+| MEDIUM 🟡 | MEDIUM+ | Defer | Requires planning |
+| LOW 🟢 | LOW 🟢 | **Fix in-line** | Quick wins, < 15 min |
+| LOW 🟢 | MEDIUM+ | Defer | Not worth the overhead |
+
+**Key Question:** Is the fix < 15-30 minutes? If yes, fix it now.
+
+**Rationale:** Creating fix plans, fix PRs, and tracking docs for tiny fixes often takes longer than the fix itself. Fix them while the context is fresh.
+
+---
+
+#### 6a. Fix CRITICAL/HIGH Issues (Required)
 
 **If CRITICAL 🔴 or HIGH 🟠 issues found:**
 
-1. **Create fix branch (if not already on PR branch):**
+1. **Ensure on PR branch:**
 
    ```bash
    git checkout [pr-branch-name]
@@ -1122,29 +1143,72 @@ Add priority assessment after the comment:
    - Update PR description with fixes
    - Re-run manual testing if needed
 
-**If only LOW/MEDIUM issues:**
+---
+
+#### 6b. Fix LOW Effort Issues In-Line (Recommended)
+
+**For MEDIUM/LOW priority issues with LOW effort:**
+
+1. **Identify quick wins from priority matrix:**
+   - Look for issues marked LOW effort (🟢)
+   - Estimate time: Should be < 15-30 minutes total
+   - Examples: adding diagnostic output, fixing comments, standardizing naming
+
+2. **Implement fixes on PR branch:**
+   ```bash
+   # Already on PR branch from validation
+   # Make the fix
+   # Test locally
+   ```
+
+3. **Commit with clear message:**
+   ```bash
+   git commit -m "fix: address Sourcery feedback (PR##-#N)
+   
+   - [Description of fix]
+   
+   Addresses: PR##-#N (LOW effort in-line fix)"
+   ```
+
+4. **Update priority matrix:**
+   - Change status from "⏸️ Deferred" to "✅ Fixed (in-line)"
+   - Note that it was fixed in the same PR
+
+5. **Push to PR branch:**
+   ```bash
+   git push origin [pr-branch-name]
+   ```
+
+**Examples of in-line fixes:**
+- Adding diagnostic echo statements for debugging
+- Updating comments for clarity
+- Standardizing naming conventions
+- Adding missing default cases
+- Minor code style improvements
+
+---
+
+#### 6c. Defer MEDIUM+ Effort Issues
+
+**For issues with MEDIUM or higher effort:**
 
 - Document in fix tracking
-- Can be deferred to future PR
+- Create fix plan via `/fix-plan` after PR merge
 - Proceed with merge approval
 
 **MEDIUM Priority Discretion:**
 
-Use judgment when deciding whether to fix MEDIUM issues now or defer:
+Use judgment when deciding whether to fix MEDIUM priority issues now or defer:
 
 | Factor | Fix Now | Defer |
 |--------|---------|-------|
-| **Effort** | LOW effort (quick fix) | HIGH effort (significant work) |
+| **Effort** | LOW effort (< 15 min) | MEDIUM+ effort (> 30 min) |
 | **Scope** | Isolated change | Touches multiple files/systems |
 | **Risk** | Low risk of regression | Could introduce new issues |
 | **Context** | Aligns with PR's purpose | Tangential to PR's goal |
 | **Future Work** | No planned refactoring | Related consolidation planned |
 
-**Examples:**
-- **Fix now:** Adding a default case to a switch statement (LOW effort, defensive coding)
-- **Defer:** Centralizing version detection across multiple files (MEDIUM effort, future consolidation planned)
-
-**Key principle:** Don't let perfect be the enemy of good. If a MEDIUM fix would delay the PR significantly or expand its scope unnecessarily, document it and defer.
+**Key principle:** Don't let perfect be the enemy of good. If a fix would delay the PR significantly or expand its scope unnecessarily, document it and defer.
 
 ---
 
