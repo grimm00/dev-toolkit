@@ -49,4 +49,4 @@ None yet.
 ---
 
 **Last Updated:** 2026-01-27  
-**Recent:** PR #34 added with 4 deferred issues (2026-01-27)
+**Recent:** PR #33 fix batches created (2026-01-27)

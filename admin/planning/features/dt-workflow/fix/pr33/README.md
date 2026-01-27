@@ -2,13 +2,70 @@
 
 **PR:** #33 - feat: Workflow Expansion + Template Enhancement (Phase 2)  
 **Merged:** 2026-01-26  
-**Status:** 🟡 **DEFERRED ISSUES TRACKED**
+**Status:** 🟡 Planned  
+**Last Updated:** 2026-01-27
 
 ---
 
-## 📋 Overview
+## 📋 Quick Links
 
-This directory tracks deferred issues from PR #33's Sourcery review. All issues are documentation improvements or future enhancements.
+### Fix Batches
+
+- **[batch-medium-medium-01.md](batch-medium-medium-01.md)** - Hardcoded template paths (🟡 MEDIUM, 🟡 MEDIUM, 1 issue)
+- **[batch-low-low-01.md](batch-low-low-01.md)** - Documentation cleanup (🟢 LOW, 🟢 LOW, 3 issues)
+
+---
+
+## 📊 Summary
+
+**Total Issues:** 4  
+**Batches:** 2  
+**Status:** 🟡 Planned
+
+**Priority Breakdown:**
+- 🟡 MEDIUM: 1 issue (MEDIUM effort)
+- 🟢 LOW: 3 issues (all LOW effort)
+
+**Estimated Total Time:** 2.5-4 hours
+
+---
+
+## 🎯 Batch Overview
+
+### Batch 1: Template Path Portability (medium-medium-01)
+
+**Priority:** 🟡 MEDIUM | **Effort:** 🟡 MEDIUM | **Time:** ~2-3 hours
+
+Make hardcoded dev-infra template paths configurable for CI/CD portability.
+
+**Issues:**
+- PR33-Overall-#1: Allow template root injection via environment variable
+
+**Files:** `tests/unit/test-template-enhancement.bats`, `tests/helpers/template-paths.sh`
+
+---
+
+### Batch 2: Documentation Cleanup (low-low-01)
+
+**Priority:** 🟢 LOW | **Effort:** 🟢 LOW | **Time:** ~30-45 minutes
+
+Fix documentation clarity issues in phase-2-template-changes.md.
+
+**Issues:**
+- PR33-#1: Purpose line mismatch (Tasks 1-3 vs 1-2)
+- PR33-#2: Validation section heading ambiguity
+- PR33-Overall-#2: Template variable heading consideration
+
+**Files:** `admin/planning/features/dt-workflow/phase-2-template-changes.md`
+
+---
+
+## 📈 Implementation Order
+
+**Recommended order:**
+
+1. **Batch 2** (low-low-01) - Quick documentation fixes
+2. **Batch 1** (medium-medium-01) - More involved test infrastructure change
 
 ---
 
