@@ -17,7 +17,7 @@ This directory tracks Sourcery review feedback and deferred issues from dt-workf
 
 ## 🔴 Active PRs
 
-- **[PR #34](pr34/README.md)** - Phase 4: Enhancement - Model Recommendations, Profiles, Dry Run (🟡 4 deferred issues - 3 MEDIUM, 1 LOW)
+- **[PR #34](pr34/README.md)** - Phase 4: Enhancement (🟡 4 deferred issues - 3 MEDIUM, 1 LOW)
 - **[PR #33](pr33/README.md)** - Phase 2: Workflow Expansion + Template Enhancement (🟡 4 deferred issues - 1 MEDIUM, 3 LOW)
 - **[PR #32](pr32/README.md)** - Phase 1: Foundation (🟢 Minimal issues, 2 deferred)
 
