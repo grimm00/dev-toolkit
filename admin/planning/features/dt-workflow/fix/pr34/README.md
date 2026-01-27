@@ -12,7 +12,7 @@
 ### Fix Batches
 
 - **[batch-medium-low-01.md](batch-medium-low-01.md)** - Strengthen model recommendation tests (✅ Complete via PR #36)
-- **[batch-medium-medium-01.md](batch-medium-medium-01.md)** - Performance test reliability (✅ Complete via PR #[pending])
+- **[batch-medium-medium-01.md](batch-medium-medium-01.md)** - Performance test reliability (✅ Complete via PR #37)
 - **[batch-low-medium-01.md](batch-low-medium-01.md)** - `date +%s%N` portability (🟢 LOW, 🟡 MEDIUM, 1 issue)
 
 ---
@@ -54,7 +54,7 @@ Strengthen model recommendation tests to assert specific model names per workflo
 ### Batch 2: Performance Test Reliability (medium-medium-01) ✅ Complete
 
 **Priority:** 🟡 MEDIUM | **Effort:** 🟡 MEDIUM | **Time:** ~2-3 hours  
-**Status:** ✅ Complete via PR #[pending] (2026-01-27)
+**Status:** ✅ Complete via PR #37 (2026-01-27)
 
 Address concerns about performance test flakiness in CI environments by relaxing timing thresholds and improving robustness.
 
@@ -84,7 +84,7 @@ Assess and potentially improve portability of `date +%s%N` timing approach acros
 **Recommended order:**
 
 1. ~~**Batch 1** (medium-low-01) - Quickest win, improves test quality~~ ✅ Complete (PR #36)
-2. ~~**Batch 2** (medium-medium-01) - Addresses primary robustness concern~~ ✅ Complete (PR #[pending])
+2. ~~**Batch 2** (medium-medium-01) - Addresses primary robustness concern~~ ✅ Complete (PR #37)
 3. **Batch 3** (low-medium-01) - Lowest priority, only if broader platform support needed
 
 ---
