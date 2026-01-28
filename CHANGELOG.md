@@ -5,6 +5,68 @@ All notable changes to the Dev Toolkit project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-01-28
+
+### Added
+
+- **dt-workflow Command** - Unified workflow orchestration for exploration, research, and decision phases
+  - Context injection with START/MIDDLE/END ordering (FR-2)
+  - Three workflow modes: explore, research, decision
+  - Interactive mode (`--interactive`) for AI-assisted workflows
+  - Validation mode (`--validate`) for pre-flight checks
+  - Output customization (`--output`) for file generation
+  - Project override (`--project`) for multi-project support
+  - Model recommendations per workflow type (Phase 4)
+  - Context profiles: default, minimal, full (`--profile`)
+  - Dry run preview mode (`--dry-run`)
+  - Workflow chaining (`--from-explore`, `--from-research`)
+  - 93 unit tests with comprehensive coverage
+
+- **dt-doc-gen Command** - Document generation from templates (PR #30)
+  - Template rendering with variable substitution
+  - Support for exploration, research, decision templates
+  - Integration with doc-infrastructure library
+
+- **dt-doc-validate Command** - Document validation (PR #31)
+  - L1/L2/L3 validation levels
+  - Structural and content validation
+  - Template compliance checking
+
+- **doc-infrastructure Library** - Shared infrastructure for document tools (PR #29)
+  - Common utilities for template handling
+  - Shared validation functions
+  - Reusable rendering components
+
+### Changed
+
+- **Workflow Commands** - Enhanced Cursor command documentation
+  - `/pr-validation` - Added development environment setup section (Step 1f)
+  - `/release-prep` - Added installation verification section (Step 3a)
+  - `/pr-validation` - Added threshold-based in-line fix approach
+
+### Fixed
+
+- **Test Reliability** - Relaxed performance test thresholds (PR #37)
+  - Context injection: 1s → 5s threshold
+  - Validation: 500ms → 2.5s threshold
+  - Smoke test naming standardization
+
+- **Test Specificity** - Strengthened model recommendation tests (PR #36)
+  - Added specific model name assertions
+  - Added rationale content verification
+
+- **Documentation Cleanup** - Fixed documentation issues (PR #35)
+  - Purpose line consistency
+  - Template name headings
+  - Test comments
+
+### Documentation
+
+- **Manual Testing Guide** - Comprehensive scenarios for Phases 1-4
+- **ADRs** - 6 architecture decision records for dt-workflow
+- **Pattern Library** - 5 workflow patterns documented
+- **Fix Tracking** - Sourcery review feedback management
+
 ## [0.2.1] - 2025-10-07
 
 ### Added

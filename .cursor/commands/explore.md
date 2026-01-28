@@ -26,6 +26,85 @@ This command supports multiple project organization patterns:
 
 ---
 
+## dt-workflow Integration
+
+**Per ADR-004:** This command acts as an orchestrator, calling dt-workflow for core logic.
+
+### Command Invocation
+
+Before conducting the exploration, run dt-workflow to gather context:
+
+```bash
+# Get exploration context and structure
+dt-workflow explore <topic> --interactive
+
+# Example with output redirection
+mkdir -p admin/explorations/my-feature
+dt-workflow explore my-feature --interactive > admin/explorations/my-feature/exploration.md
+```
+
+### What dt-workflow Provides
+
+1. **Injected Context:**
+   - Cursor rules (`.cursor/rules/*.mdc`)
+   - Project identity (roadmap, admin structure)
+   - Workflow-specific context
+
+2. **Structure Template:**
+   - Exploration template with structural examples
+   - Required markers for completeness
+   - Research topics placeholder
+
+3. **Handoff Guidance:**
+   - Creates `research-topics.md` handoff file guidance
+   - Enables workflow chaining to `/research` command
+
+### Error Handling
+
+**Explore is the first workflow** - no upstream prerequisites required.
+
+**Possible Errors:**
+- Not in a git repository: dt-workflow will report git context unavailable
+- No `.cursor/rules/`: Output proceeds but "CRITICAL RULES" section will be empty
+
+**Note:** These are non-fatal - exploration can proceed even without rules or git context.
+
+### Integration Workflow
+
+```
+/explore [topic]
+        │
+        ▼
+┌─────────────────────────────────────────────┐
+│  1. Run dt-workflow explore --interactive   │
+│     - Gathers universal context             │
+│     - Generates structure template          │
+│     - Outputs to stdout for AI              │
+└─────────────────────────────────────────────┘
+        │
+        ▼
+┌─────────────────────────────────────────────┐
+│  2. AI fills in exploration content         │
+│     - Uses injected context                 │
+│     - Follows structure template            │
+│     - Creates research topics               │
+└─────────────────────────────────────────────┘
+        │
+        ▼
+┌─────────────────────────────────────────────┐
+│  3. Create handoff file                     │
+│     - research-topics.md for /research      │
+│     - Enables workflow chaining             │
+└─────────────────────────────────────────────┘
+```
+
+### Related
+
+- [ADR-004: Cursor Command Role](../admin/decisions/dt-workflow/adr-004-cursor-command-role.md)
+- [dt-workflow help](../../bin/dt-workflow) - Run `dt-workflow --help` for full options
+
+---
+
 ## Workflow Overview
 
 **When to use:**
@@ -399,6 +478,8 @@ This pattern aligns with the worktree feature workflow:
 **Output Size:** ~60-80 lines total
 
 Setup Mode creates lightweight scaffolding documents for human review before investing in detailed exploration.
+
+**Context Source:** Run `dt-workflow explore <topic> --interactive` first to get injected context (Cursor rules, project identity) and structure template. Use this output to inform scaffolding creation.
 
 **Creates:**
 
@@ -801,17 +882,26 @@ Create worktree for this exploration? [Y/n]
 
 **Process:**
 
-1. Create exploration directory: `explorations/[topic]/`
-2. Create `README.md` hub (~20 lines) with quick links
-3. Create `exploration.md` scaffolding (~40-50 lines) with placeholders
-4. Create `research-topics.md` scaffolding (~20-30 lines) with prioritized questions
-5. Update explorations hub with new exploration link
+1. **Run dt-workflow for context injection:**
+   ```bash
+   dt-workflow explore <topic> --interactive
+   ```
+   - Gathers Cursor rules and project identity
+   - Provides structure template with required markers
+   - Output serves as starting context for AI
+
+2. Create exploration directory: `explorations/[topic]/`
+3. Create `README.md` hub (~20 lines) with quick links
+4. Create `exploration.md` scaffolding (~40-50 lines) using dt-workflow output
+5. Create `research-topics.md` scaffolding (~20-30 lines) with prioritized questions
+6. Update explorations hub with new exploration link
 
 **Setup Mode Checklist:**
 
+- [ ] dt-workflow context gathered (`dt-workflow explore <topic> --interactive`)
 - [ ] Exploration directory created
 - [ ] Exploration hub created (~20 lines)
-- [ ] Exploration scaffolding created (~40-50 lines)
+- [ ] Exploration scaffolding created (~40-50 lines) using dt-workflow output
 - [ ] Research topics scaffolding created (~20-30 lines)
 - [ ] Status set to `🔴 Scaffolding (needs expansion)`
 - [ ] Explorations hub updated
@@ -833,6 +923,16 @@ git push origin develop
 **Reads:** Existing scaffolding from `explorations/[topic]/`
 
 **Creates:** See [Conduct Mode Output](#conduct-mode-output) for expanded templates (~200-300 lines total)
+
+**Context Refresh (Optional):**
+
+If project context has changed since scaffolding was created, re-run dt-workflow:
+
+```bash
+dt-workflow explore <topic> --interactive
+```
+
+This provides fresh injected context (rules, project identity) for the expansion phase.
 
 ### Worktree Creation (Conduct Mode Only)
 
@@ -876,6 +976,7 @@ git push origin develop
 **Conduct Mode Checklist:**
 
 - [ ] Existing scaffolding read and understood
+- [ ] Context refresh considered (optional: re-run `dt-workflow explore <topic> --interactive` if project context changed)
 - [ ] Themes expanded with detailed analysis
 - [ ] Questions expanded with context and sub-questions
 - [ ] Initial thoughts documented with evidence

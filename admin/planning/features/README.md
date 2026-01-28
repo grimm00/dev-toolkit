@@ -27,6 +27,15 @@ features/
 
 ## Current Features
 
+### Doc Infrastructure
+**Status:** 🔴 Not Started (Scaffolding Ready)  
+**Folder:** `doc-infrastructure/`  
+**Goal:** Implement dt-doc-gen and dt-doc-validate commands  
+**Documents:**
+- [Feature Hub](doc-infrastructure/README.md)
+- [Transition Plan](doc-infrastructure/transition-plan.md)
+- Phase 1-3 scaffolding ready
+
 ### Optional Sourcery Integration
 **Status:** 📋 Phase 1 Planning  
 **Folder:** `optional-sourcery/`  
@@ -34,4 +43,4 @@ features/
 
 ---
 
-**Last Updated:** October 6, 2025
+**Last Updated:** 2026-01-21

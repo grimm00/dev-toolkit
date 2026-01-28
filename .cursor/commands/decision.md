@@ -32,6 +32,62 @@ This command supports multiple project organization patterns:
 
 ---
 
+## dt-workflow Integration
+
+**Per ADR-004:** This command acts as an orchestrator, calling dt-workflow for core logic.
+
+### Command Invocation
+
+Before making decisions, run dt-workflow to gather context:
+
+```bash
+# Auto-detect research (looks for admin/research/<topic>/)
+dt-workflow decision <topic> --from-research --interactive
+
+# Or with explicit path
+dt-workflow decision <topic> --from-research /path/to/research --interactive
+
+# Example with output redirection
+mkdir -p admin/decisions/my-topic
+dt-workflow decision my-topic --from-research --interactive > admin/decisions/my-topic/adr-001.md
+```
+
+### What dt-workflow Provides
+
+1. **Chained Context:**
+   - Research summary (from research-summary.md)
+   - Research findings and recommendations
+   - Requirements extracted from research
+
+2. **Injected Context:**
+   - Cursor rules (.cursor/rules/*.mdc)
+   - Project identity (roadmap, admin structure)
+
+3. **Structure Template:**
+   - ADR template with structural examples
+   - Required markers for completeness
+   - Decision documentation guidance
+
+### Related
+
+- [ADR-004: Cursor Command Role](../admin/decisions/dt-workflow/adr-004-cursor-command-role.md)
+- [dt-workflow help](../../bin/dt-workflow) - Run `dt-workflow --help` for full options
+
+### Integration Workflow
+
+```
+User runs: /decision my-topic --from-research
+
+Cursor Command (orchestrator):
+  1. dt-workflow decision my-topic --from-research --interactive
+     → Outputs: Context + ADR template
+  2. Create decisions directory structure
+  3. Apply template to create ADR documents
+  4. AI expands with actual decision analysis
+```
+
+---
+
 ## Workflow Overview
 
 **When to use:**
@@ -76,9 +132,45 @@ This command supports multiple project organization patterns:
 
 ## Step-by-Step Process
 
+### 0. Run dt-workflow
+
+**Before creating decisions, gather context:**
+
+```bash
+# Verify research exists and get context
+dt-workflow decision <topic> --from-research --interactive
+
+# Or with explicit research path
+dt-workflow decision <topic> --from-research /path/to/research --interactive
+```
+
+**What dt-workflow provides:**
+- Validates research prerequisites (research-summary.md exists)
+- Provides chained context from research
+- Provides ADR template structure
+- Outputs injected context (rules, project identity)
+
+**Error Handling:**
+
+If research doesn't exist, dt-workflow will report:
+```
+Error: Research not found for topic '<topic>'
+Expected: admin/research/<topic>/research-summary.md
+```
+
+**Decision Process Checklist:**
+
+- [ ] dt-workflow context gathered (`dt-workflow decision <topic> --from-research --interactive`)
+- [ ] Prerequisites validated (research exists)
+- [ ] Chained context available (research-summary.md read)
+
+---
+
 ### 1. Identify Research Source
 
 **Read research documents:**
+
+**Note:** dt-workflow already validated research exists in Step 0.
 
 1. **Read research summary:**
    - **Dev-Infra:** `admin/research/[topic]/research-summary.md`
@@ -214,6 +306,20 @@ decisions/[topic]/
 ---
 
 ### 4. Create ADR Documents
+
+**Context Usage:**
+
+ADR creation uses the structure from dt-workflow (Step 0):
+- ADR template structure (from dt-workflow template)
+- Injected context (rules, project identity) already available
+- AI fills in decision content based on research findings
+
+**Multiple ADRs:**
+
+One ADR per decision point. A single topic may result in multiple ADRs:
+- `adr-001-database-choice.md` - Primary database decision
+- `adr-002-caching-strategy.md` - Related caching decision
+- etc.
 
 **For each decision point:**
 
@@ -621,6 +727,7 @@ This directory contains Architecture Decision Records (ADRs) documenting key dec
 
 **Related Commands:**
 
+- `/explore` - Start exploration and identify research topics
 - `/research` - Conduct research before making decisions
 - `/transition-plan` - Transition to feature planning after decisions
 

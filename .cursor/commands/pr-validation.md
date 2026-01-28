@@ -526,6 +526,119 @@ gh pr view [pr-number] --json state,title,headRefName
 
 ---
 
+### 1f. Development Environment Setup (NEW)
+
+**Purpose:** Ensure development code is accessible before manual testing. This prevents issues where manual testing runs against an outdated global installation instead of the development code.
+
+**When to run:**
+
+- Before starting manual testing
+- After manual testing determination (Step 1e) shows testing is required
+- Especially important for new command implementations (e.g., `dt-workflow`)
+
+**Skip this step if:**
+
+- Manual testing is not required (Step 1e determination)
+- `--skip-manual-testing` flag is provided
+
+**Setup Options:**
+
+**Option A: Direct Path (Recommended for Testing)**
+
+Run commands directly from the repository:
+
+```bash
+# From dev-toolkit directory
+./bin/dt-workflow [arguments]
+
+# Or use absolute path
+/path/to/dev-toolkit/bin/dt-workflow [arguments]
+```
+
+**Option B: Temporary PATH Addition**
+
+Add bin/ to PATH for the current session:
+
+```bash
+# Source the development setup script
+source dev-setup.sh
+
+# Or manually add to PATH
+export PATH="$PWD/bin:$PATH"
+
+# Verify correct binary is being used
+which dt-workflow
+# Should show: /path/to/dev-toolkit/bin/dt-workflow
+```
+
+**Option C: Global Installation (For Release Testing)**
+
+Install globally to test the installation process:
+
+```bash
+# Run installation script
+./install.sh
+
+# Verify installation
+which dt-workflow
+dt-workflow --version
+```
+
+**Environment Verification Checklist:**
+
+- [ ] Confirm which binary will be executed
+  ```bash
+  # Check if command exists in PATH
+  which dt-workflow 2>/dev/null || echo "Not in PATH - use ./bin/dt-workflow"
+  
+  # If in PATH, verify it's the development version
+  ls -la $(which dt-workflow 2>/dev/null)
+  ```
+
+- [ ] Verify development code is being tested
+  ```bash
+  # Check version matches expected
+  ./bin/dt-workflow --version
+  
+  # Compare with any global installation
+  /usr/local/bin/dt-workflow --version 2>/dev/null || echo "No global installation"
+  ```
+
+- [ ] Note which method is being used for testing
+  - [ ] Direct path (`./bin/dt-workflow`)
+  - [ ] Temporary PATH (`source dev-setup.sh`)
+  - [ ] Global installation (`install.sh`)
+
+**Common Issues:**
+
+| Issue | Symptom | Solution |
+|-------|---------|----------|
+| Outdated global installation | Wrong version output | Use `./bin/dt-workflow` directly |
+| Command not found | `command not found` error | Use direct path or `source dev-setup.sh` |
+| Wrong binary executed | Unexpected behavior | Check `which dt-workflow` and use absolute path |
+| PATH conflict | Global version shadows dev version | Use absolute path `./bin/dt-workflow` |
+
+**Manual Testing Prerequisite Check:**
+
+Before proceeding to manual testing, confirm:
+
+```bash
+# Quick verification (for any new command being tested)
+COMMAND="dt-workflow"  # Replace with the command being tested
+
+echo "Testing: $(./bin/$COMMAND --version 2>/dev/null || echo 'N/A')"
+echo "Global:  $(/usr/local/bin/$COMMAND --version 2>/dev/null || echo 'Not installed')"
+```
+
+**Checklist:**
+
+- [ ] Development environment is configured
+- [ ] Correct binary will be used for testing
+- [ ] Setup method documented (direct path / temp PATH / global)
+- [ ] Ready to proceed with manual testing
+
+---
+
 ### 2. Update Manual Testing Guide (CONDITIONAL)
 
 **Applicability:** This step is **conditional** based on Step 1e determination.
@@ -1100,11 +1213,32 @@ Add priority assessment after the comment:
 
 ---
 
-### 6. Address Critical Issues (If Any)
+### 6. Address Issues Based on Priority/Effort Matrix
+
+**Threshold-Based Approach:**
+
+Use this matrix to determine whether to fix issues in-line or defer:
+
+| Priority | Effort | Action | Rationale |
+|----------|--------|--------|-----------|
+| CRITICAL 🔴 | Any | **Fix before merge** | Must be addressed |
+| HIGH 🟠 | Any | **Fix before merge** | Should be addressed |
+| MEDIUM 🟡 | LOW 🟢 | **Fix in-line** | Quick wins, < 15 min |
+| MEDIUM 🟡 | MEDIUM+ | Defer | Requires planning |
+| LOW 🟢 | LOW 🟢 | **Fix in-line** | Quick wins, < 15 min |
+| LOW 🟢 | MEDIUM+ | Defer | Not worth the overhead |
+
+**Key Question:** Is the fix < 15-30 minutes? If yes, fix it now.
+
+**Rationale:** Creating fix plans, fix PRs, and tracking docs for tiny fixes often takes longer than the fix itself. Fix them while the context is fresh.
+
+---
+
+#### 6a. Fix CRITICAL/HIGH Issues (Required)
 
 **If CRITICAL 🔴 or HIGH 🟠 issues found:**
 
-1. **Create fix branch (if not already on PR branch):**
+1. **Ensure on PR branch:**
 
    ```bash
    git checkout [pr-branch-name]
@@ -1122,11 +1256,72 @@ Add priority assessment after the comment:
    - Update PR description with fixes
    - Re-run manual testing if needed
 
-**If only LOW/MEDIUM issues:**
+---
+
+#### 6b. Fix LOW Effort Issues In-Line (Recommended)
+
+**For MEDIUM/LOW priority issues with LOW effort:**
+
+1. **Identify quick wins from priority matrix:**
+   - Look for issues marked LOW effort (🟢)
+   - Estimate time: Should be < 15-30 minutes total
+   - Examples: adding diagnostic output, fixing comments, standardizing naming
+
+2. **Implement fixes on PR branch:**
+   ```bash
+   # Already on PR branch from validation
+   # Make the fix
+   # Test locally
+   ```
+
+3. **Commit with clear message:**
+   ```bash
+   git commit -m "fix: address Sourcery feedback (PR##-#N)
+   
+   - [Description of fix]
+   
+   Addresses: PR##-#N (LOW effort in-line fix)"
+   ```
+
+4. **Update priority matrix:**
+   - Change status from "⏸️ Deferred" to "✅ Fixed (in-line)"
+   - Note that it was fixed in the same PR
+
+5. **Push to PR branch:**
+   ```bash
+   git push origin [pr-branch-name]
+   ```
+
+**Examples of in-line fixes:**
+- Adding diagnostic echo statements for debugging
+- Updating comments for clarity
+- Standardizing naming conventions
+- Adding missing default cases
+- Minor code style improvements
+
+---
+
+#### 6c. Defer MEDIUM+ Effort Issues
+
+**For issues with MEDIUM or higher effort:**
 
 - Document in fix tracking
-- Can be deferred to future PR
+- Create fix plan via `/fix-plan` after PR merge
 - Proceed with merge approval
+
+**MEDIUM Priority Discretion:**
+
+Use judgment when deciding whether to fix MEDIUM priority issues now or defer:
+
+| Factor | Fix Now | Defer |
+|--------|---------|-------|
+| **Effort** | LOW effort (< 15 min) | MEDIUM+ effort (> 30 min) |
+| **Scope** | Isolated change | Touches multiple files/systems |
+| **Risk** | Low risk of regression | Could introduce new issues |
+| **Context** | Aligns with PR's purpose | Tangential to PR's goal |
+| **Future Work** | No planned refactoring | Related consolidation planned |
+
+**Key principle:** Don't let perfect be the enemy of good. If a fix would delay the PR significantly or expand its scope unnecessarily, document it and defer.
 
 ---
 

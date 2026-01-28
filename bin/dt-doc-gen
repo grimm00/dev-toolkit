@@ -1,0 +1,251 @@
+#!/usr/bin/env bash
+
+# ============================================================================
+# DT-DOC-GEN - Generate documentation from dev-infra templates
+# Usage: dt-doc-gen <type> <topic> [OPTIONS]
+# ============================================================================
+
+set -euo pipefail
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+
+VERSION="1.0.0"
+SCRIPT_NAME=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
+
+# Source shared libraries
+source "$TOOLKIT_ROOT/lib/core/output-utils.sh"
+source "$TOOLKIT_ROOT/lib/doc-gen/templates.sh"
+source "$TOOLKIT_ROOT/lib/doc-gen/render.sh"
+
+# Initialize colors
+dt_setup_colors
+
+# ============================================================================
+# FUNCTIONS
+# ============================================================================
+
+show_help() {
+    cat << EOF
+Usage: $SCRIPT_NAME <type> <topic> [OPTIONS]
+
+Generate documentation from dev-infra templates.
+
+Arguments:
+    type              Document type (exploration, research, decision, planning, etc.)
+    topic             Topic or feature name for the document
+
+Options:
+    --mode MODE       Generation mode: setup (scaffolding) or conduct (expand)
+    --output PATH     Output directory (default: auto-detect from project structure)
+    --template-path   Explicit path to templates directory
+    --help            Show this help message
+    --version         Show version information
+    --debug           Enable debug output
+
+Document Types:
+    exploration       Exploration documents (exploration.md, research-topics.md, README.md)
+    research          Research documents (research-topic.md, requirements.md, etc.)
+    decision          Decision documents (adr.md, decisions-summary.md)
+    planning          Planning documents (feature-plan.md, phase.md, etc.)
+    handoff           Session handoff document
+    fix-batch         Fix batch planning document
+
+Examples:
+    $SCRIPT_NAME exploration my-feature
+    $SCRIPT_NAME research my-topic --mode setup
+    $SCRIPT_NAME decision auth-system --output admin/decisions/auth/
+
+EOF
+}
+
+show_version() {
+    echo "$SCRIPT_NAME version $VERSION"
+}
+
+generate_exploration() {
+    local topic_name="$1"
+    local output_dir="$2"
+    local mode="$3"
+    local templates_root="$4"
+    
+    # Set variables
+    dt_set_exploration_vars "$topic_name"
+    
+    # Create output directory
+    dt_create_output_dir "$output_dir" || return 1
+    
+    # Generate files based on mode
+    local files_to_generate=("exploration")
+    if [ "$mode" = "setup" ]; then
+        files_to_generate+=("research_topics" "exploration_hub")
+    fi
+    
+    for doc_type in "${files_to_generate[@]}"; do
+        local template_path
+        template_path=$(dt_get_template_path "$doc_type" "$doc_type" "$templates_root")
+        
+        if [ ! -f "$template_path" ]; then
+            dt_print_status "WARNING" "Template not found: $template_path"
+            continue
+        fi
+        
+        local output_filename
+        output_filename=$(dt_get_output_filename "$doc_type")
+        local output_file="$output_dir/$output_filename"
+        
+        dt_print_status "INFO" "Generating: $output_filename"
+        dt_render_template "$template_path" "$output_file" "$doc_type" || {
+            dt_print_status "ERROR" "Failed to generate: $output_filename"
+            return 1
+        }
+    done
+    
+    dt_print_status "SUCCESS" "Generated exploration in: $output_dir"
+}
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+main() {
+    local doc_type=""
+    local topic_name=""
+    local mode="setup"
+    local output_dir=""
+    local template_path_override=""
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            --version|-v)
+                show_version
+                exit 0
+                ;;
+            --debug)
+                export DT_DEBUG=true
+                shift
+                ;;
+            --mode)
+                mode="$2"
+                shift 2
+                ;;
+            --output)
+                output_dir="$2"
+                shift 2
+                ;;
+            --template-path)
+                template_path_override="$2"
+                shift 2
+                ;;
+            -*)
+                dt_print_status "ERROR" "Unknown option: $1"
+                echo ""
+                show_help
+                exit 1
+                ;;
+            *)
+                if [ -z "$doc_type" ]; then
+                    doc_type="$1"
+                elif [ -z "$topic_name" ]; then
+                    topic_name="$1"
+                else
+                    dt_print_status "ERROR" "Unexpected argument: $1"
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Validate required arguments
+    if [ -z "$doc_type" ]; then
+        dt_print_status "ERROR" "Document type is required"
+        echo ""
+        show_help
+        exit 1
+    fi
+    
+    if [ -z "$topic_name" ]; then
+        dt_print_status "ERROR" "Topic name is required"
+        echo ""
+        show_help
+        exit 1
+    fi
+    
+    # Validate mode
+    if [[ "$mode" != "setup" && "$mode" != "conduct" ]]; then
+        dt_print_status "ERROR" "Invalid mode: $mode (use 'setup' or 'conduct')"
+        exit 1
+    fi
+    
+    # Check envsubst availability
+    dt_check_envsubst || exit 1
+    
+    # Find templates
+    local templates_root
+    templates_root=$(dt_find_templates "$template_path_override") || {
+        dt_print_status "ERROR" "Could not locate templates"
+        dt_print_status "INFO" "Set DT_TEMPLATES_PATH or use --template-path"
+        dt_print_status "INFO" "Expected location: ~/Projects/dev-infra/scripts/doc-gen/templates"
+        exit 1
+    }
+    
+    dt_print_debug "Using templates: $templates_root"
+    
+    # Validate document type before determining output directory
+    case "$doc_type" in
+        exploration|research|decision|planning)
+            # Valid types - continue
+            ;;
+        *)
+            dt_print_status "ERROR" "Unknown or invalid document type: $doc_type"
+            dt_print_status "INFO" "Available types: exploration, research, decision, planning"
+            exit 1
+            ;;
+    esac
+    
+    # Determine output directory if not specified
+    if [ -z "$output_dir" ]; then
+        output_dir=$(dt_get_output_dir "." "$doc_type" "$topic_name") || {
+            dt_print_status "ERROR" "Could not determine output directory"
+            dt_print_status "INFO" "Use --output to specify output directory"
+            exit 1
+        }
+    fi
+    
+    dt_print_debug "Output directory: $output_dir"
+    
+    # Generate documents based on type
+    case "$doc_type" in
+        exploration)
+            generate_exploration "$topic_name" "$output_dir" "$mode" "$templates_root"
+            ;;
+        research)
+            dt_print_status "INFO" "Research generation not yet implemented"
+            exit 1
+            ;;
+        decision)
+            dt_print_status "INFO" "Decision generation not yet implemented"
+            exit 1
+            ;;
+        planning)
+            dt_print_status "INFO" "Planning generation not yet implemented"
+            exit 1
+            ;;
+        *)
+            dt_print_status "ERROR" "Unknown or invalid document type: $doc_type"
+            dt_print_status "INFO" "Available types: exploration, research, decision, planning"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

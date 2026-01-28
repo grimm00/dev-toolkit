@@ -102,7 +102,15 @@ Use this workflow for:
 /explore [topic]
     → Creates exploration document
     → Identifies research questions
+    → Assesses spike candidates (risk framework)
     → Outputs: research-topics.md
+
+/spike [topic] (optional, when risk is high)
+    → Time-boxed prototype (2-4 hours)
+    → Validates assumptions
+    → Outputs: learnings, refined questions
+    ↓
+    Informs research direction
 
 /research [topic] --from-explore [topic]
     → Investigates research questions
@@ -120,12 +128,106 @@ Use this workflow for:
     → Ready for implementation
 ```
 
+**Note:** Spikes and research are iterative. A spike may reveal new questions that require research, and research may identify areas that benefit from a spike.
+
 ### File Locations
 
 - **Explorations:** `admin/explorations/[topic]/`
 - **Research:** `admin/research/[topic]/` (when created)
 - **Decisions:** `admin/decisions/[topic]/` (when created)
 - **Features:** `admin/planning/features/[feature-name]/`
+
+### dt-workflow Integration
+
+**Per ADR-004:** Cursor commands (`/explore`, `/research`, `/decision`) act as orchestrators that call `dt-workflow` for core logic.
+
+**How it works:**
+1. Cursor command receives user request
+2. Command calls `dt-workflow <workflow> <topic> --interactive`
+3. dt-workflow provides context injection, structure templates, and handoff guidance
+4. AI uses the output to guide the workflow
+
+**Command examples:**
+```bash
+dt-workflow explore my-topic --interactive
+dt-workflow research my-topic --from-explore --interactive
+dt-workflow decision my-topic --from-research --interactive
+```
+
+**Reference:** [ADR-004: Cursor Command Role](../admin/decisions/dt-workflow/adr-004-cursor-command-role.md)
+
+---
+
+## 🧪 Spike Workflow (Planned)
+
+### What is a Spike?
+
+A **spike** is a time-boxed experiment to answer a specific technical question or reduce risk. Unlike research (which investigates options), a spike **builds something minimal** to validate assumptions.
+
+**Key characteristics:**
+- **Time-boxed:** 2-4 hours maximum
+- **Throwaway mindset:** Code may be discarded
+- **Learning-focused:** Output is knowledge, not production code
+- **Question-driven:** Clear success criteria before starting
+
+### When to Spike vs Research
+
+| Situation | Use Spike | Use Research |
+|-----------|-----------|--------------|
+| Architectural decision with high commitment | ✅ | |
+| User-facing UX that needs to be "felt" | ✅ | |
+| Technical uncertainty ("can it even work?") | ✅ | |
+| Comparing known options | | ✅ |
+| Investigating best practices | | ✅ |
+| Low-risk, well-understood path | | ✅ |
+
+### Spike Determination Framework
+
+During exploration, assess each topic:
+
+| Risk Level | Determination | Rationale |
+|------------|---------------|-----------|
+| 🔴 HIGH | **Spike first** | Hard to pivot once committed |
+| 🟠 MEDIUM-HIGH | **Consider spike** | Benefits from hands-on validation |
+| 🟡 MEDIUM | Research only | Depends on other decisions |
+| 🟢 LOW | Research only | Clear path, low risk |
+
+### Spike Workflow (Future: `/spike` command)
+
+```
+/explore [topic]
+    → Identifies spike candidates (risk assessment)
+    
+/spike [topic] --questions "Q1, Q2"
+    → Time-boxed implementation plan
+    → Context + structure for AI
+    → Success criteria
+    → Outputs: Minimal prototype
+    
+/spike [topic] --document-learnings
+    → spike-learnings.md
+    → Refined research questions
+    → Go/no-go recommendation
+```
+
+### Current Process (Manual)
+
+Until `/spike` command is built:
+
+1. **Identify** spike candidates during exploration (use risk framework)
+2. **Time-box** the implementation (set a timer, 2-4 hours)
+3. **Build** minimal prototype to answer questions
+4. **Document** learnings in exploration document
+5. **Decide** if approach is validated or needs pivot
+
+### Spike Outputs
+
+A completed spike should produce:
+
+- **Learnings document:** What we learned, what surprised us
+- **Refined questions:** New questions revealed by implementation
+- **Go/no-go:** Is the approach validated?
+- **Code (optional):** May keep, refactor, or discard
 
 ---
 
@@ -309,5 +411,5 @@ bats tests/unit/[test-file].bats
 
 ---
 
-**Last Updated:** 2026-01-09  
+**Last Updated:** 2026-01-22  
 **Status:** ✅ Active

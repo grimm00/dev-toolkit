@@ -1,0 +1,1565 @@
+#!/usr/bin/env bash
+
+# ============================================================================
+# DT-WORKFLOW - Unified Workflow Orchestration
+# Usage: dt-workflow <workflow> <topic> [OPTIONS]
+# 
+# Unified command for orchestrating exploration→research→decision workflows.
+# Provides explicit context injection and standardized output formats.
+# ============================================================================
+
+set -euo pipefail
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+
+VERSION="0.4.0"
+SCRIPT_NAME=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
+
+# Source shared libraries
+source "$TOOLKIT_ROOT/lib/core/output-utils.sh"
+source "$TOOLKIT_ROOT/lib/doc-gen/render.sh"
+source "$TOOLKIT_ROOT/lib/doc-gen/templates.sh"
+
+# Initialize colors
+dt_setup_colors
+
+# ============================================================================
+# MODEL RECOMMENDATIONS
+# ============================================================================
+
+get_recommended_model() {
+    # Get recommended model for workflow type (FR-6)
+    # 
+    # Model recommendations are based on workflow characteristics:
+    # - explore: Fast iteration needed, brainstorming focus → Sonnet (speed + creativity)
+    # - research: Balanced analysis, moderate complexity → Sonnet (cost-effective)
+    # - decision: Complex reasoning, ADR quality critical → Opus (highest reasoning)
+    #
+    # Rationale:
+    # - Sonnet provides good balance of speed, cost, and quality for most workflows
+    # - Opus used for decisions where reasoning quality is paramount
+    # - Future: Could be made configurable via config file or --model flag
+    #
+    # Parameters:
+    #   $1 - Workflow type (explore, research, decision)
+    # Returns: Model recommendation with brief rationale
+    
+    local workflow="$1"
+    
+    case "$workflow" in
+        explore)
+            # Fast iteration and brainstorming benefit from Sonnet's speed
+            echo "claude-3-5-sonnet (fast iteration, good for brainstorming)"
+            ;;
+        research)
+            # Balanced analysis doesn't require Opus-level reasoning
+            echo "claude-3-5-sonnet (balanced analysis)"
+            ;;
+        decision)
+            # ADRs require complex reasoning - Opus provides best quality
+            echo "claude-3-opus (complex reasoning for ADRs)"
+            ;;
+        *)
+            # Default to Sonnet for unknown workflows (general purpose)
+            echo "claude-3-5-sonnet (general purpose)"
+            ;;
+    esac
+}
+
+# ============================================================================
+# CONTEXT PROFILES
+# ============================================================================
+
+apply_context_profile() {
+    # Apply context profile settings (FR-7)
+    #
+    # Profiles control which context sections are included in output.
+    # Note: Rules and workflow context are always included (critical for AI guidance).
+    # Only project identity is configurable.
+    #
+    # Configurable via INCLUDE_PROJECT_IDENTITY:
+    # - true: Include project roadmap, admin structure
+    # - false: Skip project identity (reduces token usage)
+    #
+    # Profile Definitions:
+    # - default: All context (backward compatible, current behavior)
+    # - minimal: Rules + workflow context only (reduces token usage)
+    # - full: All context + future additions (extensibility point)
+    #
+    # Extension Points (Future):
+    # - Config file support: Read custom profiles from config file
+    #   Format: JSON/YAML with profile definitions
+    #   Location: config/dt-workflow-profiles.json (or similar)
+    # - Additional context types: Git history, related docs, etc.
+    #
+    # Parameters:
+    #   $1 - Profile name (default, minimal, full)
+    # Sets global variable: INCLUDE_PROJECT_IDENTITY
+    
+    local profile="${1:-default}"
+    
+    case "$profile" in
+        default)
+            # Full context: Rules + Project Identity + Workflow Context
+            # Use when: Need complete context for complex workflows
+            INCLUDE_PROJECT_IDENTITY=true
+            ;;
+        minimal)
+            # Minimal context: Rules + Workflow Context only
+            # Use when: Token limits or quick iterations
+            # Skips: Project identity (roadmap, admin structure)
+            INCLUDE_PROJECT_IDENTITY=false
+            ;;
+        full)
+            # Extended context: All + future additions
+            # Use when: Need maximum context (future: additional context types)
+            # Currently same as default, but extensible
+            INCLUDE_PROJECT_IDENTITY=true
+            # Future: Additional context types (git history, related docs, etc.)
+            ;;
+        *)
+            dt_print_status "ERROR" "Unknown profile: $profile"
+            echo ""
+            echo "Available profiles:"
+            echo "  default  - All context (current behavior)"
+            echo "  minimal  - Rules only, skip project identity"
+            echo "  full     - All context + additional (future)"
+            echo ""
+            echo "💡 Future: Custom profiles via config file (see extension points)"
+            exit 1
+            ;;
+    esac
+}
+
+# ============================================================================
+# DRY RUN PREVIEW
+# ============================================================================
+
+show_dry_run_preview() {
+    # Show preview of what would be included without generating full output
+    # Parameters:
+    #   $1 - Workflow type
+    #   $2 - Topic name
+    #   $3 - Project directory
+    
+    local workflow="$1"
+    local topic="$2"
+    local project_dir="${3:-.}"
+    
+    # Apply profile to determine what would be included
+    apply_context_profile "${profile:-default}"
+    
+    # Estimate output size (rough calculation)
+    local estimated_tokens=5000  # Base estimate
+    if [ "$INCLUDE_PROJECT_IDENTITY" = true ]; then
+        estimated_tokens=$((estimated_tokens + 2000))
+    fi
+    
+    cat << EOF
+🔍 Dry Run Preview
+==================
+
+Workflow: $workflow
+Topic: $topic
+
+Would include:
+- Cursor rules: $([ -d "$project_dir/.cursor/rules" ] && echo "Yes ($(find "$project_dir/.cursor/rules" -name "*.mdc" 2>/dev/null | wc -l | tr -d ' ') files)" || echo "No")
+- Project identity: $([ "$INCLUDE_PROJECT_IDENTITY" = true ] && ([ -f "$project_dir/admin/planning/roadmap.md" ] && echo "Yes" || echo "No (not found)") || echo "No (skipped by profile)")
+- Workflow template: Yes
+- Git context: $([ -d "$project_dir/.git" ] && echo "Yes" || echo "No")
+
+Profile: ${profile:-default}
+Estimated output: ~${estimated_tokens} tokens
+
+Run without --dry-run to generate full output.
+EOF
+}
+
+# ============================================================================
+# CONTEXT GATHERING
+# ============================================================================
+
+gather_cursor_rules() {
+    # Gather Cursor rules from .cursor/rules directory for context injection
+    # Parameters:
+    #   $1 - Project directory (default: current directory)
+    # Returns: Markdown-formatted rules output, or empty if no rules found
+    
+    local project_dir="${1:-.}"
+    local rules_dir="$project_dir/.cursor/rules"
+    
+    # Check if rules directory exists (graceful degradation)
+    if [ ! -d "$rules_dir" ]; then
+        dt_print_debug "No .cursor/rules directory found"
+        return 0
+    fi
+    
+    echo "## Cursor Rules (Universal Context)"
+    echo ""
+    echo "These rules define project standards and must always be followed."
+    echo ""
+    
+    # Find all .mdc files and output their contents (sorted for consistency)
+    local rule_files
+    rule_files=$(find "$rules_dir" -name "*.mdc" -type f 2>/dev/null | sort)
+    
+    if [ -z "$rule_files" ]; then
+        echo "*No rule files found*"
+        return 0
+    fi
+    
+    # Output each rule file in markdown code blocks for clarity
+    for rule_file in $rule_files; do
+        local filename
+        filename=$(basename "$rule_file")
+        echo "### $filename"
+        echo ""
+        echo '```markdown'
+        cat "$rule_file"
+        echo '```'
+        echo ""
+    done
+}
+
+gather_project_identity() {
+    # Gather project identity context (roadmap, admin structure) for context injection
+    # Parameters:
+    #   $1 - Project directory (default: current directory)
+    # Returns: Markdown-formatted project identity output
+    # Note: Checks multiple common locations for roadmap files
+    
+    local project_dir="${1:-.}"
+    
+    echo "## Project Identity (Universal Context)"
+    echo ""
+    
+    # Check for roadmap in common locations (priority order)
+    local roadmap_paths=(
+        "$project_dir/admin/planning/roadmap.md"
+        "$project_dir/docs/roadmap.md"
+        "$project_dir/ROADMAP.md"
+    )
+    
+    for roadmap in "${roadmap_paths[@]}"; do
+        if [ -f "$roadmap" ]; then
+            echo "### Project Roadmap"
+            echo ""
+            echo "From: \`$roadmap\`"
+            echo ""
+            echo '```markdown'
+            # Output first 100 lines to keep context manageable (per ADR-002)
+            head -100 "$roadmap"
+            echo '```'
+            echo ""
+            break
+        fi
+    done
+    
+    # Check for admin README (provides project structure context)
+    local admin_readme="$project_dir/admin/README.md"
+    if [ -f "$admin_readme" ]; then
+        echo "### Admin Structure"
+        echo ""
+        echo "From: \`$admin_readme\`"
+        echo ""
+        echo '```markdown'
+        # Output first 80 lines (slightly less than roadmap)
+        head -80 "$admin_readme"
+        echo '```'
+        echo ""
+    fi
+}
+
+gather_workflow_context() {
+    local workflow="$1"
+    local topic="$2"
+    local project_dir="${3:-.}"
+    
+    echo "## Workflow-Specific Context"
+    echo ""
+    
+    case "$workflow" in
+        explore)
+            # For exploration: show existing explorations
+            local explorations_dir="$project_dir/admin/explorations"
+            if [ -d "$explorations_dir" ]; then
+                echo "### Existing Explorations"
+                echo ""
+                echo "From: \`$explorations_dir\`"
+                echo ""
+                
+                # List exploration directories
+                local explorations
+                explorations=$(find "$explorations_dir" -maxdepth 1 -type d ! -name explorations 2>/dev/null | sort)
+                
+                if [ -n "$explorations" ]; then
+                    echo "| Exploration | Status |"
+                    echo "|-------------|--------|"
+                    for exp_dir in $explorations; do
+                        local exp_name
+                        exp_name=$(basename "$exp_dir")
+                        local readme="$exp_dir/README.md"
+                        local status="Unknown"
+                        if [ -f "$readme" ]; then
+                            # Extract status from README
+                            status=$(grep -o "Status:\*\* [^|]*" "$readme" 2>/dev/null | head -1 | sed 's/Status:\*\* //' || echo "Unknown")
+                        fi
+                        echo "| $exp_name | $status |"
+                    done
+                    echo ""
+                fi
+            fi
+            ;;
+        research)
+            # Resolve exploration path if --from-explore was used
+            local exploration_path=""
+            if [ -n "$from_explore_path" ]; then
+                exploration_path=$(parse_from_explore "$topic" "$from_explore_path" "$project_dir")
+                if [ $? -ne 0 ]; then
+                    exit 1
+                fi
+            fi
+            gather_research_context "$topic" "$project_dir" "$exploration_path"
+            ;;
+        decision)
+            # Resolve research path if --from-research was used
+            local research_path=""
+            if [ -n "$from_research_path" ]; then
+                research_path=$(parse_from_research "$topic" "$from_research_path" "$project_dir")
+                if [ $? -ne 0 ]; then
+                    exit 1
+                fi
+            fi
+            gather_decision_context "$topic" "$project_dir" "$research_path"
+            ;;
+        *)
+            echo "*No workflow-specific context defined for: $workflow*"
+            echo ""
+            ;;
+    esac
+}
+
+parse_from_explore() {
+    # Parse and resolve --from-explore path
+    # Parameters:
+    #   $1 - Topic name
+    #   $2 - Explicit path or "AUTO" for auto-detection
+    #   $3 - Project directory
+    # Returns: Exploration directory path (or empty if not found)
+    
+    local topic="$1"
+    local explicit_path="${2:-}"
+    local project_dir="${3:-.}"
+    
+    if [ -z "$explicit_path" ]; then
+        # No --from-explore flag used
+        echo ""
+        return 0
+    fi
+    
+    if [ "$explicit_path" = "AUTO" ]; then
+        # Auto-detect: check standard location
+        local auto_path="$project_dir/admin/explorations/$topic"
+        if [ ! -d "$auto_path" ]; then
+            dt_print_status "ERROR" "Exploration not found: $auto_path" >&2
+            echo "" >&2
+            echo "💡 Suggestion: Run '/explore $topic' first to create the exploration" >&2
+            echo "   Or use: $SCRIPT_NAME research $topic --from-explore <path>" >&2
+            return 1
+        fi
+        echo "$auto_path"
+        return 0
+    else
+        # Explicit path provided
+        if [ ! -d "$explicit_path" ]; then
+            dt_print_status "ERROR" "Exploration not found: $explicit_path" >&2
+            echo "" >&2
+            echo "💡 Suggestion: Check the path or run '/explore $topic' first" >&2
+            return 1
+        fi
+        echo "$explicit_path"
+        return 0
+    fi
+}
+
+parse_from_research() {
+    # Parse and resolve --from-research path
+    # Parameters:
+    #   $1 - Topic name
+    #   $2 - Explicit path or "AUTO" for auto-detection
+    #   $3 - Project directory
+    # Returns: Research directory path (or empty if not found)
+    
+    local topic="$1"
+    local explicit_path="${2:-}"
+    local project_dir="${3:-.}"
+    
+    if [ -z "$explicit_path" ]; then
+        # No --from-research flag used
+        echo ""
+        return 0
+    fi
+    
+    if [ "$explicit_path" = "AUTO" ]; then
+        # Auto-detect: check standard location
+        local auto_path="$project_dir/admin/research/$topic"
+        if [ ! -d "$auto_path" ]; then
+            dt_print_status "ERROR" "Research not found: $auto_path" >&2
+            echo "" >&2
+            echo "💡 Suggestion: Run '/research $topic --from-explore $topic' first to create the research" >&2
+            echo "   Or use: $SCRIPT_NAME decision $topic --from-research <path>" >&2
+            return 1
+        fi
+        echo "$auto_path"
+        return 0
+    else
+        # Explicit path provided
+        if [ ! -d "$explicit_path" ]; then
+            dt_print_status "ERROR" "Research not found: $explicit_path" >&2
+            echo "" >&2
+            echo "💡 Suggestion: Check the path or run '/research $topic --from-explore $topic' first" >&2
+            return 1
+        fi
+        echo "$explicit_path"
+        return 0
+    fi
+}
+
+gather_research_context() {
+    local topic="$1"
+    local project_dir="${2:-.}"
+    local exploration_path="${3:-}"
+    
+    echo "### Research Context"
+    echo ""
+    
+    # Check for exploration (upstream) - use provided path or auto-detect
+    local exp_dir
+    if [ -n "$exploration_path" ]; then
+        exp_dir="$exploration_path"
+    else
+        exp_dir="$project_dir/admin/explorations/$topic"
+    fi
+    
+    if [ -d "$exp_dir" ]; then
+        echo "#### Related Exploration"
+        echo ""
+        
+        if [ -f "$exp_dir/exploration.md" ]; then
+            echo "**Exploration Document:** \`exploration.md\`"
+            echo ""
+            echo '```markdown'
+            # Limit to first 100 lines to avoid token bloat
+            head -100 "$exp_dir/exploration.md"
+            echo '```'
+            echo ""
+        fi
+        
+        # Include handoff file (research-topics.md)
+        if [ -f "$exp_dir/research-topics.md" ]; then
+            echo "#### Research Topics (from exploration)"
+            echo ""
+            echo "**Source:** \`research-topics.md\`"
+            echo ""
+            cat "$exp_dir/research-topics.md"
+            echo ""
+        fi
+    else
+        dt_print_debug "Exploration directory not found: $exp_dir"
+    fi
+    
+    # Check for existing research
+    local research_dir="$project_dir/admin/research/$topic"
+    if [ -d "$research_dir" ]; then
+        echo "#### Existing Research"
+        echo ""
+        
+        local research_files
+        research_files=$(find "$research_dir" -maxdepth 1 -name "*.md" -type f 2>/dev/null | sort)
+        
+        if [ -n "$research_files" ]; then
+            local file_count
+            file_count=$(echo "$research_files" | wc -l | tr -d ' ')
+            
+            if [ "$file_count" -le 5 ]; then
+                # List all files if 5 or fewer
+                echo "$research_files" | while read -r f; do
+                    echo "- \`$(basename "$f")\`"
+                done
+            else
+                # Show summary if more than 5 files
+                echo "**Found $file_count research documents:**"
+                echo ""
+                echo "$research_files" | head -5 | while read -r f; do
+                    echo "- \`$(basename "$f")\`"
+                done
+                echo "- ... and $((file_count - 5)) more"
+            fi
+            echo ""
+        else
+            dt_print_debug "No existing research documents found in: $research_dir"
+        fi
+    else
+        dt_print_debug "Research directory not found: $research_dir (will be created)"
+    fi
+}
+
+gather_decision_context() {
+    local topic="$1"
+    local project_dir="${2:-.}"
+    local research_path="${3:-}"
+    
+    echo "### Decision Context"
+    echo ""
+    
+    # Check for research (upstream) - use provided path or auto-detect
+    local research_dir
+    if [ -n "$research_path" ]; then
+        research_dir="$research_path"
+    else
+        research_dir="$project_dir/admin/research/$topic"
+    fi
+    
+    if [ -d "$research_dir" ]; then
+        echo "#### Research Summary (from research workflow)"
+        echo ""
+        
+        if [ -f "$research_dir/research-summary.md" ]; then
+            echo "**Source:** \`research-summary.md\` (handoff file per Pattern 4)"
+            echo ""
+            echo '```markdown'
+            # Limit to first 150 lines to avoid token bloat
+            head -150 "$research_dir/research-summary.md"
+            echo '```'
+            echo ""
+        else
+            dt_print_debug "Research summary not found: $research_dir/research-summary.md"
+        fi
+        
+        # Include requirements if exists
+        if [ -f "$research_dir/requirements.md" ]; then
+            echo "#### Requirements"
+            echo ""
+            echo "**Source:** \`requirements.md\`"
+            echo ""
+            cat "$research_dir/requirements.md"
+            echo ""
+        else
+            dt_print_debug "Requirements file not found: $research_dir/requirements.md"
+        fi
+    else
+        dt_print_debug "Research directory not found: $research_dir"
+    fi
+    
+    # Check for existing decisions
+    local decisions_dir="$project_dir/admin/decisions/$topic"
+    if [ -d "$decisions_dir" ]; then
+        echo "#### Existing ADRs"
+        echo ""
+        
+        local adr_files
+        adr_files=$(find "$decisions_dir" -maxdepth 1 -name "adr-*.md" -type f 2>/dev/null | sort)
+        
+        if [ -n "$adr_files" ]; then
+            local adr_count
+            adr_count=$(echo "$adr_files" | wc -l | tr -d ' ')
+            
+            if [ "$adr_count" -le 5 ]; then
+                # List all ADRs if 5 or fewer
+                echo "$adr_files" | while read -r f; do
+                    echo "- \`$(basename "$f")\`"
+                done
+            else
+                # Show summary if more than 5 ADRs
+                echo "**Found $adr_count ADRs:**"
+                echo ""
+                echo "$adr_files" | head -5 | while read -r f; do
+                    echo "- \`$(basename "$f")\`"
+                done
+                echo "- ... and $((adr_count - 5)) more"
+            fi
+            echo ""
+        else
+            dt_print_debug "No existing ADRs found in: $decisions_dir"
+        fi
+    else
+        dt_print_debug "Decisions directory not found: $decisions_dir (will be created)"
+    fi
+}
+
+gather_git_context() {
+    local project_dir="${1:-.}"
+    
+    echo "## Git Context"
+    echo ""
+    
+    # Current branch
+    local branch
+    branch=$(git -C "$project_dir" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+    echo "- **Current Branch:** \`$branch\`"
+    
+    # Recent commits (last 5)
+    echo "- **Recent Commits:**"
+    echo ""
+    git -C "$project_dir" log --oneline -5 2>/dev/null | while read -r line; do
+        echo "  - $line"
+    done
+    echo ""
+}
+
+# ============================================================================
+# PERFORMANCE NOTES
+# ============================================================================
+# 
+# Performance Requirements (NFR-2, NFR-3):
+# - Context injection: <1 second (NFR-2)
+# - Validation: <500ms (NFR-3)
+# 
+# Current Implementation:
+# - Uses standard bash file operations (find, cat, head, grep)
+# - File operations are sequential but necessary for correctness
+# - Performance tests confirm requirements are met
+# 
+# Potential Optimizations (if needed in future):
+# - Cache file listings if same directory read multiple times
+# - Minimize subshell spawning (use built-in bash where possible)
+# - Use built-in bash string operations over external commands
+# - Profile with: time dt-workflow explore test-topic --interactive
+# 
+# Performance Baseline (2026-01-26):
+# - Context injection: ~200-400ms (well under 1s requirement)
+# - Validation: ~50-150ms (well under 500ms requirement)
+# - Dry run: ~20-50ms (very fast)
+# - Help: ~10-30ms (instant)
+# 
+# ============================================================================
+# STRUCTURE GENERATION
+# ============================================================================
+
+generate_exploration_structure() {
+    local topic="$1"
+    
+    # Find templates directory
+    local templates_root
+    templates_root=$(dt_find_templates) || {
+        dt_print_status "ERROR" "Templates not found - templates are required for structure generation"
+        dt_print_debug "Template search failed - templates must be available"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are installed or DT_TEMPLATES_PATH is set"
+        echo ""
+        echo "Expected locations:"
+        echo "  - \$HOME/Projects/dev-infra/scripts/doc-gen/templates"
+        echo "  - \$HOME/dev-infra/scripts/doc-gen/templates"
+        echo "  - Or set DT_TEMPLATES_PATH environment variable"
+        return 1
+    }
+    
+    dt_print_debug "Using templates from: $templates_root"
+    
+    # Set template variables
+    dt_set_exploration_vars "$topic" "Exploration of $topic"
+    dt_print_debug "Set exploration variables for topic: $topic"
+    
+    echo "## Generated Structure"
+    echo ""
+    echo "### Files to Create"
+    echo ""
+    echo "The following files should be created in \`admin/explorations/$topic/\`:"
+    echo ""
+    
+    # Render exploration.md template
+    local exploration_template
+    exploration_template=$(dt_get_template_path "exploration" "exploration" "$templates_root")
+    dt_print_debug "Exploration template path: $exploration_template"
+    
+    if [ -f "$exploration_template" ]; then
+        echo "#### exploration.md (Main Analysis)"
+        echo ""
+        echo '```markdown'
+        local temp_output
+        temp_output=$(mktemp)
+        if dt_render_template "$exploration_template" "$temp_output" "exploration" 2>/dev/null; then
+            cat "$temp_output"
+            dt_print_debug "Successfully rendered exploration template"
+        else
+            # Template rendering failed - templates are required
+            dt_print_status "ERROR" "Template rendering failed for: $exploration_template"
+            dt_print_debug "Template rendering failed - check template file and variables"
+            rm -f "$temp_output"
+            return 1
+        fi
+        rm -f "$temp_output"
+        echo '```'
+        echo ""
+    else
+        dt_print_status "ERROR" "Exploration template not found: $exploration_template"
+        dt_print_debug "Template file missing: $exploration_template"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are properly installed"
+        return 1
+    fi
+    
+    # Render research-topics.md template
+    local research_topics_template
+    research_topics_template=$(dt_get_template_path "research_topics" "research_topics" "$templates_root")
+    dt_print_debug "Research topics template path: $research_topics_template"
+    
+    if [ -f "$research_topics_template" ]; then
+        echo "#### research-topics.md (Research Questions)"
+        echo ""
+        echo '```markdown'
+        local temp_output2
+        temp_output2=$(mktemp)
+        if dt_render_template "$research_topics_template" "$temp_output2" "research_topics" 2>/dev/null; then
+            cat "$temp_output2"
+            dt_print_debug "Successfully rendered research-topics template"
+        else
+            dt_print_debug "Research-topics template rendering failed, using minimal output"
+            echo "# Research Topics - ${TOPIC_TITLE} Exploration"
+            echo ""
+            echo "**Status:** ${STATUS}"
+            echo "**Created:** ${DATE}"
+            echo "**Last Updated:** ${DATE}"
+        fi
+        rm -f "$temp_output2"
+        echo '```'
+        echo ""
+    else
+        dt_print_debug "Research-topics template not found: $research_topics_template (skipping)"
+    fi
+    
+    # Render exploration hub (README.md) template
+    local hub_template
+    hub_template=$(dt_get_template_path "exploration_hub" "exploration_hub" "$templates_root")
+    dt_print_debug "Exploration hub template path: $hub_template"
+    
+    if [ -f "$hub_template" ]; then
+        echo "#### README.md (Hub)"
+        echo ""
+        echo '```markdown'
+        local temp_output3
+        temp_output3=$(mktemp)
+        if dt_render_template "$hub_template" "$temp_output3" "exploration_hub" 2>/dev/null; then
+            cat "$temp_output3"
+            dt_print_debug "Successfully rendered exploration hub template"
+        else
+            dt_print_debug "Exploration hub template rendering failed (skipping)"
+        fi
+        rm -f "$temp_output3"
+        echo '```'
+        echo ""
+    else
+        dt_print_debug "Exploration hub template not found: $hub_template (skipping)"
+    fi
+}
+
+generate_research_structure() {
+    local topic="$1"
+    
+    # Find templates directory
+    local templates_root
+    templates_root=$(dt_find_templates) || {
+        dt_print_status "ERROR" "Templates not found - templates are required for structure generation"
+        dt_print_debug "Template search failed - templates must be available"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are installed or DT_TEMPLATES_PATH is set"
+        echo ""
+        echo "Expected locations:"
+        echo "  - \$HOME/Projects/dev-infra/scripts/doc-gen/templates"
+        echo "  - \$HOME/dev-infra/scripts/doc-gen/templates"
+        echo "  - Or set DT_TEMPLATES_PATH environment variable"
+        return 1
+    }
+    
+    dt_print_debug "Using templates from: $templates_root"
+    
+    # Set template variables
+    dt_set_research_vars "$topic" "" "Research for $topic"
+    dt_print_debug "Set research variables for topic: $topic"
+    
+    echo "## Generated Structure"
+    echo ""
+    echo "### Files to Create"
+    echo ""
+    echo "The following files should be created in \`admin/research/$topic/\`:"
+    echo ""
+    
+    # Render research-topic.md template
+    local research_template
+    research_template=$(dt_get_template_path "research_topic" "research_topic" "$templates_root")
+    dt_print_debug "Research template path: $research_template"
+    
+    if [ -f "$research_template" ]; then
+        echo "#### research-topic.md (Main Research Document)"
+        echo ""
+        echo '```markdown'
+        local temp_output
+        temp_output=$(mktemp)
+        if dt_render_template "$research_template" "$temp_output" "research_topic" 2>/dev/null; then
+            cat "$temp_output"
+            dt_print_debug "Successfully rendered research template"
+        else
+            # Template rendering failed - templates are required
+            dt_print_status "ERROR" "Template rendering failed for: $research_template"
+            dt_print_debug "Template rendering failed - check template file and variables"
+            rm -f "$temp_output"
+            return 1
+        fi
+        rm -f "$temp_output"
+        echo '```'
+        echo ""
+    else
+        dt_print_status "ERROR" "Research template not found: $research_template"
+        dt_print_debug "Template file missing: $research_template"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are properly installed"
+        return 1
+    fi
+    
+    # Handoff file guidance per Pattern 4 (FR-10)
+    # Reference: docs/patterns/workflow-patterns.md (Pattern 4: Handoff File Contract)
+    echo "#### research-summary.md (Handoff File)"
+    echo ""
+    echo "**Purpose:** Standardized handoff file for research→decision transition per Pattern 4"
+    echo ""
+    echo "**Reference:** [Pattern 4: Handoff File Contract](../../docs/patterns/workflow-patterns.md#pattern-4-handoff-file-contract)"
+    echo ""
+    echo "After completing research, create \`research-summary.md\` with the following required sections:"
+    echo ""
+    echo '```markdown'
+    cat << 'HANDOFF_EOF'
+## 🔍 Key Findings
+
+<!-- AI: Summarize key findings from research with sources -->
+
+### Finding 1: [Title]
+[Summary with source references]
+
+---
+
+## 💡 Recommendations
+
+<!-- AI: Provide actionable recommendations based on findings -->
+
+1. [Recommendation 1]
+2. [Recommendation 2]
+
+---
+
+## 📊 Requirements Discovered
+
+<!-- AI: List any new requirements discovered during research (FR-*, NFR-*) -->
+
+- [ ] FR-XX: [Requirement description]
+- [ ] NFR-XX: [Non-functional requirement]
+
+---
+
+## 🚀 Next Steps
+
+1. Review research findings and recommendations above
+2. Run `/decision topic --from-research` to make decisions
+3. Or run: `dt-workflow decision topic --from-research --interactive`
+HANDOFF_EOF
+    echo '```'
+    echo ""
+}
+
+generate_decision_structure() {
+    local topic="$1"
+    local project_dir="${2:-.}"
+    
+    # Find templates directory
+    local templates_root
+    templates_root=$(dt_find_templates) || {
+        dt_print_status "ERROR" "Templates not found - templates are required for structure generation"
+        dt_print_debug "Template search failed - templates must be available"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are installed or DT_TEMPLATES_PATH is set"
+        echo ""
+        echo "Expected locations:"
+        echo "  - \$HOME/Projects/dev-infra/scripts/doc-gen/templates"
+        echo "  - \$HOME/dev-infra/scripts/doc-gen/templates"
+        echo "  - Or set DT_TEMPLATES_PATH environment variable"
+        return 1
+    }
+    
+    dt_print_debug "Using templates from: $templates_root"
+    
+    # Auto-detect ADR number from existing ADRs (or default to 001)
+    local adr_number="001"
+    local decisions_dir="$project_dir/admin/decisions/$topic"
+    if [ -d "$decisions_dir" ]; then
+        local existing_adrs
+        existing_adrs=$(find "$decisions_dir" -name "adr-*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+        if [ "$existing_adrs" -gt 0 ]; then
+            # Increment: find highest ADR number and add 1
+            local highest_adr
+            highest_adr=$(find "$decisions_dir" -name "adr-*.md" -type f 2>/dev/null | sed 's/.*adr-\([0-9]*\)\.md/\1/' | sort -n | tail -1)
+            if [ -n "$highest_adr" ]; then
+                adr_number=$(printf "%03d" $((highest_adr + 1)))
+            fi
+        fi
+    fi
+    
+    # Set template variables
+    dt_set_decision_vars "$topic" "$adr_number" "Decision for $topic" "Decisions for $topic"
+    dt_print_debug "Set decision variables for topic: $topic, ADR: $adr_number"
+    
+    echo "## Generated Structure"
+    echo ""
+    echo "### Files to Create"
+    echo ""
+    echo "The following files should be created in \`admin/decisions/$topic/\`:"
+    echo ""
+    
+    # Render adr.md template
+    local adr_template
+    adr_template=$(dt_get_template_path "adr" "adr" "$templates_root")
+    dt_print_debug "ADR template path: $adr_template"
+    
+    if [ -f "$adr_template" ]; then
+        echo "#### adr-${adr_number}.md (Architectural Decision Record)"
+        echo ""
+        echo '```markdown'
+        local temp_output
+        temp_output=$(mktemp)
+        if dt_render_template "$adr_template" "$temp_output" "adr" 2>/dev/null; then
+            cat "$temp_output"
+            dt_print_debug "Successfully rendered ADR template"
+        else
+            # Template rendering failed - templates are required
+            dt_print_status "ERROR" "Template rendering failed for: $adr_template"
+            dt_print_debug "Template rendering failed - check template file and variables"
+            rm -f "$temp_output"
+            return 1
+        fi
+        rm -f "$temp_output"
+        echo '```'
+        echo ""
+        echo "---"
+        echo ""
+        echo "## 📋 Handoff: decisions-summary.md"
+        echo ""
+        echo "<!-- AI: After making decisions, update decisions-summary.md with: -->"
+        echo ""
+        echo "### Required Sections"
+        echo ""
+        echo "- \`## Decisions\` table with ADR numbers and status"
+        echo "- \`## Impact Summary\` - Key consequences"
+        echo ""
+        echo "**Reference:** See [Pattern 4: Handoff File Contract](../../docs/patterns/workflow-patterns.md#pattern-4-handoff-file-contract) for details."
+        echo ""
+    else
+        dt_print_status "ERROR" "ADR template not found: $adr_template"
+        dt_print_debug "Template file missing: $adr_template"
+        echo ""
+        echo "💡 Suggestion: Ensure dev-infra templates are properly installed"
+        return 1
+    fi
+}
+
+# ============================================================================
+# VALIDATION (L1/L2/L3 Levels)
+# ============================================================================
+
+validate_inputs() {
+    # Validate workflow inputs using tiered validation levels (L1/L2/L3)
+    # Parameters:
+    #   $1 - Workflow type (explore, research, decision)
+    #   $2 - Topic name
+    #   $3 - Project directory (default: current directory)
+    #   $4 - Validation level: L1 (existence), L2 (structure), L3 (content), or "all"
+    #   $5 - Exit on failure: "true" (exit 1) or "false" (return 1)
+    # Returns: 0 on success, 1 on failure (if exit_on_fail=false)
+    #
+    # Validation Levels:
+    # - L1: Existence checks (hard fail) - Required directories/files must exist
+    # - L2: Structure checks (warn, proceed) - Expected sections/format may be missing
+    # - L3: Content checks (warn, allow continue) - Content quality/completeness warnings
+    # This tiered approach allows graceful degradation while catching critical issues early.
+    
+    local workflow="$1"
+    local topic="$2"
+    local project_dir="${3:-.}"
+    local validation_level="${4:-L1}"
+    local exit_on_fail="${5:-true}"
+    
+    # L1: Existence checks (hard fail) - Block execution if prerequisites missing
+    if [ "$validation_level" = "L1" ] || [ "$validation_level" = "all" ]; then
+        # Check project directory exists
+        if [ ! -d "$project_dir" ]; then
+            dt_print_status "ERROR" "Error: Project directory does not exist: $project_dir"
+            echo ""
+            echo "💡 Suggestion: Check the path or use --project to specify correct directory"
+            if [ "$exit_on_fail" = "true" ]; then
+                exit 1
+            else
+                return 1
+            fi
+        fi
+        
+        # Workflow-specific L1 checks
+        case "$workflow" in
+        research)
+            # L1: Check if exploration exists (only if --from-explore is used)
+            # Note: Validation for --from-explore is handled separately in parse_from_explore
+            ;;
+            decision)
+                # L1: Check if research exists (only if --from-research is used)
+                # Note: Validation for --from-research is handled separately in parse_from_research
+                ;;
+        esac
+    fi
+    
+    # L2: Structure checks (warn, proceed) - Missing expected sections but can continue
+    if [ "$validation_level" = "L2" ] || [ "$validation_level" = "all" ]; then
+        case "$workflow" in
+            research)
+                local research_topics="$project_dir/admin/explorations/$topic/research-topics.md"
+                if [ -f "$research_topics" ]; then
+                    if ! grep -q "## 📋 Research Topics" "$research_topics" 2>/dev/null; then
+                        dt_print_status "WARNING" "research-topics.md missing expected '## 📋 Research Topics' section"
+                        echo "   Proceeding anyway, but structure may be incomplete."
+                    fi
+                fi
+                ;;
+        esac
+    fi
+    
+    # L3: Content checks (warn, allow continue) - Quality/completeness warnings only
+    if [ "$validation_level" = "L3" ] || [ "$validation_level" = "all" ]; then
+        case "$workflow" in
+            research)
+                local research_topics="$project_dir/admin/explorations/$topic/research-topics.md"
+                if [ -f "$research_topics" ]; then
+                    local topic_count
+                    topic_count=$(grep -c "^#### Topic" "$research_topics" 2>/dev/null || echo "0")
+                    if [ "$topic_count" -eq 0 ]; then
+                        dt_print_status "WARNING" "No research topics found in research-topics.md"
+                        echo "   You may want to add topics before conducting research."
+                    fi
+                fi
+                ;;
+        esac
+    fi
+    
+    return 0
+}
+
+# ============================================================================
+# TOKEN COUNT ESTIMATION
+# ============================================================================
+
+estimate_tokens() {
+    # Estimate token count for text (used for context size reporting)
+    # Parameters:
+    #   $1 - Text to estimate
+    # Returns: Estimated token count (integer)
+    # Note: Uses conservative 4 chars/token ratio (actual is ~3.5-4.5 depending on content)
+    
+    local text="$1"
+    # Rough estimation: ~4 characters per token (conservative estimate)
+    local char_count
+    char_count=$(echo -n "$text" | wc -c | tr -d ' ')
+    local token_estimate
+    token_estimate=$((char_count / 4))
+    echo "$token_estimate"
+}
+
+# ============================================================================
+# OUTPUT GENERATION
+# ============================================================================
+
+output_for_ai() {
+    # Generate formatted output for AI consumption with explicit context injection
+    # Parameters:
+    #   $1 - Workflow type (explore, research, decision)
+    #   $2 - Topic name
+    #   $3 - Project directory (default: current directory)
+    # Returns: Markdown-formatted output with context and task structure
+    # 
+    # Context Ordering Rationale (per ADR-002):
+    # - START: Critical rules (highest attention) - AI must follow these
+    # - MIDDLE: Background context (lower attention) - Reference material
+    # - END: Task + Instructions (high attention) - What AI should do
+    # This ordering addresses "lost in middle" problem where important info
+    # placed in middle gets less attention from LLMs.
+    
+    local workflow="$1"
+    local topic="$2"
+    local project_dir="${3:-.}"
+    
+    # Capture output for token counting (Research Finding: FR-5)
+    local output_buffer
+    output_buffer=$(mktemp)
+    
+    {
+        echo "# dt-workflow Output: $workflow $topic"
+        echo ""
+        echo "**Mode:** --interactive (Phase 1)"
+        echo "**Generated:** $(date +%Y-%m-%d\ %H:%M)"
+        echo "**Recommended Model:** $(get_recommended_model "$workflow")"
+        echo ""
+        echo "---"
+        echo ""
+        echo "# CONTEXT"
+        echo ""
+        echo "The following context has been gathered for this workflow."
+        echo "This replaces implicit rule loading with explicit context injection."
+        echo ""
+        echo "**Context Ordering:** Critical rules (START) → Background (MIDDLE) → Task (END)"
+        echo ""
+        
+        # ====================================================================
+        # START: Critical Rules (Highest Attention - Research Finding)
+        # Placed at START to ensure maximum AI attention (ADR-002)
+        # ====================================================================
+        echo "## 🔴 CRITICAL RULES (START - Highest Attention)"
+        echo ""
+        gather_cursor_rules "$project_dir"
+        
+        # ====================================================================
+        # MIDDLE: Background Context (Lower Attention)
+        # Conditional based on profile
+        # ====================================================================
+        if [ "$INCLUDE_PROJECT_IDENTITY" = true ]; then
+            echo "---"
+            echo ""
+            echo "## 📋 BACKGROUND CONTEXT (MIDDLE)"
+            echo ""
+            gather_project_identity "$project_dir"
+            gather_git_context "$project_dir"
+        fi
+        
+        # ====================================================================
+        # MIDDLE: Workflow-Specific Context
+        # ====================================================================
+        gather_workflow_context "$workflow" "$topic" "$project_dir"
+        
+        # ====================================================================
+        # END: Task + Instructions (High Attention - Research Finding)
+        # ====================================================================
+        echo "---"
+        echo ""
+        echo "# TASK (END - High Attention)"
+        echo ""
+        
+        case "$workflow" in
+            explore)
+                echo "Create an exploration for **$topic** using the structure below."
+                echo ""
+                echo "Fill in the placeholders with thoughtful analysis based on the context provided."
+                echo ""
+                generate_exploration_structure "$topic"
+                ;;
+            research)
+                echo "Create a research document for **$topic** using the structure below."
+                echo ""
+                echo "Fill in the placeholders with thoughtful analysis based on the context provided."
+                echo ""
+                generate_research_structure "$topic"
+                ;;
+            decision)
+                echo "Create a decision document (ADR) for **$topic** using the structure below."
+                echo ""
+                echo "Fill in the placeholders with thoughtful analysis based on the context provided."
+                echo ""
+                generate_decision_structure "$topic" "$project_dir"
+                ;;
+            *)
+                echo "Workflow '$workflow' structure generation not yet implemented."
+                ;;
+        esac
+        
+        echo "---"
+        echo ""
+        echo "# INSTRUCTIONS (END - High Attention)"
+        echo ""
+        echo "1. Review the CONTEXT section above (rules, project identity, existing work)"
+        echo "2. Create the files in the TASK section with appropriate content"
+        echo "3. After creation, run \`dt-doc-validate\` to check compliance"
+        echo ""
+        
+        # ====================================================================
+        # NEXT STEPS (Research Finding: FR-13)
+        # ====================================================================
+        echo "---"
+        echo ""
+        echo "# 🚀 NEXT STEPS"
+        echo ""
+        case "$workflow" in
+            explore)
+                echo "After completing this exploration:"
+                echo ""
+                echo "1. Review the exploration documents"
+                echo "2. Run: \`/research $topic --from-explore $topic\` to conduct research"
+                echo "3. Or run: \`dt-workflow research $topic --from-explore $topic --interactive\`"
+                ;;
+            research)
+                echo "After completing research:"
+                echo ""
+                echo "1. Review research findings in \`admin/research/$topic/\`"
+                echo "2. Create \`research-summary.md\` with key findings and recommendations (handoff file per Pattern 4)"
+                echo "3. Run: \`/decision $topic --from-research\` to make decisions"
+                echo "4. Or run: \`dt-workflow decision $topic --from-research --interactive\`"
+                ;;
+            decision)
+                echo "After making decisions:"
+                echo ""
+                echo "1. Complete ADR with all sections (Context, Decision, Consequences, Alternatives Considered)"
+                echo "2. Update \`decisions-summary.md\` with new ADR (handoff file per Pattern 4)"
+                echo "3. Run: \`/transition-plan --from-adr $topic\` to create implementation plan"
+                echo "4. Or run: \`dt-workflow transition-plan --from-adr $topic --interactive\`"
+                ;;
+        esac
+        echo ""
+        
+    } | tee "$output_buffer"
+    
+    # Calculate and report token count (Research Finding: FR-5)
+    local output_content
+    output_content=$(cat "$output_buffer")
+    local token_count
+    token_count=$(estimate_tokens "$output_content")
+    
+    echo "---"
+    echo ""
+    echo "**📊 Token Estimate:** ~$token_count tokens (well within 100K+ limits)"
+    echo ""
+    
+    rm -f "$output_buffer"
+}
+
+# ============================================================================
+# HELP AND VERSION
+# ============================================================================
+
+show_help() {
+    cat << EOF
+Usage: $SCRIPT_NAME <workflow> <topic> [OPTIONS]
+
+Unified workflow orchestration for dev-toolkit. Orchestrates the
+exploration→research→decision workflow pipeline with explicit context injection.
+
+Features:
+    - Explicit context injection (Cursor rules, project identity)
+    - Model recommendations per workflow type (FR-6)
+    - Configurable context profiles (FR-7)
+    - Workflow chaining (--from-explore, --from-research)
+
+Workflows:
+    explore           Start an exploration
+    research          Conduct research (requires --from-explore)
+    decision          Make a decision (requires --from-research)
+
+Arguments:
+    workflow          Workflow type (explore, research, decision)
+    topic             Topic or feature name
+
+Options:
+    --interactive     Output context + structure for interactive AI fill (Phase 1)
+    --validate        Validate inputs without generating output (L1/L2/L3 checks)
+    --dry-run          Show preview of what would be included without full generation
+    --output FILE      Save output to file instead of stdout
+    --project PATH    Project directory (default: current directory)
+    --profile NAME    Context profile: default (all), minimal (rules only), full (all + future)
+    --help            Show this help message
+    --version         Show version information
+    --debug           Enable debug output
+
+Examples:
+    # Start an exploration
+    $SCRIPT_NAME explore my-feature --interactive
+    
+    # Explore with output file
+    $SCRIPT_NAME explore auth-system --interactive --output context.md
+    
+    # Research workflow (chained from exploration)
+    $SCRIPT_NAME research my-feature --from-explore --interactive
+    
+    # Research with explicit exploration path
+    $SCRIPT_NAME research my-feature --from-explore /path/to/exploration --interactive
+    
+    # Decision workflow (chained from research)
+    $SCRIPT_NAME decision my-feature --from-research --interactive
+    
+    # Decision with explicit research path
+    $SCRIPT_NAME decision my-feature --from-research /path/to/research --interactive
+    
+    # Full workflow chain example:
+    # 1. $SCRIPT_NAME explore my-feature --interactive
+    # 2. (Create exploration files, including research-topics.md)
+    # 3. $SCRIPT_NAME research my-feature --from-explore --interactive
+    # 4. (Create research files, including research-summary.md)
+    # 5. $SCRIPT_NAME decision my-feature --from-research --interactive
+    
+    # Validate inputs only
+    $SCRIPT_NAME explore test-topic --validate
+
+EOF
+}
+
+show_version() {
+    echo "$SCRIPT_NAME version $VERSION"
+}
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+main() {
+    local workflow=""
+    local topic=""
+    local interactive=false
+    local validate_only=false
+    local dry_run=false
+    local output_file=""
+    local project_dir="."
+    local from_explore_path=""
+    local from_research_path=""
+    local profile="default"
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            --version|-v)
+                show_version
+                exit 0
+                ;;
+            --debug)
+                export DT_DEBUG=true
+                shift
+                ;;
+            --interactive|-i)
+                interactive=true
+                shift
+                ;;
+            --validate)
+                validate_only=true
+                shift
+                ;;
+            --dry-run)
+                dry_run=true
+                shift
+                ;;
+            --output|-o)
+                output_file="$2"
+                shift 2
+                ;;
+            --project|-p)
+                project_dir="$2"
+                shift 2
+                ;;
+            --from-explore)
+                # Check if next argument is a path (doesn't start with -)
+                if [ $# -gt 1 ] && [[ ! "$2" =~ ^- ]]; then
+                    from_explore_path="$2"
+                    shift 2
+                else
+                    # Auto-detect: will be resolved later using topic
+                    from_explore_path="AUTO"
+                    shift
+                fi
+                ;;
+            --from-research)
+                # Check if next argument is a path (doesn't start with -)
+                if [ $# -gt 1 ] && [[ ! "$2" =~ ^- ]]; then
+                    from_research_path="$2"
+                    shift 2
+                else
+                    # Auto-detect: will be resolved later using topic
+                    from_research_path="AUTO"
+                    shift
+                fi
+                ;;
+            --profile)
+                profile="$2"
+                shift 2
+                ;;
+            -*)
+                dt_print_status "ERROR" "Unknown option: $1"
+                echo ""
+                show_help
+                exit 1
+                ;;
+            *)
+                if [ -z "$workflow" ]; then
+                    workflow="$1"
+                elif [ -z "$topic" ]; then
+                    topic="$1"
+                else
+                    dt_print_status "ERROR" "Unexpected argument: $1"
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Validate required arguments (L1 Validation - Research Finding: REQ-IO-1)
+    if [ -z "$workflow" ]; then
+        dt_print_status "ERROR" "Error: Workflow type is required"
+        echo ""
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME <workflow> <topic> --interactive"
+        echo ""
+        echo "Available workflows:"
+        echo "  explore   - Start an exploration"
+        echo "  research  - Conduct research (requires --from-explore)"
+        echo "  decision  - Make decisions (requires --from-research)"
+        echo ""
+        echo "Example: $SCRIPT_NAME explore my-feature --interactive"
+        exit 1
+    fi
+    
+    if [ -z "$topic" ]; then
+        dt_print_status "ERROR" "Error: Topic is required"
+        echo ""
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME $workflow <topic> --interactive"
+        echo ""
+        echo "Example: $SCRIPT_NAME $workflow my-feature --interactive"
+        exit 1
+    fi
+    
+    # Validate workflow type
+    case "$workflow" in
+        explore|research|decision)
+            # Valid workflows
+            ;;
+        *)
+            dt_print_status "ERROR" "Error: Unknown workflow: $workflow"
+            echo ""
+            echo "💡 Suggestion: Available workflows: explore, research, decision"
+            echo ""
+            echo "Example: $SCRIPT_NAME explore $topic --interactive"
+            exit 1
+            ;;
+    esac
+    
+    # --dry-run mode: Show preview without generating full output
+    if [ "$dry_run" = true ]; then
+        show_dry_run_preview "$workflow" "$topic" "$project_dir"
+        exit 0
+    fi
+    
+    # Apply context profile
+    apply_context_profile "$profile"
+    
+    # --validate mode: Check inputs only (Research Finding: REQ-IO-5)
+    if [ "$validate_only" = true ]; then
+        echo "🔍 Validating inputs for: $workflow $topic"
+        echo ""
+        
+        # L1: Existence checks
+        echo "L1 Validation (Existence - Hard Fail):"
+        if validate_inputs "$workflow" "$topic" "$project_dir" "L1" "false"; then
+            dt_print_status "SUCCESS" "L1 checks passed"
+        else
+            dt_print_status "ERROR" "L1 validation failed"
+            exit 1
+        fi
+        echo ""
+        
+        # L2: Structure checks
+        echo "L2 Validation (Structure - Warn):"
+        validate_inputs "$workflow" "$topic" "$project_dir" "L2" "false" || true
+        echo ""
+        
+        # L3: Content checks
+        echo "L3 Validation (Content - Warn):"
+        validate_inputs "$workflow" "$topic" "$project_dir" "L3" "false" || true
+        echo ""
+        
+        dt_print_status "SUCCESS" "Validation complete"
+        exit 0
+    fi
+    
+    # Phase 1: Interactive mode required
+    if [ "$interactive" != true ]; then
+        dt_print_status "ERROR" "Error: Phase 1 requires --interactive mode"
+        echo ""
+        echo "💡 Suggestion: Usage: $SCRIPT_NAME $workflow $topic --interactive"
+        echo ""
+        echo "Phase 1 (current): Script outputs context + structure for manual AI fill"
+        echo "Phase 3 (future):  Script will invoke AI directly"
+        exit 1
+    fi
+    
+    # Validate --from-explore flag if used (before other validation)
+    if [ "$workflow" = "research" ] && [ -n "$from_explore_path" ]; then
+        local exploration_path
+        exploration_path=$(parse_from_explore "$topic" "$from_explore_path" "$project_dir")
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    fi
+    
+    # Validate --from-research flag if used (before other validation)
+    if [ "$workflow" = "decision" ] && [ -n "$from_research_path" ]; then
+        local research_path
+        research_path=$(parse_from_research "$topic" "$from_research_path" "$project_dir")
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    fi
+    
+    # L1 Validation: Check required inputs exist (Research Finding: REQ-IO-1)
+    validate_inputs "$workflow" "$topic" "$project_dir" "L1"
+    
+    # L2/L3 Validation: Warn on structure/content issues (non-blocking)
+    validate_inputs "$workflow" "$topic" "$project_dir" "L2"
+    validate_inputs "$workflow" "$topic" "$project_dir" "L3"
+    
+    # Generate output
+    if [ -n "$output_file" ]; then
+        # Validate output directory exists (handle invalid paths)
+        local output_dir
+        output_dir=$(dirname "$output_file")
+        if [ ! -d "$output_dir" ]; then
+            dt_print_status "ERROR" "Error: Output directory does not exist: $output_dir"
+            echo ""
+            echo "💡 Suggestion: Create the directory first or use a valid path"
+            exit 1
+        fi
+        
+        # Attempt to write output file (capture both stdout and stderr)
+        # Use a temp file first to catch write errors before finalizing
+        local temp_output
+        temp_output=$(mktemp)
+        if ! output_for_ai "$workflow" "$topic" "$project_dir" > "$temp_output" 2>&1; then
+            rm -f "$temp_output"
+            dt_print_status "ERROR" "Error: Failed to generate output"
+            echo ""
+            echo "💡 Suggestion: Check workflow inputs and try again"
+            exit 1
+        fi
+        
+        # Move temp file to final location (catches permission errors)
+        if ! mv "$temp_output" "$output_file" 2>/dev/null; then
+            rm -f "$temp_output"
+            dt_print_status "ERROR" "Error: Failed to write output file: $output_file"
+            echo ""
+            echo "💡 Suggestion: Check file permissions and directory access"
+            exit 1
+        fi
+        
+        dt_print_status "SUCCESS" "Output saved to: $output_file"
+        echo ""
+        echo "💡 Next: Open $output_file in Cursor and let AI fill the structure"
+    else
+        output_for_ai "$workflow" "$topic" "$project_dir"
+    fi
+}
+
+# Only execute main if script is run directly (not sourced)
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi

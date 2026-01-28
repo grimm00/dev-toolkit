@@ -2,7 +2,7 @@
 
 **Purpose:** Active explorations and proof of concepts  
 **Status:** ✅ Active  
-**Last Updated:** 2026-01-09
+**Last Updated:** 2026-01-22
 
 ---
 
@@ -10,7 +10,10 @@
 
 ### Active Explorations
 
+- **[dt-workflow](dt-workflow/README.md)** - Unified workflow orchestration (dt-doc-gen + AI + validate) (✅ Expanded → 🟡 Research)
+- **[doc-infrastructure](doc-infrastructure/README.md)** - `dt-doc-gen` and `dt-doc-validate` commands from dev-infra specs (✅ Complete)
 - **[dt-review-deduplication](dt-review-deduplication/README.md)** - Deduplicate Sourcery comments across multiple review runs (🔴 Exploration)
+- **[command-migrations](command-migrations/README.md)** - ~~Migrate Cursor commands~~ (⚠️ May be superseded by dt-workflow)
 
 ---
 
@@ -37,4 +40,4 @@ This directory contains active explorations, proof of concepts, and abstract ide
 
 ---
 
-**Last Updated:** 2026-01-09
+**Last Updated:** 2026-01-22

@@ -34,6 +34,62 @@ This command supports multiple project organization patterns:
 
 ---
 
+## dt-workflow Integration
+
+**Per ADR-004:** This command acts as an orchestrator, calling dt-workflow for core logic.
+
+### Command Invocation
+
+Before conducting research, run dt-workflow to gather context:
+
+```bash
+# Auto-detect exploration (looks for admin/explorations/<topic>/)
+dt-workflow research <topic> --from-explore --interactive
+
+# Or with explicit path
+dt-workflow research <topic> --from-explore /path/to/exploration --interactive
+
+# Example with output redirection
+mkdir -p admin/research/my-topic
+dt-workflow research my-topic --from-explore --interactive > admin/research/my-topic/research-doc-1.md
+```
+
+### What dt-workflow Provides
+
+1. **Chained Context:**
+   - Exploration context (from research-topics.md)
+   - Research questions to investigate
+   - Previous workflow handoff
+
+2. **Injected Context:**
+   - Cursor rules (.cursor/rules/*.mdc)
+   - Project identity (roadmap, admin structure)
+
+3. **Structure Template:**
+   - Research template with structural examples
+   - Required markers for completeness
+   - Handoff guidance for decision workflow
+
+### Related
+
+- [ADR-004: Cursor Command Role](../admin/decisions/dt-workflow/adr-004-cursor-command-role.md)
+- [dt-workflow help](../../bin/dt-workflow) - Run `dt-workflow --help` for full options
+
+### Integration Workflow
+
+```
+User runs: /research my-topic --from-explore
+
+Cursor Command (orchestrator):
+  1. dt-workflow research my-topic --from-explore --interactive
+     → Outputs: Context + research template
+  2. Create research directory structure
+  3. Apply template to create research documents
+  4. AI expands with actual research
+```
+
+---
+
 ## Workflow Overview
 
 **When to use:**
@@ -102,6 +158,40 @@ This command supports multiple project organization patterns:
 
 ## Step-by-Step Process
 
+### 0. Run dt-workflow (Setup Mode)
+
+**Before creating structure, gather context:**
+
+```bash
+# Verify exploration exists and get context
+dt-workflow research <topic> --from-explore --interactive
+
+# Or with explicit exploration path
+dt-workflow research <topic> --from-explore /path/to/exploration --interactive
+```
+
+**What dt-workflow provides:**
+- Validates exploration prerequisites (research-topics.md exists)
+- Provides chained context from exploration
+- Provides research template structure
+- Outputs injected context (rules, project identity)
+
+**Error Handling:**
+
+If exploration doesn't exist, dt-workflow will report:
+```
+Error: Exploration not found for topic '<topic>'
+Expected: admin/explorations/<topic>/research-topics.md
+```
+
+**Setup Mode Checklist:**
+
+- [ ] dt-workflow context gathered (`dt-workflow research <topic> --from-explore --interactive`)
+- [ ] Prerequisites validated (exploration exists)
+- [ ] Chained context available (research-topics.md read)
+
+---
+
 ### 1. Identify Research Source
 
 **Determine input source:**
@@ -111,6 +201,7 @@ This command supports multiple project organization patterns:
    - **Template Structure:** Read `docs/maintainers/planning/explorations/[explore-topic]/research-topics.md`
    - Extract research topics/questions
    - Use explore-topic as research topic name (or use --topic to override)
+   - **Note:** dt-workflow already validated this in Step 0
 
 2. **From Reflection (`--from-reflect`):**
    - Read reflection document
@@ -658,6 +749,32 @@ This directory contains research documents supporting exploration and decision-m
 ## Conduct Mode Workflow (`--conduct`)
 
 **When to use:** After research structure has been created (Setup Mode), use Conduct Mode to actually perform the research.
+
+**Context Usage:**
+
+Conduct Mode uses the structure created from dt-workflow in Setup Mode:
+- Research questions and methodology (from dt-workflow template)
+- Injected context (rules, project identity) already embedded in structure
+- AI fills in findings via web search, not dt-workflow
+
+**Context Refresh (Optional):**
+
+If project context has changed significantly, you can re-run dt-workflow:
+
+```bash
+dt-workflow research <topic> --from-explore --interactive
+```
+
+This provides fresh context but is typically not needed for Conduct Mode.
+
+**Handoff at Completion:**
+
+When research is complete, create `research-summary.md` as handoff for `/decision`:
+- Key findings summary
+- Recommendations
+- Research status (complete/partial)
+
+---
 
 ### 1. Identify Research to Conduct
 

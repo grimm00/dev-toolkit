@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+
+# ============================================================================
+# DT-DOC-VALIDATE - Validate documentation against dev-infra rules
+# Usage: dt-doc-validate [FILE|DIR] [OPTIONS]
+# ============================================================================
+
+set -euo pipefail
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+
+VERSION="1.0.0"
+SCRIPT_NAME=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLKIT_ROOT="${SCRIPT_DIR%/bin}"
+
+# Source shared libraries
+source "$TOOLKIT_ROOT/lib/core/output-utils.sh"
+source "$TOOLKIT_ROOT/lib/doc-validate/type-detection.sh"
+source "$TOOLKIT_ROOT/lib/doc-validate/rules.sh"
+source "$TOOLKIT_ROOT/lib/doc-validate/validation.sh"
+source "$TOOLKIT_ROOT/lib/doc-validate/output.sh"
+
+# ============================================================================
+# FUNCTIONS
+# ============================================================================
+
+show_help() {
+    cat << EOF
+Usage: $SCRIPT_NAME [FILE|DIR] [OPTIONS]
+
+Validate documentation against dev-infra rules.
+
+Arguments:
+    FILE|DIR          File or directory to validate
+
+Options:
+    --type TYPE       Document type (overrides auto-detection)
+    --json            Output in JSON format
+    --rules-path PATH Path to validation rules directory
+    --help            Show this help message
+    --version         Show version information
+    --debug           Enable debug output
+
+Document Types:
+    exploration, research_topics, exploration_hub, research_topic,
+    research_summary, requirements, research_hub, adr, decisions_summary,
+    decisions_hub, feature_plan, phase, status_and_next_steps,
+    planning_hub, fix_batch, handoff, reflection
+
+Exit Codes:
+    0    Success (all validations passed, warnings allowed)
+    1    Validation errors found
+    2    System error (invalid args, file not found, etc.)
+
+Examples:
+    $SCRIPT_NAME admin/explorations/my-topic/
+    $SCRIPT_NAME --type adr admin/decisions/auth/adr-001.md
+    $SCRIPT_NAME admin/research/ --json
+
+EOF
+}
+
+show_version() {
+    echo "$SCRIPT_NAME version $VERSION"
+}
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+main() {
+    local target=""
+    local explicit_type=""
+    local json_output=false
+    local rules_path=""
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            --version|-v)
+                show_version
+                exit 0
+                ;;
+            --debug)
+                export DT_DEBUG=true
+                shift
+                ;;
+            --type)
+                if [ -z "${2:-}" ]; then
+                    dt_print_status "ERROR" "Option --type requires a value"
+                    show_help
+                    exit 2
+                fi
+                explicit_type="$2"
+                shift 2
+                ;;
+            --json)
+                json_output=true
+                shift
+                ;;
+            --rules-path)
+                if [ -z "${2:-}" ]; then
+                    dt_print_status "ERROR" "Option --rules-path requires a value"
+                    show_help
+                    exit 2
+                fi
+                rules_path="$2"
+                shift 2
+                ;;
+            -*)
+                dt_print_status "ERROR" "Unknown option: $1"
+                show_help
+                exit 2
+                ;;
+            *)
+                if [ -z "$target" ]; then
+                    target="$1"
+                else
+                    dt_print_status "ERROR" "Unexpected argument: $1"
+                    show_help
+                    exit 2
+                fi
+                shift
+                ;;
+        esac
+    done
+    
+    # Validate target
+    if [ -z "$target" ]; then
+        dt_print_status "ERROR" "No file or directory specified"
+        show_help
+        exit 2
+    fi
+    
+    if [ ! -e "$target" ]; then
+        dt_print_status "ERROR" "File or directory not found: $target"
+        exit 2
+    fi
+    
+    # Initialize validation state
+    dt_reset_validation_results
+    
+    # Validate target (file or directory)
+    if [ -d "$target" ]; then
+        dt_validate_directory "$target" "$explicit_type" "$rules_path"
+    else
+        dt_validate_file "$target" "$explicit_type" "$rules_path"
+    fi
+    
+    # Output results
+    if [ "$json_output" = true ]; then
+        dt_format_results_json
+    else
+        dt_output_text
+    fi
+    
+    # Exit with appropriate code
+    exit "$(dt_get_exit_code)"
+}
+
+main "$@"
