@@ -234,9 +234,9 @@ cd ~/Projects/other && ~/.dev-toolkit/bin/dt-review 123
 
 ## 🚧 Current Project State
 
-**Version:** v0.2.0  
+**Version:** v0.4.0  
 **Stage:** Feature Development  
-**Updated:** 2026-01-09
+**Updated:** 2026-01-28
 
 ### ✅ Completed
 
@@ -245,6 +245,9 @@ cd ~/Projects/other && ~/.dev-toolkit/bin/dt-review 123
 - ✅ `dt-sourcery-parse` - Full parser with options
 - ✅ `dt-git-safety` - Git Flow safety checks
 - ✅ `dt-config` - Configuration management
+- ✅ `dt-workflow` - Unified workflow orchestration (v0.4.0)
+- ✅ `dt-doc-gen` - Document generation from templates (v0.4.0)
+- ✅ `dt-doc-validate` - Document validation (v0.4.0)
 - ✅ `dt-install-hooks` - Pre-commit hook installer
 - ✅ `dt-setup-sourcery` - Interactive Sourcery setup
 
