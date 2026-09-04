@@ -44,10 +44,10 @@ setup() {
   [ "$status" -ne 0 ]  # Should fail due to no Sourcery review
   
   # But it should create the directory structure
-  [ -d "admin/feedback/sourcery" ]
+  [ -d "scratch/feedback/sourcery" ]
   
   # And should not create the file (since no review found)
-  [ ! -f "admin/feedback/sourcery/pr99999.md" ]
+  [ ! -f "scratch/feedback/sourcery/pr99999.md" ]
 }
 
 @test "dt-review: creates custom output file structure" {
@@ -212,7 +212,7 @@ setup() {
 
 teardown() {
   # Clean up any test files created
-  rm -f admin/feedback/sourcery/pr*.md
+  rm -f scratch/feedback/sourcery/pr*.md
   rm -f /tmp/test*.md
   rm -f /tmp/*review*.md
 }

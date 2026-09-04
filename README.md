@@ -138,7 +138,7 @@ dt-setup-sourcery
 **Parse Sourcery Reviews:**
 ```bash
 # Quick extraction (recommended)
-dt-review 42                # Saves to admin/feedback/sourcery/pr42.md
+dt-review 42                # Saves to scratch/feedback/sourcery/pr42.md
 
 # Full parser with options
 dt-sourcery-parse 42        # Parse a specific PR

@@ -113,5 +113,5 @@ setup() {
   [ "$status" -eq 0 ]
   [[ "$output" =~ "Usage:" ]]
   [[ "$output" =~ "dt-review" ]]
-  [[ "$output" =~ "admin/feedback/sourcery" ]]
+  [[ "$output" =~ "scratch/feedback/sourcery" ]]
 }

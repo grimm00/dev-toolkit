@@ -19,6 +19,9 @@ else
     exit 1
 fi
 
+# Default under ./scratch (globally gitignored) — never under admin/ in consumer repos
+DEFAULT_REVIEW_DIR="scratch/feedback/sourcery"
+
 # Handle help flags
 if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
     echo "Usage: dt-review <PR_NUMBER> [OUTPUT_PATH]"
@@ -27,13 +30,13 @@ if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
     echo ""
     echo "This is a convenience wrapper for dt-sourcery-parse that:"
     echo "  - Automatically adds --rich-details flag"
-    echo "  - Saves to admin/feedback/sourcery/pr<NUMBER>.md by default"
+    echo "  - Saves to ${DEFAULT_REVIEW_DIR}/pr<NUMBER>.md by default"
     echo "  - Accepts custom output path as second argument"
     echo "  - Formats PR number with leading zero (e.g., pr06.md)"
     echo ""
     echo "Examples:"
     echo "  dt-review 6"
-    echo "  # Saves to admin/feedback/sourcery/pr06.md"
+    echo "  # Saves to ${DEFAULT_REVIEW_DIR}/pr06.md"
     echo ""
     echo "  dt-review 6 custom-review.md"
     echo "  # Saves to custom-review.md"
@@ -53,7 +56,7 @@ if [ -z "$PR_NUMBER" ]; then
     echo ""
     echo "Examples:"
     echo "  dt-review 6"
-    echo "  # Saves to admin/feedback/sourcery/pr06.md"
+    echo "  # Saves to ${DEFAULT_REVIEW_DIR}/pr06.md"
     echo ""
     echo "  dt-review 6 custom-review.md"
     echo "  # Saves to custom-review.md"
@@ -77,10 +80,10 @@ if [ -n "${2:-}" ]; then
     # Custom output path provided
     OUTPUT_FILE="$2"
 else
-    # Default output path
+    # Default output path (cwd-relative; keep scratch/ out of git via global ignore)
     PR_PADDED=$(printf "pr%02d" "$PR_NUMBER")
-    mkdir -p admin/feedback/sourcery
-    OUTPUT_FILE="admin/feedback/sourcery/${PR_PADDED}.md"
+    mkdir -p "$DEFAULT_REVIEW_DIR"
+    OUTPUT_FILE="${DEFAULT_REVIEW_DIR}/${PR_PADDED}.md"
 fi
 
 # Run the parser with rich details - let it do all the heavy lifting

@@ -43,7 +43,7 @@ dt-config edit global       # Edit global config
 ### Sourcery Parser
 ```bash
 # Quick review extraction (recommended)
-dt-review 42                # Extract review to admin/feedback/sourcery/pr42.md
+dt-review 42                # Extract review to scratch/feedback/sourcery/pr42.md
 
 # Full parser with options
 dt-sourcery-parse           # Parse current user's open PR
